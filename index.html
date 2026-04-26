@@ -1744,5 +1744,18 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('input[type="date"]').forEach(el=>{if(!el.value)el.value=td;});
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://idbekogmcmqhwetngpvt.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYmVrb2dtY21xaHdldG5ncHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMjE4MjEsImV4cCI6MjA5Mjc5NzgyMX0.rYyK2qqJBj0EXFhQMLAGp2_X8WYfDNSFdnYDBhuah5Q";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  console.log("Connected to Supabase");
+</script>
 </body>
 </html>
