@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Murivest Executive OS — 50M Command</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ═══════════════════════════════════════════
+   MURIVEST EXECUTIVE OS — DESIGN SYSTEM
+═══════════════════════════════════════════ */
+:root {
+  --ink: #0D0D0D; --ink2: #2A2A2A; --ink3: #666;
+  --cream: #F4F1EC; --cream2: #EBE7DF; --white: #FFFFFF;
+  --gold: #B8955A; --gold2: #D4AF78; --gold-light: rgba(184,149,90,0.10); --gold-glow: rgba(184,149,90,0.20);
+  --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.05);
+  --success: #1A5C3A; --success-bg: rgba(26,92,58,0.08);
+  --warn: #7A4A00; --warn-bg: rgba(122,74,0,0.08);
+  --danger: #6B1A1A; --danger-bg: rgba(107,26,26,0.08);
+  --info: #1A3A5C; --info-bg: rgba(26,58,92,0.08);
+  --r: 4px; --r2: 8px;
+  --shadow: 0 1px 8px rgba(0,0,0,0.06); --shadow2: 0 4px 20px rgba(0,0,0,0.10);
+  --mast-h: 54px; --pb-h: 56px; --stats-h: 72px; --nav-h: 46px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px;-webkit-text-size-adjust:100%}
+body{font-family:'Syne',system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* ── AUTH SCREEN ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--ink);padding:24px}
+.auth-box{width:100%;max-width:380px}
+.auth-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--white);letter-spacing:0.06em;text-align:center;margin-bottom:4px}
+.auth-logo span{color:var(--gold2)}
+.auth-tag{text-align:center;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:32px}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px}
+.auth-field input{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r);font-family:'Syne',sans-serif;font-size:13px;color:var(--white)}
+.auth-field input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,0.09)}
+.auth-field input::placeholder{color:rgba(255,255,255,0.25)}
+.auth-btn{width:100%;padding:13px;background:var(--gold);color:var(--ink);border:none;border-radius:var(--r);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;margin-top:8px;transition:all 0.2s}
+.auth-btn:hover{background:var(--gold2)}
+.auth-switch{text-align:center;font-size:11px;color:rgba(255,255,255,0.35);margin-top:16px;cursor:pointer}
+.auth-switch span{color:var(--gold2);cursor:pointer;text-decoration:underline}
+.auth-error{font-size:11px;color:#FF6B6B;text-align:center;margin-top:8px;display:none}
+.auth-target{background:rgba(184,149,90,0.08);border:1px solid rgba(184,149,90,0.2);border-radius:var(--r2);padding:12px 16px;margin-bottom:24px;text-align:center}
+.auth-target .num{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);display:block;line-height:1}
+.auth-target .lbl{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px;display:block}
+
+/* ── CONFIG MODAL ── */
+.cfg-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;display:none}
+.cfg-overlay.show{display:flex}
+.cfg-box{background:var(--ink);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r2);padding:28px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.cfg-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin-bottom:4px}
+.cfg-desc{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px}
+.cfg-field{margin-bottom:14px}
+.cfg-field label{display:block;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px}
+.cfg-field input{width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r);font-family:'Syne',sans-serif;font-size:13px;color:var(--white)}
+.cfg-field input:focus{outline:none;border-color:var(--gold)}
+
+/* ── APP ── */
+#app{display:none}
+#app.ready{display:block}
+
+/* ── MASTHEAD ── */
+.mast{background:var(--ink);color:var(--white);height:var(--mast-h);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,0.05)}
+.mast-l{display:flex;align-items:center;gap:12px}
+.wordmark{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;letter-spacing:0.06em;color:var(--white);white-space:nowrap}
+.wordmark span{color:var(--gold2)}
+.mast-tag{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.3);border-left:1px solid rgba(255,255,255,0.1);padding-left:12px;display:none}
+@media(min-width:520px){.mast-tag{display:block}}
+.mast-r{display:flex;align-items:center;gap:10px}
+.target-chip{font-size:10px;font-weight:700;letter-spacing:0.12em;background:var(--gold);color:var(--ink);padding:5px 12px;border-radius:100px;text-transform:uppercase;white-space:nowrap}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:background 0.3s;flex-shrink:0}
+.sync-dot.live{background:#2ECC71;box-shadow:0 0 6px rgba(46,204,113,0.6)}
+.sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite}
+.logout-btn{font-size:10px;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;padding:4px 8px;font-family:'Syne',sans-serif}
+.logout-btn:hover{color:rgba(255,255,255,0.7)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap{background:var(--ink);padding:12px 20px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.pb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.pb-label{font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.35)}
+.pb-amounts{font-family:'Playfair Display',serif;font-size:18px;color:var(--white);display:flex;align-items:baseline;gap:8px}
+.pb-amounts .pct{font-size:12px;color:var(--gold2)}
+.pb-track{height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:4px}
+.pb-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width 1s ease;min-width:0}
+.pb-subs{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.08em}
+
+/* ── STATS RAIL ── */
+.stats-rail{background:var(--white);display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.stat{padding:12px 14px;border-right:1px solid var(--border);cursor:pointer;transition:background 0.15s}
+.stat:last-child{border-right:none}
+.stat:hover{background:var(--cream)}
+.stat-n{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;line-height:1;margin-bottom:2px}
+.stat-l{font-size:8px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.stat-n.g{color:var(--success)}
+.stat-n.w{color:var(--warn)}
+@media(max-width:600px){
+  .stats-rail{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:none}
+  .stat:nth-child(3){border-right:1px solid var(--border);border-top:1px solid var(--border)}
+  .stat:nth-child(4){border-top:1px solid var(--border)}
+}
+
+/* ── NAV ── */
+.nav{background:var(--white);border-bottom:2px solid var(--border2);overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-inner{display:flex;padding:0 16px;min-width:max-content}
+.ntab{display:flex;align-items:center;gap:5px;padding:10px 14px;border:none;background:none;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all 0.15s}
+.ntab svg{width:11px;height:11px;flex-shrink:0}
+.ntab:hover{color:var(--ink)}
+.ntab.act{color:var(--ink);border-bottom-color:var(--gold)}
+.ntab .badge{background:var(--gold);color:var(--ink);font-size:9px;padding:1px 6px;border-radius:100px;font-weight:700}
+
+/* ── LAYOUT ── */
+.body{max-width:700px;margin:0 auto;padding:20px 16px 80px}
+.panel{display:none;animation:fu 0.2s ease forwards}
+.panel.act{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PANEL HEADER ── */
+.ph{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.ph-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.ph-title svg{width:16px;height:16px;color:var(--gold);flex-shrink:0}
+.ph-desc{font-size:11px;color:var(--ink3);letter-spacing:0.03em}
+
+/* ── LOADING ── */
+.loading-overlay{position:fixed;inset:0;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px;display:none}
+.loading-overlay.show{display:flex}
+.loading-logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--white);letter-spacing:0.06em}
+.loading-logo span{color:var(--gold2)}
+.loading-bar{width:160px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;overflow:hidden}
+.loading-fill{height:100%;background:var(--gold);border-radius:1px;animation:load 1.5s ease-in-out infinite}
+@keyframes load{0%{width:0;margin-left:0}50%{width:80%;margin-left:10%}100%{width:0;margin-left:100%}}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+
+/* ── DEAL CARDS ── */
+.deal-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:8px;overflow:hidden;box-shadow:var(--shadow)}
+.deal-card.priority{border-left:3px solid var(--gold)}
+.deal-card.loi{border-left:3px solid var(--info)}
+.deal-card.dead{border-left:3px solid rgba(0,0,0,0.12);opacity:0.65}
+.deal-card.tour{border-left:3px solid var(--success)}
+.deal-top{padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer}
+.deal-top:hover{background:var(--cream)}
+.deal-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.deal-loc{font-size:11px;color:var(--ink3)}
+.deal-right{text-align:right;flex-shrink:0;margin-left:10px}
+.deal-price{font-family:'Playfair Display',serif;font-size:15px;font-weight:500;color:var(--ink)}
+.deal-fee{font-size:10px;color:var(--gold);font-weight:600;margin-top:1px}
+.deal-body{border-top:1px solid var(--border);padding:12px 14px;display:none}
+.deal-card.open .deal-body{display:block}
+
+/* ── STAGE BADGES ── */
+.stage{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;letter-spacing:0.09em;padding:2px 8px;border-radius:100px}
+.stage.loi{background:var(--info-bg);color:var(--info)}
+.stage.tour{background:var(--success-bg);color:var(--success)}
+.stage.dead{background:var(--danger-bg);color:var(--danger)}
+.stage.orig{background:var(--warn-bg);color:var(--warn)}
+.stage.uw{background:rgba(50,50,200,0.07);color:#1A1A9C}
+.stage.active{background:var(--gold-light);color:#7A5500}
+
+/* ── LOG ENTRIES ── */
+.log-entry{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start}
+.log-entry:last-child{border-bottom:none}
+.log-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.log-dot.loi{background:var(--info)}
+.log-dot.call{background:var(--gold)}
+.log-dot.cold{background:var(--ink3)}
+.log-dot.strat{background:var(--success)}
+.log-content{flex:1;min-width:0}
+.log-activity{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:1px}
+.log-cp{font-size:12px;color:var(--ink2)}
+.log-note{font-size:11px;color:var(--ink3);margin-top:2px;line-height:1.5}
+.log-meta{font-size:10px;color:var(--ink3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.log-pts{font-size:10px;font-weight:700;color:var(--gold);background:var(--gold-light);padding:1px 7px;border-radius:100px;white-space:nowrap}
+
+/* ── FORM ── */
+.field{margin-bottom:14px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+label{display:block;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:5px}
+label.req::after{content:' *';color:var(--gold)}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--r);font-family:'Syne',sans-serif;font-size:13px;color:var(--ink);background:var(--white);transition:border-color 0.15s,box-shadow 0.15s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,149,90,0.10)}
+input::placeholder,textarea::placeholder{color:var(--ink3);font-size:12px}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23777' d='M5 6L0 0h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+textarea{resize:vertical;min-height:70px;line-height:1.55}
+.impact-grp{display:flex;gap:6px;margin-top:4px}
+.imp{flex:1;padding:7px 4px;border:1px solid var(--border);border-radius:var(--r);text-align:center;cursor:pointer;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);transition:all 0.15s;user-select:none}
+.imp.sel-h{border-color:var(--danger);background:var(--danger-bg);color:var(--danger)}
+.imp.sel-m{border-color:var(--gold);background:var(--gold-light);color:var(--warn)}
+.imp.sel-l{border-color:var(--success);background:var(--success-bg);color:var(--success)}
+
+/* ── BUTTONS ── */
+.btn{width:100%;padding:12px 18px;background:var(--ink);color:var(--white);border:none;border-radius:var(--r);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:hover{background:#1A1A1A;box-shadow:var(--shadow2)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn svg{width:12px;height:12px}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--border);width:auto;padding:6px 12px;border-radius:100px;font-size:10px}
+.btn-ghost:hover{background:var(--cream);box-shadow:none}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);padding:10px 22px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:0.04em;z-index:500;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border:1px solid var(--gold)}
+.toast.err{background:#6B1A1A;border:1px solid rgba(255,100,100,0.3)}
+
+/* ── SECTION LABEL ── */
+.sec-lbl{font-size:9px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── DAY TARGET ── */
+.day-target{background:var(--gold-light);border:1px solid rgba(184,149,90,0.2);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dt-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:500;color:var(--ink);line-height:1}
+.dt-lbl{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-top:3px}
+.dt-right{text-align:right;font-size:11px;color:var(--ink2);flex-shrink:0}
+.dt-right strong{display:block;font-size:16px;color:var(--ink);font-family:'Playfair Display',serif}
+
+/* ── GC BANNER ── */
+.gc-banner{background:var(--ink);color:rgba(255,255,255,0.65);font-size:11px;letter-spacing:0.03em;line-height:1.75;padding:12px 14px;border-left:2px solid var(--gold);border-radius:0 var(--r) var(--r) 0;margin-bottom:14px;font-style:italic}
+
+/* ── MOMENTUM ── */
+.momentum-grid{display:flex;gap:3px;align-items:flex-end;height:56px;margin:8px 0}
+.mom-bar{flex:1;border-radius:1px 1px 0 0;min-height:2px;transition:height 0.4s;background:var(--gold);opacity:0.6}
+.mom-bar.today{background:var(--gold2);opacity:1}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.metric-card{background:var(--cream);border-radius:var(--r2);padding:10px 12px;border:1px solid var(--border)}
+.mc-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:2px}
+.mc-lbl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
+
+/* ── TASK ROWS ── */
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border2)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:18px;height:18px;border:1.5px solid var(--border);border-radius:3px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px}
+.task-cb.done{background:var(--success);border-color:var(--success)}
+.task-cb.done::after{content:'✓';font-size:10px;color:var(--white);font-weight:700}
+.task-cb.blocked{background:var(--danger-bg);border-color:var(--danger)}
+.task-info{flex:1;min-width:0}
+.task-asset{font-size:11px;font-weight:600;color:var(--gold)}
+.task-name{font-size:12px;color:var(--ink);line-height:1.4}
+.task-name.done-text{text-decoration:line-through;color:var(--ink3)}
+.task-meta{font-size:10px;color:var(--ink3);margin-top:2px}
+.velocity{font-size:10px;padding:2px 7px;border-radius:100px;font-weight:600}
+.v-ok{background:var(--success-bg);color:var(--success)}
+.v-warn{background:var(--warn-bg);color:var(--warn)}
+.v-crit{background:var(--danger-bg);color:var(--danger)}
+.v-done{background:var(--border2);color:var(--ink3)}
+
+/* ── CAPITAL ── */
+.cap-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border2)}
+.cap-row:last-child{border-bottom:none}
+.cap-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.cap-mandate{font-size:11px;color:var(--ink3)}
+.tier-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:5px}
+.t1{background:var(--gold-light);color:var(--warn)}
+.t2{background:var(--info-bg);color:var(--info)}
+.t3{background:var(--border2);color:var(--ink3)}
+.cap-r{text-align:right;flex-shrink:0;margin-left:10px}
+.cap-weighted{font-size:13px;font-weight:600;font-family:'Playfair Display',serif;color:var(--ink)}
+.cap-prob{font-size:10px;color:var(--ink3);margin-top:1px}
+
+/* ── MANDATE ── */
+.mandate-row{padding:10px 0;border-bottom:1px solid var(--border2)}
+.mandate-row:last-child{border-bottom:none}
+.man-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
+.man-name{font-size:13px;font-weight:600;color:var(--ink)}
+.man-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px}
+.ms-active{background:var(--success-bg);color:var(--success)}
+.ms-expiring{background:var(--warn-bg);color:var(--warn)}
+.ms-expired{background:var(--danger-bg);color:var(--danger)}
+.man-meta{font-size:11px;color:var(--ink3);margin-bottom:1px}
+.man-fee{font-size:11px;color:var(--gold);font-weight:600}
+
+/* ── TRAFFIC ── */
+.traffic-row{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start}
+.traffic-row:last-child{border-bottom:none}
+.tr-name{font-size:13px;font-weight:600;margin-bottom:1px}
+.tr-co{font-size:11px;color:var(--ink3);margin-bottom:1px}
+.tr-prop{font-size:11px;color:var(--gold);font-weight:600}
+.tr-temp{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px}
+.temp-hot{background:var(--danger-bg);color:var(--danger)}
+.temp-warm{background:var(--warn-bg);color:var(--warn)}
+.temp-cold{background:var(--info-bg);color:var(--info)}
+.temp-offer{background:var(--success-bg);color:var(--success)}
+.temp-dead{background:var(--border2);color:var(--ink3)}
+
+/* ── DAILY SCORECARD ── */
+.scorecard{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
+.sc-head{background:var(--ink);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.sc-title{font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
+.sc-date{font-size:11px;color:rgba(255,255,255,0.4)}
+.sc-body{padding:0}
+.sc-row{display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border2);gap:10px}
+.sc-row:last-child{border-bottom:none}
+.sc-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sc-ok{background:var(--success-bg)}
+.sc-warn{background:var(--warn-bg)}
+.sc-fail{background:var(--danger-bg)}
+.sc-label{flex:1;font-size:12px;color:var(--ink)}
+.sc-target{font-size:11px;color:var(--ink3)}
+.sc-val{font-size:12px;font-weight:700}
+.sc-val.ok{color:var(--success)}
+.sc-val.warn{color:var(--warn)}
+.sc-val.fail{color:var(--danger)}
+
+/* ── OUTREACH TRACKER ── */
+.outreach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.or-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;text-align:center;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow)}
+.or-card:hover{border-color:var(--gold);background:var(--gold-light)}
+.or-card.done-card{border-color:var(--success);background:var(--success-bg)}
+.or-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:2px}
+.or-lbl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.or-target{font-size:10px;color:var(--gold);margin-top:1px}
+
+/* ── CONTENT LOG ── */
+.content-row{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start}
+.content-row:last-child{border-bottom:none}
+.ct-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ct-platform{font-size:10px;color:var(--gold);font-weight:600}
+.ct-type{font-size:10px;color:var(--ink3)}
+.ct-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--success-bg);color:var(--success)}
+
+/* ── EMPTY STATES ── */
+.empty{font-size:12px;color:var(--ink3);padding:16px 0;text-align:center}
+.skeleton{background:linear-gradient(90deg,var(--cream2) 25%,var(--cream) 50%,var(--cream2) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--r);height:16px;margin-bottom:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── ERR BANNER ── */
+.err-banner{background:var(--danger-bg);border:1px solid rgba(107,26,26,0.2);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:12px;display:none}
+.err-banner.show{display:block}
+
+/* ── QUICK ADD ── */
+.quick-add{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.qa-btn{font-size:10px;padding:6px 10px;background:var(--white);border:1px solid var(--border);border-radius:100px;cursor:pointer;font-family:'Syne',sans-serif;color:var(--ink2);transition:all 0.15s}
+.qa-btn:hover{border-color:var(--gold);background:var(--gold-light);color:var(--ink)}
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-logo">Murivest <span>OS</span></div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
+<!-- Auth Screen -->
+<div class="auth-wrap" id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">Murivest <span>OS</span></div>
+    <div class="auth-tag">Executive Command Centre</div>
+    <div class="auth-target">
+      <span class="num">KShs 50M</span>
+      <span class="lbl">2026 Commission Target — 8 months</span>
+    </div>
+    <div id="login-form">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="auth-email" placeholder="your@email.com">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••">
+      </div>
+      <button class="auth-btn" onclick="signIn()">Enter Command Centre</button>
+      <div class="auth-error" id="auth-error"></div>
+      <div class="auth-switch">New here? <span onclick="showSignup()">Create account</span></div>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="your@email.com">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="signup-password" placeholder="min 6 characters">
+      </div>
+      <button class="auth-btn" onclick="signUp()">Create Account</button>
+      <div class="auth-error" id="signup-error"></div>
+      <div class="auth-switch">Already have access? <span onclick="showLogin()">Sign in</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase Config Modal -->
+<div class="cfg-overlay" id="cfg-modal">
+  <div class="cfg-box">
+    <div class="cfg-title">Connect Supabase</div>
+    <div class="cfg-desc">Enter your Supabase project credentials. Find these in your project Settings → API.</div>
+    <div class="cfg-field">
+      <label>Supabase URL</label>
+      <input type="text" id="cfg-url" placeholder="https://xxxxx.supabase.co">
+    </div>
+    <div class="cfg-field">
+      <label>Anon (public) Key</label>
+      <input type="text" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+    </div>
+    <button class="auth-btn" onclick="saveConfig()" style="margin-top:8px">Connect & Launch</button>
+    <div style="margin-top:16px;font-size:10px;color:rgba(255,255,255,0.3);line-height:1.7">
+      1. Create project at supabase.com<br>
+      2. Run murivest_schema.sql in SQL Editor<br>
+      3. Enter URL + anon key above
+    </div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app">
+
+<header class="mast">
+  <div class="mast-l">
+    <div class="wordmark">Murivest <span>OS</span></div>
+    <div class="mast-tag">50M Command</div>
+  </div>
+  <div class="mast-r">
+    <div class="sync-dot" id="sync-dot" title="Supabase sync status" onclick="forceSync()"></div>
+    <div class="target-chip">KShs 50M · 2026</div>
+    <button class="logout-btn" onclick="signOut()">Exit</button>
+  </div>
+</header>
+
+<!-- Progress Bar -->
+<div class="progress-bar-wrap">
+  <div class="pb-header">
+    <div class="pb-label">Commission Progress — 2026</div>
+    <div class="pb-amounts"><span id="pb-earned">KShs 0</span> <span class="pct" id="pb-pct">0%</span></div>
+  </div>
+  <div class="pb-track"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+  <div class="pb-subs"><span>KShs 0</span><span id="pb-remaining">KShs 50M remaining</span><span>KShs 50M</span></div>
+</div>
+
+<!-- Stats Rail -->
+<div class="stats-rail">
+  <div class="stat" onclick="switchTab('pipeline')">
+    <div class="stat-n" id="s-active">—</div>
+    <div class="stat-l">Active Deals</div>
+  </div>
+  <div class="stat" onclick="switchTab('pipeline')">
+    <div class="stat-n w" id="s-pipeline">—</div>
+    <div class="stat-l">Pipeline</div>
+  </div>
+  <div class="stat" onclick="switchTab('log')">
+    <div class="stat-n" id="s-today">—</div>
+    <div class="stat-l">Today's Points</div>
+  </div>
+  <div class="stat" onclick="switchTab('log')">
+    <div class="stat-n g" id="s-momentum">—</div>
+    <div class="stat-l">7-Day Score</div>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="ntab act" data-tab="dashboard" onclick="switchTab('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Command
+    </button>
+    <button class="ntab" data-tab="scorecard" onclick="switchTab('scorecard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Daily Score
+    </button>
+    <button class="ntab" data-tab="pipeline" onclick="switchTab('pipeline',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Pipeline <span class="badge" id="pipe-badge">0</span>
+    </button>
+    <button class="ntab" data-tab="log" onclick="switchTab('log',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Log
+    </button>
+    <button class="ntab" data-tab="flagship" onclick="switchTab('flagship',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Flagship
+    </button>
+    <button class="ntab" data-tab="capital" onclick="switchTab('capital',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      Capital
+    </button>
+    <button class="ntab" data-tab="mandates" onclick="switchTab('mandates',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Mandates
+    </button>
+    <button class="ntab" data-tab="traffic" onclick="switchTab('traffic',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Traffic
+    </button>
+    <button class="ntab" data-tab="content" onclick="switchTab('content',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Content
+    </button>
+  </div>
+</nav>
+
+<main class="body">
+
+<!-- ── COMMAND DASHBOARD ── -->
+<section id="panel-dashboard" class="panel act">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Command Centre
+    </div>
+    <div class="ph-desc">Your daily mission — KShs 50M in 8 months. Zero team. Zero excuses.</div>
+  </div>
+
+  <div class="day-target">
+    <div>
+      <div class="dt-val" id="dt-today-pts">0</div>
+      <div class="dt-lbl">Today's Execution Points</div>
+    </div>
+    <div class="dt-right">
+      <strong id="dt-days-left">—</strong>
+      days remaining
+      <div style="font-size:10px;color:var(--gold);margin-top:3px" id="dt-daily-needed"></div>
+    </div>
+  </div>
+
+  <div class="gc-banner">
+    "Every day you don't generate pipeline, you fall behind. The only question is: how many qualified investors did you move forward TODAY?"
+  </div>
+
+  <div class="sec-lbl">Priority Targets — Your 3 Deals</div>
+  <div class="quick-add">
+    <button class="qa-btn" onclick="quickAddDeal('Trust Building','Moi Avenue CBD',1000000000,0.03,'Site Tour','Push for NDA and LOI immediately after investor viewing')">+ Trust Building (1B)</button>
+    <button class="qa-btn" onclick="quickAddDeal('Suite Life Apartments','Nairobi',360000000,0.03,'LOI Submitted','Arrange physical viewing — push for due diligence')">+ Suite Life (360M)</button>
+    <button class="qa-btn" onclick="quickAddDeal('Sohali Building','River Road CBD',90000000,0.02,'Initial Underwriting','Confirm KShs 65M offer with KCB and Zeeshan')">+ Sohali (90M)</button>
+  </div>
+
+  <div class="sec-lbl">Priority Deals</div>
+  <div id="priority-deals"><div class="skeleton"></div><div class="skeleton"></div></div>
+
+  <div class="sec-lbl" style="margin-top:14px">7-Day Activity Momentum</div>
+  <div class="momentum-grid" id="momentum-chart"></div>
+  <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--ink3);margin-bottom:14px" id="momentum-labels"></div>
+
+  <div class="sec-lbl">Today's Required Actions (Grant Cardone System)</div>
+  <div id="required-actions" style="margin-bottom:14px"></div>
+
+  <div class="sec-lbl">Execution Breakdown</div>
+  <div class="grid-2" id="exec-breakdown"><div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:60px"></div></div>
+</section>
+
+<!-- ── DAILY SCORECARD ── -->
+<section id="panel-scorecard" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Daily Execution Scorecard
+    </div>
+    <div class="ph-desc">Grant Cardone says: track everything. This is your daily verdict. No exceptions.</div>
+  </div>
+
+  <div class="scorecard" id="scorecard-card"></div>
+
+  <div class="sec-lbl" style="margin-top:16px">Outreach Tracker</div>
+  <div class="outreach-grid" id="outreach-today"></div>
+
+  <div class="sec-lbl">Log Today's Outreach</div>
+  <div class="card" style="border:none;box-shadow:none;background:var(--white);border:1px solid var(--border)">
+    <div style="padding:14px">
+      <div class="field-row">
+        <div class="field">
+          <label class="req" for="or-channel">Channel</label>
+          <select id="or-channel">
+            <option>LinkedIn</option>
+            <option>WhatsApp</option>
+            <option>Email</option>
+            <option>Phone</option>
+            <option>In-Person</option>
+            <option>Referral</option>
+            <option>Content</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="req" for="or-count">Count</label>
+          <input type="number" id="or-count" placeholder="20" min="1">
+        </div>
+      </div>
+      <div class="field">
+        <label for="or-desc">Description (optional)</label>
+        <input type="text" id="or-desc" placeholder="e.g. LinkedIn DMs to Nairobi investors">
+      </div>
+      <button class="btn" onclick="logOutreach()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Log Outreach
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ── PIPELINE ── -->
+<section id="panel-pipeline" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Deal Pipeline
+    </div>
+    <div class="ph-desc">Track every deal from origination to close. You need 2B KES volume. 3 deals minimum.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="metric-card">
+      <div class="mc-val" id="pipe-total-kes">KShs 0</div>
+      <div class="mc-lbl">Total Value</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-val" id="pipe-risk-adj">KShs 0</div>
+      <div class="mc-lbl">Risk-Adj Revenue</div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">Active Deals</div>
+  <div id="active-deals-list"><div class="skeleton"></div><div class="skeleton"></div></div>
+
+  <div class="sec-lbl" style="margin-top:14px">Dead / Paused</div>
+  <div id="dead-deals-list"></div>
+
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Add New Deal</div>
+    <div class="card" style="border:none;box-shadow:none;background:var(--white);border:1px solid var(--border)">
+      <div style="padding:14px">
+        <div class="field-row">
+          <div class="field">
+            <label class="req" for="np-asset">Asset Name</label>
+            <input type="text" id="np-asset" placeholder="Property name">
+          </div>
+          <div class="field">
+            <label class="req" for="np-market">Market</label>
+            <input type="text" id="np-market" placeholder="Nairobi CBD">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="req" for="np-size">Deal Size (KShs)</label>
+            <input type="number" id="np-size" placeholder="1000000000">
+          </div>
+          <div class="field">
+            <label class="req" for="np-fee">Fee % (decimal)</label>
+            <input type="number" step="0.001" id="np-fee" placeholder="0.03">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label class="req" for="np-stage">Stage</label>
+            <select id="np-stage">
+              <option>Origination</option><option>Initial Underwriting</option>
+              <option>Site Tour</option><option>LOI Submitted</option>
+              <option>Due Diligence</option><option>Capital Call</option>
+              <option>Closed</option><option>Dead</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="np-source">Lead Source</label>
+            <input type="text" id="np-source" placeholder="Direct / Referral">
+          </div>
+        </div>
+        <div class="field">
+          <label class="req" for="np-action">Next Action Required</label>
+          <textarea id="np-action" placeholder="Be specific — what happens next?"></textarea>
+        </div>
+        <button class="btn" onclick="addDeal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Add to Pipeline
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DAILY LOG ── -->
+<section id="panel-log" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Execution Ledger
+    </div>
+    <div class="ph-desc">Log every strategic activity — your momentum score depends on it. If you don't log it, it didn't happen.</div>
+  </div>
+
+  <div class="field">
+    <label class="req" for="log-act">Strategic Activity</label>
+    <select id="log-act">
+      <option>Cold Outreach</option><option>Capital Intro Call</option>
+      <option>LOI Drafted / Submitted</option><option>Underwriting Model</option>
+      <option>Strategy / Research</option><option>Site Tour</option>
+      <option>Due Diligence</option><option>Investor Meeting</option>
+      <option>Content Published</option><option>Follow-up Call</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="req" for="log-cp">Counterparty / Asset</label>
+    <input type="text" id="log-cp" placeholder="Name or asset">
+  </div>
+  <div class="field">
+    <label>Impact Level</label>
+    <div class="impact-grp">
+      <div class="imp sel-m" id="imp-m" onclick="setImpact('Medium')">Medium</div>
+      <div class="imp" id="imp-h" onclick="setImpact('High')">High</div>
+      <div class="imp" id="imp-l" onclick="setImpact('Low')">Low</div>
+    </div>
+    <input type="hidden" id="log-impact" value="Medium">
+  </div>
+  <div class="field">
+    <label class="req" for="log-out">Outcome &amp; Next Steps</label>
+    <textarea id="log-out" placeholder="What moved forward? What happens next?"></textarea>
+  </div>
+  <div class="field">
+    <label for="log-followup">Follow-up Date</label>
+    <input type="date" id="log-followup">
+  </div>
+  <button class="btn" onclick="logActivity()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    Log Execution
+  </button>
+
+  <div style="margin-top:20px">
+    <div class="sec-lbl">Recent Activity</div>
+    <div id="log-list"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+  </div>
+</section>
+
+<!-- ── FLAGSHIP ── -->
+<section id="panel-flagship" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Flagship Tasks
+    </div>
+    <div class="ph-desc">Critical path — every item here is blocking KShs 50M. No mercy.</div>
+  </div>
+  <div id="flagship-list"><div class="skeleton"></div><div class="skeleton"></div></div>
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Add Critical Task</div>
+    <div class="field"><label class="req" for="ft-asset">Asset</label><input type="text" id="ft-asset" placeholder="e.g. Trust Building, Suite Life"></div>
+    <div class="field"><label class="req" for="ft-task">Critical Task</label><textarea id="ft-task" placeholder="What MUST happen to unlock this deal?"></textarea></div>
+    <div class="field-row">
+      <div class="field">
+        <label class="req" for="ft-status">Status</label>
+        <select id="ft-status"><option>Not Started</option><option>In Progress</option><option>Blocked</option><option>Done</option></select>
+      </div>
+      <div class="field"><label class="req" for="ft-deadline">Hard Deadline</label><input type="date" id="ft-deadline"></div>
+    </div>
+    <button class="btn" onclick="addFlagship()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Register Task
+    </button>
+  </div>
+</section>
+
+<!-- ── CAPITAL ── -->
+<section id="panel-capital" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+      Capital Partners
+    </div>
+    <div class="ph-desc">Your buyer and investor relationships — the source of every close. 50 relationships = 3 deals.</div>
+  </div>
+  <div class="grid-2">
+    <div class="metric-card"><div class="mc-val" id="cap-total">KShs 0</div><div class="mc-lbl">Weighted Pipeline</div></div>
+    <div class="metric-card"><div class="mc-val" id="cap-overdue" style="color:var(--danger)">0</div><div class="mc-lbl">Overdue Touchpoints</div></div>
+  </div>
+  <div class="card"><div style="padding:14px"><div id="capital-list"><div class="skeleton"></div></div></div></div>
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Add Capital Partner</div>
+    <div class="field"><label class="req" for="cp-name">Entity / Investor Name</label><input type="text" id="cp-name" placeholder="Name or fund"></div>
+    <div class="field-row">
+      <div class="field">
+        <label class="req" for="cp-tier">Tier</label>
+        <select id="cp-tier"><option value="1">Tier 1 — Decision Maker</option><option value="2">Tier 2 — Influencer</option><option value="3">Tier 3 — Warm Lead</option></select>
+      </div>
+      <div class="field"><label for="cp-region">Region</label><input type="text" id="cp-region" placeholder="Nairobi · London · Dubai"></div>
+    </div>
+    <div class="field"><label class="req" for="cp-mandate">Mandate / Interest</label><input type="text" id="cp-mandate" placeholder="e.g. Commercial CBD, 500M+ budget"></div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="cp-size">Target Deployment (KShs)</label><input type="number" id="cp-size" placeholder="500000000"></div>
+      <div class="field"><label class="req" for="cp-prob">Probability (0–1)</label><input type="number" step="0.01" id="cp-prob" placeholder="0.60"></div>
+    </div>
+    <div class="field"><label class="req" for="cp-touch">Next Touchpoint Date</label><input type="date" id="cp-touch"></div>
+    <button class="btn" onclick="addCapital()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      Log Partner
+    </button>
+  </div>
+</section>
+
+<!-- ── MANDATES ── -->
+<section id="panel-mandates" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Mandates
+    </div>
+    <div class="ph-desc">Authority to sell — your right to earn commission. No mandate = no money.</div>
+  </div>
+  <div class="card"><div style="padding:14px"><div id="mandates-list"><div class="skeleton"></div></div></div></div>
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Register Mandate</div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="mn-asset">Asset Name</label><input type="text" id="mn-asset" placeholder="Property"></div>
+      <div class="field"><label class="req" for="mn-type">Asset Type</label><select id="mn-type"><option>Office</option><option>Retail</option><option>Mixed-Use</option><option>Hospitality</option><option>Industrial</option><option>Residential</option><option>Land</option></select></div>
+    </div>
+    <div class="field"><label class="req" for="mn-location">Location</label><input type="text" id="mn-location" placeholder="Full address or market"></div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="mn-provider">Provider / Vendor</label><input type="text" id="mn-provider" placeholder="Owner / agent name"></div>
+      <div class="field"><label class="req" for="mn-mtype">Mandate Type</label><select id="mn-mtype"><option>Exclusive</option><option>Non-Exclusive</option><option>Open Listing</option><option>Co-Broker</option></select></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="mn-price">Asking Price (KShs)</label><input type="number" id="mn-price" placeholder="1000000000"></div>
+      <div class="field"><label class="req" for="mn-fee">Fee % (decimal)</label><input type="number" step="0.001" id="mn-fee" placeholder="0.03"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="mn-start">Start Date</label><input type="date" id="mn-start"></div>
+      <div class="field"><label class="req" for="mn-expiry">Expiry Date</label><input type="date" id="mn-expiry"></div>
+    </div>
+    <div class="field"><label for="mn-notes">Notes</label><textarea id="mn-notes" placeholder="Special conditions, contacts..."></textarea></div>
+    <button class="btn" onclick="addMandate()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Create Mandate
+    </button>
+  </div>
+</section>
+
+<!-- ── TRAFFIC ── -->
+<section id="panel-traffic" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Prospect Traffic
+    </div>
+    <div class="ph-desc">Track temperature — don't let leads go cold. A cold lead is a dead lead.</div>
+  </div>
+  <div id="traffic-list"><div class="skeleton"></div></div>
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Log New Prospect</div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="tr-name">Prospect Name</label><input type="text" id="tr-name" placeholder="Full name"></div>
+      <div class="field"><label for="tr-company">Company</label><input type="text" id="tr-company" placeholder="Optional"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="tr-phone">Phone</label><input type="tel" id="tr-phone" placeholder="07XX XXX XXX"></div>
+      <div class="field"><label for="tr-email">Email</label><input type="email" id="tr-email" placeholder="optional@email.com"></div>
+    </div>
+    <div class="field"><label class="req" for="tr-property">Property Shown</label><input type="text" id="tr-property" placeholder="e.g. Suite Life Apartments"></div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="tr-date">Date</label><input type="date" id="tr-date"></div>
+      <div class="field"><label class="req" for="tr-temp">Temperature</label><select id="tr-temp"><option>Hot — Ready</option><option selected>Warm — Reviewing</option><option>Cold</option><option>Offer Submitted</option><option>Dead</option></select></div>
+    </div>
+    <button class="btn" onclick="addTraffic()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+      Log Prospect
+    </button>
+  </div>
+</section>
+
+<!-- ── CONTENT TRACKER ── -->
+<section id="panel-content" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Content Authority Tracker
+    </div>
+    <div class="ph-desc">GC rule: publish daily — build authority, attract investors. No content = no credibility.</div>
+  </div>
+
+  <div class="gc-banner">
+    "You have to become known. Post content every day that shows you operate at this level. Investors must feel they are missing opportunities without you."
+  </div>
+
+  <div class="grid-2" style="margin-bottom:14px">
+    <div class="metric-card"><div class="mc-val" id="ct-posts">0</div><div class="mc-lbl">Posts This Month</div></div>
+    <div class="metric-card"><div class="mc-val" id="ct-leads">0</div><div class="mc-lbl">Leads Generated</div></div>
+  </div>
+
+  <div class="sec-lbl">Content Log</div>
+  <div id="content-list"><div class="skeleton"></div></div>
+
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Log Content Published</div>
+    <div class="field-row">
+      <div class="field">
+        <label class="req" for="ct-platform">Platform</label>
+        <select id="ct-platform"><option>LinkedIn</option><option>Instagram</option><option>Website/Blog</option><option>YouTube</option><option>WhatsApp Broadcast</option><option>Twitter/X</option><option>Email Newsletter</option></select>
+      </div>
+      <div class="field">
+        <label class="req" for="ct-type">Content Type</label>
+        <select id="ct-type"><option>Deal Breakdown</option><option>ROI Analysis</option><option>Market Insight</option><option>Property Feature</option><option>Investor Education</option><option>Personal Brand</option></select>
+      </div>
+    </div>
+    <div class="field"><label class="req" for="ct-title">Title / Description</label><input type="text" id="ct-title" placeholder="e.g. Why Trust Building is underpriced at 1B"></div>
+    <div class="field-row">
+      <div class="field"><label for="ct-url">URL (optional)</label><input type="url" id="ct-url" placeholder="https://..."></div>
+      <div class="field"><label for="ct-leads-gen">Leads Generated</label><input type="number" id="ct-leads-gen" placeholder="0" min="0"></div>
+    </div>
+    <button class="btn" onclick="logContent()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Log Content
+    </button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// SUPABASE CONFIGURATION
+// ═══════════════════════════════════════════════════════════
+const SUPABASE_URL_KEY = 'murivest_sb_url';
+const SUPABASE_KEY_KEY = 'murivest_sb_key';
+let sbUrl = localStorage.getItem(SUPABASE_URL_KEY) || '';
+let sbKey = localStorage.getItem(SUPABASE_KEY_KEY) || '';
+let supabase = null;
+let currentUser = null;
+
+function initSupabase() {
+  if (!sbUrl || !sbKey) {
+    document.getElementById('cfg-modal').classList.add('show');
+    return false;
+  }
+  try {
+    supabase = window.supabase.createClient(sbUrl, sbKey);
+    return true;
+  } catch(e) {
+    console.error('Supabase init failed:', e);
+    return false;
+  }
+}
+
+function saveConfig() {
+  const url = document.getElementById('cfg-url').value.trim();
+  const key = document.getElementById('cfg-key').value.trim();
+  if (!url || !key) { toast('Enter both URL and key', false); return; }
+  localStorage.setItem(SUPABASE_URL_KEY, url);
+  localStorage.setItem(SUPABASE_KEY_KEY, key);
+  sbUrl = url; sbKey = key;
+  document.getElementById('cfg-modal').classList.remove('show');
+  if (initSupabase()) checkAuth();
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+function showSignup() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('signup-form').style.display = 'block';
+}
+function showLogin() {
+  document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+}
+
+async function signIn() {
+  if (!supabase) { toast('Configure Supabase first', false); return; }
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+  if (!email || !pass) { errEl.textContent = 'Enter email and password'; errEl.style.display = 'block'; return; }
+  showLoading();
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+  if (error) {
+    hideLoading();
+    errEl.textContent = error.message;
+    errEl.style.display = 'block';
+    return;
+  }
+  currentUser = data.user;
+  enterApp();
+}
+
+async function signUp() {
+  if (!supabase) { toast('Configure Supabase first', false); return; }
+  const email = document.getElementById('signup-email').value.trim();
+  const pass = document.getElementById('signup-password').value;
+  const errEl = document.getElementById('signup-error');
+  errEl.style.display = 'none';
+  if (!email || !pass) { errEl.textContent = 'Enter email and password'; errEl.style.display = 'block'; return; }
+  showLoading();
+  const { data, error } = await supabase.auth.signUp({ email, password: pass });
+  if (error) {
+    hideLoading();
+    errEl.textContent = error.message;
+    errEl.style.display = 'block';
+    return;
+  }
+  hideLoading();
+  toast('Account created! Check your email to confirm, then sign in.');
+  showLogin();
+}
+
+async function signOut() {
+  if (supabase) await supabase.auth.signOut();
+  currentUser = null;
+  document.getElementById('app').classList.remove('ready');
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+async function checkAuth() {
+  if (!supabase) return;
+  showLoading();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    currentUser = user;
+    enterApp();
+  } else {
+    hideLoading();
+    document.getElementById('auth-screen').style.display = 'flex';
+  }
+}
+
+function enterApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').classList.add('ready');
+  setSyncStatus('live');
+  const td = today();
+  document.querySelectorAll('input[type="date"]').forEach(el => { if (!el.value) el.value = td; });
+  loadAllData();
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOADING & SYNC
+// ═══════════════════════════════════════════════════════════
+function showLoading() { document.getElementById('loading').classList.add('show'); }
+function hideLoading() { document.getElementById('loading').classList.remove('show'); }
+function setSyncStatus(s) {
+  const dot = document.getElementById('sync-dot');
+  dot.className = 'sync-dot ' + s;
+}
+function forceSync() { setSyncStatus('syncing'); loadAllData(); }
+
+// ═══════════════════════════════════════════════════════════
+// DATA CACHE
+// ═══════════════════════════════════════════════════════════
+let DATA = { pipeline: [], log: [], flagship: [], capital: [], mandates: [], traffic: [], outreach: [], content: [] };
+const TARGET = 50000000;
+const WEIGHTS = {
+  'Cold Outreach': 1,'Capital Intro Call': 3,'LOI Drafted / Submitted': 10,
+  'Underwriting Model': 5,'Strategy / Research': 2,'Site Tour': 5,
+  'Due Diligence': 8,'Investor Meeting': 4,'Content Published': 1,'Follow-up Call': 2
+};
+const STAGE_PROB = {
+  'Origination': 0.05,'Initial Underwriting': 0.15,'Site Tour': 0.30,
+  'LOI Submitted': 0.50,'Due Diligence': 0.75,'Capital Call': 0.90,'Closed': 1.0,'Dead': 0
+};
+
+// ═══════════════════════════════════════════════════════════
+// SUPABASE QUERIES
+// ═══════════════════════════════════════════════════════════
+async function sb(table, query) {
+  if (!supabase || !currentUser) return [];
+  setSyncStatus('syncing');
+  try {
+    const { data, error } = await query(supabase.from(table).select('*').eq('user_id', currentUser.id));
+    setSyncStatus('live');
+    if (error) { console.error(table, error); return []; }
+    return data || [];
+  } catch(e) { setSyncStatus(''); console.error(e); return []; }
+}
+
+async function sbInsert(table, row) {
+  if (!supabase || !currentUser) return null;
+  setSyncStatus('syncing');
+  const { data, error } = await supabase.from(table).insert({ ...row, user_id: currentUser.id }).select().single();
+  setSyncStatus(error ? '' : 'live');
+  if (error) { toast('Save failed: ' + error.message, false); return null; }
+  return data;
+}
+
+async function sbUpdate(table, id, updates) {
+  if (!supabase || !currentUser) return;
+  setSyncStatus('syncing');
+  const { error } = await supabase.from(table).update(updates).eq('id', id).eq('user_id', currentUser.id);
+  setSyncStatus(error ? '' : 'live');
+  if (error) toast('Update failed: ' + error.message, false);
+}
+
+async function sbDelete(table, id) {
+  if (!supabase || !currentUser) return;
+  const { error } = await supabase.from(table).delete().eq('id', id).eq('user_id', currentUser.id);
+  if (error) toast('Delete failed: ' + error.message, false);
+}
+
+async function loadAllData() {
+  try {
+    const [pipeline, log, flagship, capital, mandates, traffic, outreach, content] = await Promise.all([
+      sb('pipeline', q => q.order('created_at', { ascending: false })),
+      sb('daily_log', q => q.order('logged_at', { ascending: false })),
+      sb('flagship_tasks', q => q.order('deadline', { ascending: true })),
+      sb('capital_partners', q => q.order('tier', { ascending: true })),
+      sb('mandates', q => q.order('expiry_date', { ascending: true })),
+      sb('prospect_traffic', q => q.order('interaction_date', { ascending: false })),
+      sb('outreach_log', q => q.order('outreach_date', { ascending: false })),
+      sb('content_tracker', q => q.order('published_at', { ascending: false })),
+    ]);
+    DATA = { pipeline, log, flagship, capital, mandates, traffic, outreach, content };
+    hideLoading();
+    render();
+  } catch(e) {
+    hideLoading();
+    toast('Data load error — check connection', false);
+    console.error(e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function fmtKes(n) {
+  if (!n || n === 0) return 'KShs 0';
+  if (n >= 1e9) return 'KShs ' + (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return 'KShs ' + (n/1e6).toFixed(0) + 'M';
+  if (n >= 1e3) return 'KShs ' + (n/1e3).toFixed(0) + 'K';
+  return 'KShs ' + Math.round(n).toLocaleString();
+}
+function fmtDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-KE', {day:'numeric',month:'short',year:'numeric'});
+}
+function today() { return new Date().toISOString().split('T')[0]; }
+function daysSince(d) { return Math.floor((new Date() - new Date(d)) / 86400000); }
+function daysUntil(d) { return Math.ceil((new Date(d) - new Date()) / 86400000); }
+function toast(msg, ok=true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (ok ? 'ok' : 'err');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════════
+function switchTab(id, btn) {
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('act'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('act'));
+  if (btn) btn.classList.add('act');
+  else document.querySelector(`[data-tab="${id}"]`)?.classList.add('act');
+  document.getElementById('panel-' + id)?.classList.add('act');
+  renderPanel(id);
+}
+
+function setImpact(val) {
+  ['h','m','l'].forEach(x => { const el = document.getElementById('imp-' + x); if (el) el.className = 'imp'; });
+  const map = {High:'h',Medium:'m',Low:'l'};
+  const el = document.getElementById('imp-' + map[val]);
+  if (el) el.className = 'imp sel-' + map[val].toLowerCase();
+  document.getElementById('log-impact').value = val;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CALCULATIONS
+// ═══════════════════════════════════════════════════════════
+function calcStats() {
+  const active = DATA.pipeline.filter(d => d.stage !== 'Dead' && d.stage !== 'Closed');
+  const closed = DATA.pipeline.filter(d => d.stage === 'Closed');
+  const totalPipe = active.reduce((s,d) => s + (d.size||0), 0);
+  const riskAdj = active.reduce((s,d) => s + (d.size||0) * (STAGE_PROB[d.stage]||0) * (d.fee||0), 0);
+  const commEarned = closed.reduce((s,d) => s + (d.size||0) * (d.fee||0), 0);
+  const todayStr = today();
+  const weekAgo = new Date(Date.now() - 7*86400000);
+  let todayPts = 0, weekPts = 0;
+  DATA.log.forEach(l => {
+    const ld = new Date(l.logged_at);
+    if (l.logged_at?.startsWith(todayStr)) todayPts += (l.points||0);
+    if (ld >= weekAgo) weekPts += (l.points||0);
+  });
+  return { active: active.length, totalPipe, riskAdj, commEarned, todayPts: Math.round(todayPts), weekPts: Math.round(weekPts) };
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER STATS BAR
+// ═══════════════════════════════════════════════════════════
+function renderStats() {
+  const st = calcStats();
+  document.getElementById('s-active').textContent = st.active;
+  document.getElementById('s-pipeline').textContent = fmtKes(st.totalPipe);
+  document.getElementById('s-today').textContent = st.todayPts;
+  document.getElementById('s-momentum').textContent = st.weekPts;
+  document.getElementById('pipe-badge').textContent = st.active;
+  const earned = st.commEarned;
+  const pct = Math.min(100, (earned / TARGET) * 100);
+  document.getElementById('pb-fill').style.width = pct + '%';
+  document.getElementById('pb-earned').textContent = fmtKes(earned);
+  document.getElementById('pb-pct').textContent = pct.toFixed(1) + '%';
+  document.getElementById('pb-remaining').textContent = fmtKes(Math.max(0, TARGET - earned)) + ' remaining';
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER PANELS
+// ═══════════════════════════════════════════════════════════
+function renderPanel(id) {
+  if (id === 'dashboard') renderDashboard();
+  else if (id === 'scorecard') renderScorecard();
+  else if (id === 'pipeline') renderPipeline();
+  else if (id === 'log') renderLog();
+  else if (id === 'flagship') renderFlagship();
+  else if (id === 'capital') renderCapital();
+  else if (id === 'mandates') renderMandates();
+  else if (id === 'traffic') renderTraffic();
+  else if (id === 'content') renderContent();
+}
+
+function render() {
+  renderStats();
+  const active = document.querySelector('.panel.act');
+  const id = active ? active.id.replace('panel-','') : 'dashboard';
+  renderPanel(id);
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const st = calcStats();
+  document.getElementById('dt-today-pts').textContent = st.todayPts;
+  const end2026 = new Date('2026-12-31');
+  const daysLeft = Math.ceil((end2026 - new Date()) / 86400000);
+  document.getElementById('dt-days-left').textContent = daysLeft;
+  const remaining = TARGET - st.commEarned;
+  document.getElementById('dt-daily-needed').textContent = remaining > 0
+    ? fmtKes(remaining / daysLeft) + ' commission/day needed' : '🎯 TARGET REACHED!';
+
+  const priority = DATA.pipeline.filter(d => ['Site Tour','LOI Submitted','Due Diligence','Capital Call'].includes(d.stage));
+  const pEl = document.getElementById('priority-deals');
+  pEl.innerHTML = (priority.length ? priority : DATA.pipeline.filter(d=>d.stage!=='Dead')).slice(0,3).map(d => `
+    <div class="deal-card ${stageClass(d.stage)}" style="margin-bottom:7px">
+      <div class="deal-top" onclick="switchTab('pipeline')">
+        <div>
+          <div class="deal-name">${d.asset} ${stageTag(d.stage)}</div>
+          <div class="deal-loc">${d.market}</div>
+        </div>
+        <div class="deal-right">
+          <div class="deal-price">${fmtKes(d.size)}</div>
+          <div class="deal-fee">Comm: ${fmtKes(d.size * d.fee)}</div>
+        </div>
+      </div>
+    </div>`).join('') || '<div class="empty">No active deals — add your 3 priority deals above</div>';
+
+  const days = [];
+  for (let i=6; i>=0; i--) {
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const ds = d.toISOString().split('T')[0];
+    const pts = DATA.log.filter(l => l.logged_at?.startsWith(ds)).reduce((s,l) => s+(l.points||0), 0);
+    days.push({ds, pts, label: d.toLocaleDateString('en-KE',{weekday:'short'}), isToday: i===0});
+  }
+  const maxPts = Math.max(...days.map(d=>d.pts), 1);
+  document.getElementById('momentum-chart').innerHTML = days.map(d => {
+    const h = Math.max(3, (d.pts / maxPts) * 52);
+    return `<div class="mom-bar ${d.isToday?'today':''}" style="height:${h}px" title="${d.label}: ${Math.round(d.pts)} pts"></div>`;
+  }).join('');
+  document.getElementById('momentum-labels').innerHTML = days.map(d => `<span>${d.label}</span>`).join('');
+
+  const todayStr = today();
+  const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o)=>s+(o.count||0),0);
+  const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
+  const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr)).length;
+  document.getElementById('required-actions').innerHTML = `
+    <div style="display:grid;gap:6px">
+      ${requiredItem('📤 20+ Outreach Touches', todayOutreach, 20, 'switchTab("scorecard")')}
+      ${requiredItem('📝 2 Content Pieces Posted', todayContent, 2, 'switchTab("content")')}
+      ${requiredItem('🔄 3+ Deals Moved Forward', todayLog, 3, 'switchTab("log")')}
+      ${requiredItem('📞 1 Investor Call', DATA.log.filter(l=>l.logged_at?.startsWith(todayStr)&&l.activity.includes('Call')).length, 1, 'switchTab("log")')}
+    </div>`;
+
+  const actCounts = {};
+  DATA.log.forEach(l => { actCounts[l.activity] = (actCounts[l.activity]||0) + 1; });
+  const top4 = Object.entries(actCounts).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  document.getElementById('exec-breakdown').innerHTML = top4.length ? top4.map(([act,cnt]) =>
+    `<div class="metric-card"><div class="mc-val">${cnt}</div><div class="mc-lbl">${act}</div></div>`
+  ).join('') : '<div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:60px"></div>';
+}
+
+function requiredItem(label, current, target, onclick) {
+  const done = current >= target;
+  const warn = current > 0 && current < target;
+  const pct = Math.min(100, (current/target)*100);
+  const color = done ? 'var(--success)' : warn ? 'var(--warn)' : 'var(--danger)';
+  const bg = done ? 'var(--success-bg)' : warn ? 'var(--warn-bg)' : 'var(--danger-bg)';
+  return `
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;cursor:pointer;box-shadow:var(--shadow)" onclick="${onclick}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <div style="font-size:12px;font-weight:600;color:var(--ink)">${label}</div>
+        <div style="font-size:12px;font-weight:700;color:${color}">${current}/${target}</div>
+      </div>
+      <div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width 0.4s"></div>
+      </div>
+    </div>`;
+}
+
+// ── SCORECARD ──
+function renderScorecard() {
+  const todayStr = today();
+  const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
+  const todayPts = todayLog.reduce((s,l)=>s+(l.points||0),0);
+  const todayOutreach = DATA.outreach.filter(o=>o.outreach_date===todayStr).reduce((s,o)=>s+(o.count||0),0);
+  const todayContent = DATA.content.filter(c=>c.published_at===todayStr).length;
+  const todayCalls = todayLog.filter(l=>l.activity.includes('Call')||l.activity.includes('Meeting')).length;
+  const todayMoves = todayLog.length;
+
+  const checks = [
+    {icon:'📤',label:'Outreach Touches',current:todayOutreach,target:20},
+    {icon:'📝',label:'Content Published',current:todayContent,target:2},
+    {icon:'📞',label:'Investor Calls / Meetings',current:todayCalls,target:1},
+    {icon:'🔄',label:'Deals Moved Forward',current:todayMoves,target:3},
+    {icon:'⚡',label:'Execution Points',current:Math.round(todayPts),target:30},
+  ];
+  const score = checks.filter(c=>c.current>=c.target).length;
+  const scorePct = Math.round((score/checks.length)*100);
+
+  document.getElementById('scorecard-card').innerHTML = `
+    <div class="sc-head">
+      <div class="sc-title">Daily Execution Score — ${fmtDate(new Date())}</div>
+      <div class="sc-date" style="font-family:'Playfair Display',serif;font-size:18px;color:${scorePct>=80?'#2ECC71':scorePct>=60?'var(--gold2)':'#E74C3C'}">${scorePct}%</div>
+    </div>
+    <div class="sc-body">
+      ${checks.map(c => {
+        const ok = c.current >= c.target;
+        const warn = c.current > 0 && !ok;
+        const cls = ok ? 'sc-ok' : warn ? 'sc-warn' : 'sc-fail';
+        const ico = ok ? '✅' : warn ? '⚠️' : '❌';
+        return `
+        <div class="sc-row">
+          <div class="sc-icon ${cls}">${ico}</div>
+          <div class="sc-label">${c.icon} ${c.label}</div>
+          <div class="sc-target">${c.target} req'd</div>
+          <div class="sc-val ${ok?'ok':warn?'warn':'fail'}">${c.current}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  const byChannel = {};
+  DATA.outreach.filter(o=>o.outreach_date===todayStr).forEach(o => {
+    byChannel[o.channel] = (byChannel[o.channel]||0) + (o.count||0);
+  });
+  const channels = ['LinkedIn','WhatsApp','Email','Phone','In-Person','Content'];
+  const targets = {LinkedIn:20,WhatsApp:10,Email:10,Phone:5,'In-Person':2,Content:2};
+  document.getElementById('outreach-today').innerHTML = channels.map(ch => {
+    const cnt = byChannel[ch]||0;
+    const tgt = targets[ch]||10;
+    const done = cnt >= tgt;
+    return `
+      <div class="or-card ${done?'done-card':''}" onclick="document.getElementById('or-channel').value='${ch}';document.getElementById('or-count').focus()">
+        <div class="or-val">${cnt}</div>
+        <div class="or-lbl">${ch}</div>
+        <div class="or-target">Target: ${tgt}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── PIPELINE ──
+function stageClass(s) {
+  const m={'LOI Submitted':'loi','Due Diligence':'tour','Capital Call':'tour','Closed':'tour','Dead':'dead','Origination':'active','Initial Underwriting':'active','Site Tour':'tour'};
+  return m[s]||'active';
+}
+function stageTag(s) {
+  const cls={'LOI Submitted':'loi','Site Tour':'tour','Due Diligence':'tour','Closed':'tour','Dead':'dead','Origination':'orig','Initial Underwriting':'uw','Capital Call':'active'};
+  return `<span class="stage ${cls[s]||'active'}">${s}</span>`;
+}
+
+function renderPipeline() {
+  const active = DATA.pipeline.filter(d=>d.stage!=='Dead');
+  const dead = DATA.pipeline.filter(d=>d.stage==='Dead');
+  let totalKes=0, riskKes=0;
+  active.forEach(d=>{totalKes+=d.size||0;riskKes+=(d.size||0)*(STAGE_PROB[d.stage]||0)*(d.fee||0);});
+  document.getElementById('pipe-total-kes').textContent = fmtKes(totalKes);
+  document.getElementById('pipe-risk-adj').textContent = fmtKes(riskKes);
+  document.getElementById('active-deals-list').innerHTML = active.map(d=>dealCard(d)).join('')||'<div class="empty">No active deals — add your 3 priority deals.</div>';
+  document.getElementById('dead-deals-list').innerHTML = dead.map(d=>dealCard(d)).join('')||'<div class="empty">None</div>';
+}
+
+function dealCard(d) {
+  const prob = STAGE_PROB[d.stage]||0;
+  const grossFee = (d.size||0)*(d.fee||0);
+  return `
+  <div class="deal-card ${stageClass(d.stage)}" id="deal-${d.id}">
+    <div class="deal-top" onclick="toggleDeal('${d.id}')">
+      <div>
+        <div class="deal-name">${d.asset} ${stageTag(d.stage)}</div>
+        <div class="deal-loc">${d.market}</div>
+      </div>
+      <div class="deal-right">
+        <div class="deal-price">${fmtKes(d.size)}</div>
+        <div class="deal-fee">Comm: ${fmtKes(grossFee)}</div>
+      </div>
+    </div>
+    <div class="deal-body">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;font-size:11px;color:var(--ink2)">
+        <span>Risk-Adj: <strong>${fmtKes(grossFee*prob)}</strong></span>
+        <span>Prob: <strong>${(prob*100).toFixed(0)}%</strong></span>
+        <span>Source: <strong>${d.source||'Direct'}</strong></span>
+      </div>
+      <div style="font-size:11px;color:var(--ink3);line-height:1.5;margin-bottom:10px"><strong>Next:</strong> ${d.next_action||'—'}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <select onchange="updateDealStage('${d.id}',this.value)" style="width:auto;padding:6px 10px;font-size:11px">
+          ${['Origination','Initial Underwriting','Site Tour','LOI Submitted','Due Diligence','Capital Call','Closed','Dead'].map(s=>`<option ${s===d.stage?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <button class="btn btn-ghost" onclick="deleteDeal('${d.id}')">Remove</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleDeal(id) { document.getElementById('deal-'+id)?.classList.toggle('open'); }
+
+async function updateDealStage(id, stage) {
+  await sbUpdate('pipeline', id, {stage});
+  const d = DATA.pipeline.find(x=>x.id===id);
+  if (d) d.stage = stage;
+  renderStats(); renderPipeline();
+  toast('Stage → ' + stage);
+}
+
+async function deleteDeal(id) {
+  if (!confirm('Remove this deal?')) return;
+  await sbDelete('pipeline', id);
+  DATA.pipeline = DATA.pipeline.filter(x=>x.id!==id);
+  render();
+  toast('Deal removed');
+}
+
+function quickAddDeal(asset, market, size, fee, stage, nextAction) {
+  document.getElementById('np-asset').value = asset;
+  document.getElementById('np-market').value = market;
+  document.getElementById('np-size').value = size;
+  document.getElementById('np-fee').value = fee;
+  document.getElementById('np-stage').value = stage;
+  document.getElementById('np-action').value = nextAction;
+  switchTab('pipeline');
+  toast('Quick-add populated — review and submit');
+}
+
+// ── LOG ──
+function renderLog() {
+  const sorted = [...DATA.log].sort((a,b)=>new Date(b.logged_at)-new Date(a.logged_at));
+  document.getElementById('log-list').innerHTML = sorted.slice(0,40).map(l => {
+    const dot = l.activity.includes('LOI')||l.activity.includes('Underwriting')?'loi':l.activity.includes('Capital')||l.activity.includes('Meeting')?'call':l.activity.includes('Cold')||l.activity.includes('Follow')?'cold':'strat';
+    return `
+    <div class="log-entry">
+      <div class="log-dot ${dot}"></div>
+      <div class="log-content">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="log-activity">${l.activity}</div>
+          <span class="log-pts">${Math.round(l.points||0)} pts</span>
+        </div>
+        <div class="log-cp">${l.counterparty}</div>
+        <div class="log-note">${l.outcome}</div>
+        <div class="log-meta">
+          <span>${fmtDate(l.logged_at)}</span>
+          <span>${l.impact||'Medium'} impact</span>
+          ${l.follow_up_date?`<span>Follow-up: ${fmtDate(l.follow_up_date)}</span>`:''}
+        </div>
+      </div>
+    </div>`; 
+  }).join('')||'<div class="empty">No activity logged yet — start your execution log below.</div>';
+}
+
+// ── FLAGSHIP ──
+function renderFlagship() {
+  const sorted = [...DATA.flagship].sort((a,b)=>{
+    const ord={Blocked:0,'Not Started':1,'In Progress':2,Done:3};
+    return (ord[a.status]||0)-(ord[b.status]||0);
+  });
+  document.getElementById('flagship-list').innerHTML = `
+    <div class="card"><div style="padding:14px">
+      ${sorted.map(t=>`
+        <div class="task-row">
+          <div class="task-cb ${t.status==='Done'?'done':t.status==='Blocked'?'blocked':''}" onclick="cycleTask('${t.id}','${t.status}')"></div>
+          <div class="task-info">
+            <div class="task-asset">${t.asset}</div>
+            <div class="task-name ${t.status==='Done'?'done-text':''}">${t.task}</div>
+            <div class="task-meta">
+              Deadline: ${fmtDate(t.deadline)} · 
+              ${t.status==='Done'?'<span class="velocity v-done">✅ Done</span>':t.status==='Blocked'?'<span class="velocity v-crit">🔴 Blocked</span>':daysUntil(t.deadline)<0?'<span class="velocity v-crit">🔴 OVERDUE</span>':daysUntil(t.deadline)<7?'<span class="velocity v-warn">⚠️ Due Soon</span>':'<span class="velocity v-ok">🟢 On Track</span>'}
+            </div>
+          </div>
+          <button class="btn btn-ghost" onclick="deleteFlagship('${t.id}')" style="padding:4px 8px;font-size:10px">✕</button>
+        </div>`).join('')||'<div class="empty">No tasks registered — add your critical path items</div>'}
+    </div></div>`;
+}
+
+async function cycleTask(id, currentStatus) {
+  const cycle = ['Not Started','In Progress','Done','Blocked'];
+  const next = cycle[(cycle.indexOf(currentStatus)+1)%cycle.length];
+  await sbUpdate('flagship_tasks', id, {status: next});
+  const t = DATA.flagship.find(x=>x.id===id);
+  if (t) t.status = next;
+  renderFlagship();
+  toast('Task → ' + next);
+}
+
+async function deleteFlagship(id) {
+  await sbDelete('flagship_tasks', id);
+  DATA.flagship = DATA.flagship.filter(x=>x.id!==id);
+  renderFlagship();
+}
+
+// ── CAPITAL ──
+function renderCapital() {
+  const now = new Date();
+  let total=0, overdue=0;
+  DATA.capital.forEach(c=>{total+=(c.target_deployment||0)*(c.probability||0);if(new Date(c.next_touchpoint)<now)overdue++;});
+  document.getElementById('cap-total').textContent = fmtKes(total);
+  document.getElementById('cap-overdue').textContent = overdue;
+  const sorted = [...DATA.capital].sort((a,b)=>a.tier-b.tier);
+  document.getElementById('capital-list').innerHTML = sorted.map(c=>{
+    const od = new Date(c.next_touchpoint)<now;
+    return `
+    <div class="cap-row">
+      <div>
+        <div class="cap-name">${c.entity_name}<span class="tier-pill t${c.tier}">T${c.tier}</span></div>
+        <div class="cap-mandate">${c.mandate}</div>
+        <div style="font-size:10px;color:${od?'var(--danger)':'var(--ink3)'};margin-top:1px">Touchpoint: ${fmtDate(c.next_touchpoint)} ${od?'⚠️ OVERDUE':''}</div>
+      </div>
+      <div class="cap-r">
+        <div class="cap-weighted">${fmtKes((c.target_deployment||0)*(c.probability||0))}</div>
+        <div class="cap-prob">${((c.probability||0)*100).toFixed(0)}% · ${fmtKes(c.target_deployment)}</div>
+      </div>
+    </div>`;
+  }).join('')||'<div class="empty">No capital partners logged — start with your first 10 targets</div>';
+}
+
+// ── MANDATES ──
+function renderMandates() {
+  document.getElementById('mandates-list').innerHTML = DATA.mandates.map(m=>{
+    const d = daysUntil(m.expiry_date);
+    const st = d<0?{cls:'ms-expired',lbl:'Expired'}:d<60?{cls:'ms-expiring',lbl:`Expiring ${d}d`}:{cls:'ms-active',lbl:'Active'};
+    return `
+    <div class="mandate-row">
+      <div class="man-top">
+        <div class="man-name">${m.asset}</div>
+        <span class="man-status ${st.cls}">${st.lbl}</span>
+      </div>
+      <div class="man-meta">${m.asset_type} · ${m.location} · ${m.mandate_type}</div>
+      <div class="man-meta">Provider: ${m.provider} · Expires: ${fmtDate(m.expiry_date)}</div>
+      <div class="man-fee">${fmtKes(m.asking_price)} · Gross fee: ${fmtKes((m.asking_price||0)*(m.fee||0))} (${((m.fee||0)*100).toFixed(1)}%)</div>
+    </div>`;
+  }).join('')||'<div class="empty">No mandates registered — get your first mandate immediately</div>';
+}
+
+// ── TRAFFIC ──
+function renderTraffic() {
+  const tempCls={'Hot — Ready':'temp-hot','Warm — Reviewing':'temp-warm','Cold':'temp-cold','Offer Submitted':'temp-offer','Dead':'temp-dead'};
+  document.getElementById('traffic-list').innerHTML = DATA.traffic.map(t=>`
+    <div class="traffic-row">
+      <div>
+        <div class="tr-name">${t.prospect_name}</div>
+        ${t.company?`<div class="tr-co">${t.company}</div>`:''}
+        <div class="tr-prop">${t.property_shown}</div>
+        <div style="font-size:10px;color:var(--ink3)">${t.phone||''} ${t.email?'· '+t.email:''}</div>
+      </div>
+      <div style="text-align:right">
+        <span class="tr-temp ${tempCls[t.temperature]||'temp-warm'}">${(t.temperature||'').split(' — ')[0]}</span>
+        <div style="font-size:10px;color:var(--ink3);margin-top:3px">${fmtDate(t.interaction_date)}</div>
+      </div>
+    </div>`).join('')||'<div class="empty">No prospects logged yet — every viewing must be tracked</div>';
+}
+
+// ── CONTENT ──
+function renderContent() {
+  const thisMonth = DATA.content.filter(c => c.published_at?.startsWith(new Date().toISOString().slice(0,7)));
+  document.getElementById('ct-posts').textContent = thisMonth.length;
+  document.getElementById('ct-leads').textContent = thisMonth.reduce((s,c)=>s+(c.leads_generated||0),0);
+  document.getElementById('content-list').innerHTML = DATA.content.slice(0,20).map(c=>`
+    <div class="content-row">
+      <div>
+        <div class="ct-title">${c.title}</div>
+        <div class="ct-platform">${c.platform} · <span class="ct-type">${c.content_type}</span></div>
+        <div style="font-size:10px;color:var(--ink3)">${fmtDate(c.published_at)}</div>
+      </div>
+      <div style="text-align:right">
+        ${c.leads_generated>0?`<span class="ct-badge">+${c.leads_generated} leads</span>`:''}
+        ${c.url?`<div style="margin-top:4px"><a href="${c.url}" target="_blank" style="font-size:10px;color:var(--gold)">View →</a></div>`:''}
+      </div>
+    </div>`).join('')||'<div class="empty">No content logged — start publishing daily. Authority = deals.</div>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD ACTIONS
+// ═══════════════════════════════════════════════════════════
+async function addDeal() {
+  const asset = document.getElementById('np-asset').value.trim();
+  const market = document.getElementById('np-market').value.trim();
+  const size = parseFloat(document.getElementById('np-size').value);
+  const fee = parseFloat(document.getElementById('np-fee').value);
+  const stage = document.getElementById('np-stage').value;
+  const source = document.getElementById('np-source').value.trim();
+  const next_action = document.getElementById('np-action').value.trim();
+  if (!asset||!market||!size||!fee||!next_action){toast('Fill all required fields',false);return;}
+  const btn = event.target.closest('.btn');
+  btn.disabled = true;
+  const row = await sbInsert('pipeline', {asset,market,size,fee,stage,source:source||'Direct',next_action});
+  btn.disabled = false;
+  if (!row) return;
+  DATA.pipeline.unshift(row);
+  ['np-asset','np-market','np-size','np-fee','np-source','np-action'].forEach(id=>document.getElementById(id).value='');
+  render();
+  toast('Deal added to pipeline ✓');
+}
+
+async function logActivity() {
+  const activity = document.getElementById('log-act').value;
+  const counterparty = document.getElementById('log-cp').value.trim();
+  const outcome = document.getElementById('log-out').value.trim();
+  const impact = document.getElementById('log-impact').value;
+  const follow_up_date = document.getElementById('log-followup').value||null;
+  if (!counterparty||!outcome){toast('Counterparty and outcome required',false);return;}
+  const base = WEIGHTS[activity]||1;
+  const mult = impact==='High'?2:impact==='Low'?0.5:1;
+  const points = base*mult;
+  const btn = event.target.closest('.btn');
+  btn.disabled = true;
+  const row = await sbInsert('daily_log',{activity,counterparty,outcome,impact,follow_up_date,points,logged_at:new Date().toISOString()});
+  btn.disabled = false;
+  if (!row) return;
+  DATA.log.unshift(row);
+  document.getElementById('log-cp').value='';
+  document.getElementById('log-out').value='';
+  render();
+  toast(`Logged: ${Math.round(points)} execution points ✓`);
+}
+
+async function addFlagship() {
+  const asset=document.getElementById('ft-asset').value.trim();
+  const task=document.getElementById('ft-task').value.trim();
+  const status=document.getElementById('ft-status').value;
+  const deadline=document.getElementById('ft-deadline').value;
+  if(!asset||!task||!deadline){toast('Asset, task and deadline required',false);return;}
+  const btn=event.target.closest('.btn');btn.disabled=true;
+  const row=await sbInsert('flagship_tasks',{asset,task,status,deadline});
+  btn.disabled=false;
+  if(!row)return;
+  DATA.flagship.push(row);
+  document.getElementById('ft-asset').value='';document.getElementById('ft-task').value='';
+  renderFlagship();
+  toast('Task registered ✓');
+}
+
+async function addCapital() {
+  const entity_name=document.getElementById('cp-name').value.trim();
+  const tier=parseInt(document.getElementById('cp-tier').value);
+  const region=document.getElementById('cp-region').value.trim();
+  const mandate=document.getElementById('cp-mandate').value.trim();
+  const target_deployment=parseFloat(document.getElementById('cp-size').value);
+  const probability=parseFloat(document.getElementById('cp-prob').value);
+  const next_touchpoint=document.getElementById('cp-touch').value;
+  if(!entity_name||!mandate||!target_deployment||!probability||!next_touchpoint){toast('All capital fields required',false);return;}
+  const btn=event.target.closest('.btn');btn.disabled=true;
+  const row=await sbInsert('capital_partners',{entity_name,tier,region:region||'Nairobi',mandate,target_deployment,probability,next_touchpoint});
+  btn.disabled=false;
+  if(!row)return;
+  DATA.capital.push(row);
+  ['cp-name','cp-region','cp-mandate','cp-size','cp-prob','cp-touch'].forEach(id=>document.getElementById(id).value='');
+  renderCapital();
+  toast('Capital partner logged ✓');
+}
+
+async function addMandate() {
+  const asset=document.getElementById('mn-asset').value.trim();
+  const asset_type=document.getElementById('mn-type').value;
+  const location=document.getElementById('mn-location').value.trim();
+  const provider=document.getElementById('mn-provider').value.trim();
+  const mandate_type=document.getElementById('mn-mtype').value;
+  const asking_price=parseFloat(document.getElementById('mn-price').value);
+  const fee=parseFloat(document.getElementById('mn-fee').value);
+  const start_date=document.getElementById('mn-start').value;
+  const expiry_date=document.getElementById('mn-expiry').value;
+  const notes=document.getElementById('mn-notes').value.trim();
+  if(!asset||!location||!provider||!asking_price||!fee||!start_date||!expiry_date){toast('All mandate fields required',false);return;}
+  const mandate_ref='MND-'+new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,15);
+  const btn=event.target.closest('.btn');btn.disabled=true;
+  const row=await sbInsert('mandates',{mandate_ref,asset,asset_type,location,provider,mandate_type,asking_price,fee,start_date,expiry_date,notes});
+  btn.disabled=false;
+  if(!row)return;
+  DATA.mandates.push(row);
+  ['mn-asset','mn-location','mn-provider','mn-price','mn-fee','mn-start','mn-expiry','mn-notes'].forEach(id=>document.getElementById(id).value='');
+  renderMandates();
+  toast('Mandate registered — '+mandate_ref+' ✓');
+}
+
+async function addTraffic() {
+  const prospect_name=document.getElementById('tr-name').value.trim();
+  const company=document.getElementById('tr-company').value.trim();
+  const phone=document.getElementById('tr-phone').value.trim();
+  const email=document.getElementById('tr-email').value.trim();
+  const property_shown=document.getElementById('tr-property').value.trim();
+  const interaction_date=document.getElementById('tr-date').value;
+  const temperature=document.getElementById('tr-temp').value;
+  if(!prospect_name||!phone||!property_shown||!interaction_date){toast('Name, phone, property and date required',false);return;}
+  const btn=event.target.closest('.btn');btn.disabled=true;
+  const row=await sbInsert('prospect_traffic',{prospect_name,company,phone,email,property_shown,interaction_date,temperature});
+  btn.disabled=false;
+  if(!row)return;
+  DATA.traffic.unshift(row);
+  ['tr-name','tr-company','tr-phone','tr-email','tr-property'].forEach(id=>document.getElementById(id).value='');
+  renderTraffic();
+  toast(prospect_name+' logged ✓');
+}
+
+async function logOutreach() {
+  const channel=document.getElementById('or-channel').value;
+  const count=parseInt(document.getElementById('or-count').value);
+  const description=document.getElementById('or-desc').value.trim();
+  if(!count||count<1){toast('Enter a valid count',false);return;}
+  const btn=event.target.closest('.btn');btn.disabled=true;
+  const row=await sbInsert('outreach_log',{channel,count,description,outreach_date:today()});
+  btn.disabled=false;
+  if(!row)return;
+  DATA.outreach.unshift(row);
+  document.getElementById('or-count').value='';document.getElementById('or-desc').value='';
+  renderScorecard();renderDashboard();
+  toast(`${count} ${channel} touches logged ✓`);
+}
+
+async function logContent() {
+  const platform=document.getElementById('ct-platform').value;
+  const content_type=document.getElementById('ct-type').value;
+  const title=document.getElementById('ct-title').value.trim();
+  const url=document.getElementById('ct-url').value.trim();
+  const leads_generated=parseInt(document.getElementById('ct-leads-gen').value)||0;
+  if(!title){toast('Title required',false);return;}
+  const btn=event.target.closest('.btn');btn.disabled=true;
+  const row=await sbInsert('content_tracker',{platform,content_type,title,url,leads_generated,published_at:today()});
+  btn.disabled=false;
+  if(!row)return;
+  DATA.content.unshift(row);
+  document.getElementById('ct-title').value='';document.getElementById('ct-url').value='';document.getElementById('ct-leads-gen').value='';
+  renderContent();renderDashboard();
+  toast('Content logged ✓ — authority built');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  if (initSupabase()) checkAuth();
+  const td = today();
+  document.querySelectorAll('input[type="date"]').forEach(el=>{if(!el.value)el.value=td;});
+});
+</script>
+</body>
+</html>
