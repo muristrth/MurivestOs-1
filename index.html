@@ -1,91 +1,3 @@
-<!--
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  MURIVEST EXECUTIVE OS — PRODUCTION SCHEMA (Run this in Supabase SQL Editor) ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-  create extension if not exists "uuid-ossp";
-
-  create table if not exists pipeline (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    asset text not null, market text, size numeric, fee numeric,
-    stage text default 'Origination', source text default 'Direct',
-    next_action text, created_at timestamptz default now()
-  );
-  alter table pipeline enable row level security;
-  create policy "Own pipeline only" on pipeline for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-  create index idx_pipe_user on pipeline(user_id, created_at desc);
-
-  create table if not exists daily_log (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    activity text not null, counterparty text not null, outcome text,
-    impact text default 'Medium', follow_up_date date, points numeric default 0,
-    logged_at timestamptz default now()
-  );
-  alter table daily_log enable row level security;
-  create policy "Own log only" on daily_log for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-  create index idx_log_user on daily_log(user_id, logged_at desc);
-
-  create table if not exists flagship_tasks (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    asset text not null, task text not null, status text default 'Not Started',
-    deadline date, created_at timestamptz default now()
-  );
-  alter table flagship_tasks enable row level security;
-  create policy "Own tasks only" on flagship_tasks for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-
-  create table if not exists capital_partners (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    entity_name text not null, tier integer default 3, region text,
-    mandate text, target_deployment numeric, probability numeric,
-    next_touchpoint date, created_at timestamptz default now()
-  );
-  alter table capital_partners enable row level security;
-  create policy "Own capital only" on capital_partners for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-
-  create table if not exists mandates (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    mandate_ref text, asset text not null, asset_type text, location text,
-    provider text, mandate_type text, asking_price numeric, fee numeric,
-    start_date date, expiry_date date, notes text,
-    created_at timestamptz default now()
-  );
-  alter table mandates enable row level security;
-  create policy "Own mandates only" on mandates for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-
-  create table if not exists prospect_traffic (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    prospect_name text not null, company text, phone text, email text,
-    property_shown text, interaction_date date, temperature text,
-    created_at timestamptz default now()
-  );
-  alter table prospect_traffic enable row level security;
-  create policy "Own traffic only" on prospect_traffic for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-
-  create table if not exists outreach_log (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    channel text, count integer, description text, outreach_date date,
-    created_at timestamptz default now()
-  );
-  alter table outreach_log enable row level security;
-  create policy "Own outreach only" on outreach_log for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-
-  create table if not exists content_tracker (
-    id uuid primary key default uuid_generate_v4(),
-    user_id uuid references auth.users(id) on delete cascade not null,
-    platform text, content_type text, title text not null, url text,
-    leads_generated integer default 0, published_at date,
-    created_at timestamptz default now()
-  );
-  alter table content_tracker enable row level security;
-  create policy "Own content only" on content_tracker for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
-╚══════════════════════════════════════════════════════════════════════════════╝
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -96,9 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* ═══════════════════════════════════════════
-   MURIVEST EXECUTIVE OS — DESIGN SYSTEM
-═══════════════════════════════════════════ */
 :root {
   --ink: #0D0D0D; --ink2: #2A2A2A; --ink3: #666;
   --cream: #F4F1EC; --cream2: #EBE7DF; --white: #FFFFFF;
@@ -110,51 +19,24 @@
   --info: #1A3A5C; --info-bg: rgba(26,58,92,0.08);
   --r: 4px; --r2: 8px;
   --shadow: 0 1px 8px rgba(0,0,0,0.06); --shadow2: 0 4px 20px rgba(0,0,0,0.10);
-  --mast-h: 54px; --pb-h: 56px; --stats-h: 72px; --nav-h: 46px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{font-size:15px;-webkit-text-size-adjust:100%}
 body{font-family:'Syne',system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 
-/* ── AUTH SCREEN ── */
-.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--ink);padding:24px}
-.auth-box{width:100%;max-width:380px}
-.auth-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--white);letter-spacing:0.06em;text-align:center;margin-bottom:4px}
-.auth-logo span{color:var(--gold2)}
-.auth-tag{text-align:center;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:32px}
-.auth-field{margin-bottom:14px}
-.auth-field label{display:block;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px}
-.auth-field input{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r);font-family:'Syne',sans-serif;font-size:13px;color:var(--white)}
-.auth-field input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,0.09)}
-.auth-field input::placeholder{color:rgba(255,255,255,0.25)}
-.auth-btn{width:100%;padding:13px;background:var(--gold);color:var(--ink);border:none;border-radius:var(--r);font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;margin-top:8px;transition:all 0.2s}
-.auth-btn:hover{background:var(--gold2)}
-.auth-switch{text-align:center;font-size:11px;color:rgba(255,255,255,0.35);margin-top:16px;cursor:pointer}
-.auth-switch span{color:var(--gold2);cursor:pointer;text-decoration:underline}
-.auth-error{font-size:11px;color:#FF6B6B;text-align:center;margin-top:8px;display:none}
-.auth-target{background:rgba(184,149,90,0.08);border:1px solid rgba(184,149,90,0.2);border-radius:var(--r2);padding:12px 16px;margin-bottom:24px;text-align:center}
-.auth-target .num{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);display:block;line-height:1}
-.auth-target .lbl{font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:4px;display:block}
-
-/* ── CONFIG MODAL ── */
-.cfg-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;display:none}
-.cfg-overlay.show{display:flex}
-.cfg-box{background:var(--ink);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r2);padding:28px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
-.cfg-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--white);margin-bottom:4px}
-.cfg-desc{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:20px}
-.cfg-field{margin-bottom:14px}
-.cfg-field label{display:block;font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:6px}
-.cfg-field input{width:100%;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--r);font-family:'Syne',sans-serif;font-size:13px;color:var(--white)}
-.cfg-field input:focus{outline:none;border-color:var(--gold)}
-
-/* ── APP ── */
-#app{display:none}
-#app.ready{display:block}
+/* ── LOADING ── */
+.loading-overlay{position:fixed;inset:0;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px}
+.loading-overlay.hide{display:none}
+.loading-logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--white);letter-spacing:0.06em}
+.loading-logo span{color:var(--gold2)}
+.loading-bar{width:160px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;overflow:hidden}
+.loading-fill{height:100%;background:var(--gold);border-radius:1px;animation:load 1.5s ease-in-out infinite}
+@keyframes load{0%{width:0;margin-left:0}50%{width:80%;margin-left:10%}100%{width:0;margin-left:100%}}
 
 /* ── MASTHEAD ── */
-.mast{background:var(--ink);color:var(--white);height:var(--mast-h);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,0.05)}
+.mast{background:var(--ink);color:var(--white);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,0.05)}
 .mast-l{display:flex;align-items:center;gap:12px}
-.wordmark{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;letter-spacing:0.06em;color:var(--white);white-space:nowrap}
+.wordmark{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;letter-spacing:0.06em;color:var(--white)}
 .wordmark span{color:var(--gold2)}
 .mast-tag{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(255,255,255,0.3);border-left:1px solid rgba(255,255,255,0.1);padding-left:12px;display:none}
 @media(min-width:520px){.mast-tag{display:block}}
@@ -163,8 +45,6 @@ body{font-family:'Syne',system-ui,sans-serif;background:var(--cream);color:var(-
 .sync-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:background 0.3s;flex-shrink:0}
 .sync-dot.live{background:#2ECC71;box-shadow:0 0 6px rgba(46,204,113,0.6)}
 .sync-dot.syncing{background:var(--gold);animation:pulse 1s infinite}
-.logout-btn{font-size:10px;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;padding:4px 8px;font-family:'Syne',sans-serif}
-.logout-btn:hover{color:rgba(255,255,255,0.7)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
 /* ── PROGRESS BAR ── */
@@ -215,15 +95,6 @@ body{font-family:'Syne',system-ui,sans-serif;background:var(--cream);color:var(-
 .ph-title svg{width:16px;height:16px;color:var(--gold);flex-shrink:0}
 .ph-desc{font-size:11px;color:var(--ink3);letter-spacing:0.03em}
 
-/* ── LOADING ── */
-.loading-overlay{position:fixed;inset:0;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px;display:none}
-.loading-overlay.show{display:flex}
-.loading-logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--white);letter-spacing:0.06em}
-.loading-logo span{color:var(--gold2)}
-.loading-bar{width:160px;height:2px;background:rgba(255,255,255,0.1);border-radius:1px;overflow:hidden}
-.loading-fill{height:100%;background:var(--gold);border-radius:1px;animation:load 1.5s ease-in-out infinite}
-@keyframes load{0%{width:0;margin-left:0}50%{width:80%;margin-left:10%}100%{width:0;margin-left:100%}}
-
 /* ── CARDS ── */
 .card{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
 
@@ -233,6 +104,7 @@ body{font-family:'Syne',system-ui,sans-serif;background:var(--cream);color:var(-
 .deal-card.loi{border-left:3px solid var(--info)}
 .deal-card.dead{border-left:3px solid rgba(0,0,0,0.12);opacity:0.65}
 .deal-card.tour{border-left:3px solid var(--success)}
+.deal-card.active{border-left:3px solid var(--gold)}
 .deal-top{padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer}
 .deal-top:hover{background:var(--cream)}
 .deal-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
@@ -291,6 +163,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .btn svg{width:12px;height:12px}
 .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--border);width:auto;padding:6px 12px;border-radius:100px;font-size:10px}
 .btn-ghost:hover{background:var(--cream);box-shadow:none}
+.btn-danger{background:var(--danger);color:var(--white);border:none}
+.btn-danger:hover{background:#8B2020}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);padding:10px 22px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:0.04em;z-index:500;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap}
@@ -420,14 +294,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .skeleton{background:linear-gradient(90deg,var(--cream2) 25%,var(--cream) 50%,var(--cream2) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--r);height:16px;margin-bottom:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
-/* ── ERR BANNER ── */
-.err-banner{background:var(--danger-bg);border:1px solid rgba(107,26,26,0.2);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:12px;display:none}
-.err-banner.show{display:block}
-
 /* ── QUICK ADD ── */
 .quick-add{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .qa-btn{font-size:10px;padding:6px 10px;background:var(--white);border:1px solid var(--border);border-radius:100px;cursor:pointer;font-family:'Syne',sans-serif;color:var(--ink2);transition:all 0.15s}
 .qa-btn:hover{border-color:var(--gold);background:var(--gold-light);color:var(--ink)}
+
+/* ── DELETE ROW BTN ── */
+.del-btn{background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px;padding:2px 6px;border-radius:var(--r);transition:all 0.15s;line-height:1}
+.del-btn:hover{color:var(--danger);background:var(--danger-bg)}
 </style>
 </head>
 <body>
@@ -438,78 +312,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   <div class="loading-bar"><div class="loading-fill"></div></div>
 </div>
 
-<!-- Auth Screen -->
-<div class="auth-wrap" id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo">Murivest <span>OS</span></div>
-    <div class="auth-tag">Executive Command Centre</div>
-    <div class="auth-target">
-      <span class="num">KShs 50M</span>
-      <span class="lbl">2026 Commission Target — 8 months</span>
-    </div>
-    <div id="login-form">
-      <div class="auth-field">
-        <label>Email</label>
-        <input type="email" id="auth-email" placeholder="your@email.com">
-      </div>
-      <div class="auth-field">
-        <label>Password</label>
-        <input type="password" id="auth-password" placeholder="••••••••">
-      </div>
-      <button class="auth-btn" onclick="signIn()">Enter Command Centre</button>
-      <div class="auth-error" id="auth-error"></div>
-      <div class="auth-switch">New here? <span onclick="showSignup()">Create account</span></div>
-    </div>
-    <div id="signup-form" style="display:none">
-      <div class="auth-field">
-        <label>Email</label>
-        <input type="email" id="signup-email" placeholder="your@email.com">
-      </div>
-      <div class="auth-field">
-        <label>Password</label>
-        <input type="password" id="signup-password" placeholder="min 6 characters">
-      </div>
-      <button class="auth-btn" onclick="signUp()">Create Account</button>
-      <div class="auth-error" id="signup-error"></div>
-      <div class="auth-switch">Already have access? <span onclick="showLogin()">Sign in</span></div>
-    </div>
-  </div>
-</div>
-
-<!-- Supabase Config Modal -->
-<div class="cfg-overlay" id="cfg-modal">
-  <div class="cfg-box">
-    <div class="cfg-title">Connect Supabase</div>
-    <div class="cfg-desc">Enter your Supabase project credentials. Find these in your project Settings → API.</div>
-    <div class="cfg-field">
-      <label>Supabase URL</label>
-      <input type="text" id="cfg-url" placeholder="https://xxxxx.supabase.co">
-    </div>
-    <div class="cfg-field">
-      <label>Anon (public) Key</label>
-      <input type="text" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-    </div>
-    <button class="auth-btn" onclick="saveConfig()" style="margin-top:8px">Connect & Launch</button>
-    <div style="margin-top:16px;font-size:10px;color:rgba(255,255,255,0.3);line-height:1.7">
-      1. Create project at supabase.com<br>
-      2. Run murivest_schema.sql in SQL Editor<br>
-      3. Enter URL + anon key above
-    </div>
-  </div>
-</div>
-
-<!-- Main App -->
-<div id="app">
-
 <header class="mast">
   <div class="mast-l">
     <div class="wordmark">Murivest <span>OS</span></div>
     <div class="mast-tag">50M Command</div>
   </div>
   <div class="mast-r">
-    <div class="sync-dot" id="sync-dot" title="Supabase sync status" onclick="forceSync()"></div>
+    <div class="sync-dot" id="sync-dot" title="Supabase sync" onclick="forceSync()"></div>
     <div class="target-chip">KShs 50M · 2026</div>
-    <button class="logout-btn" onclick="signOut()">Exit</button>
   </div>
 </header>
 
@@ -613,7 +423,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     "Every day you don't generate pipeline, you fall behind. The only question is: how many qualified investors did you move forward TODAY?"
   </div>
 
-  <div class="sec-lbl">Priority Targets — Your 3 Deals</div>
+  <div class="sec-lbl">Quick Add Priority Deals</div>
   <div class="quick-add">
     <button class="qa-btn" onclick="quickAddDeal('Trust Building','Moi Avenue CBD',1000000000,0.03,'Site Tour','Push for NDA and LOI immediately after investor viewing')">+ Trust Building (1B)</button>
     <button class="qa-btn" onclick="quickAddDeal('Suite Life Apartments','Nairobi',360000000,0.03,'LOI Submitted','Arrange physical viewing — push for due diligence')">+ Suite Life (360M)</button>
@@ -631,7 +441,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   <div id="required-actions" style="margin-bottom:14px"></div>
 
   <div class="sec-lbl">Execution Breakdown</div>
-  <div class="grid-2" id="exec-breakdown"><div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:60px"></div></div>
+  <div class="grid-2" id="exec-breakdown"></div>
 </section>
 
 <!-- ── DAILY SCORECARD ── -->
@@ -643,12 +453,9 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <div class="ph-desc">Grant Cardone says: track everything. This is your daily verdict. No exceptions.</div>
   </div>
-
   <div class="scorecard" id="scorecard-card"></div>
-
   <div class="sec-lbl" style="margin-top:16px">Outreach Tracker</div>
   <div class="outreach-grid" id="outreach-today"></div>
-
   <div class="sec-lbl">Log Today's Outreach</div>
   <div class="card" style="border:none;box-shadow:none;background:var(--white);border:1px solid var(--border)">
     <div style="padding:14px">
@@ -656,13 +463,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
         <div class="field">
           <label class="req" for="or-channel">Channel</label>
           <select id="or-channel">
-            <option>LinkedIn</option>
-            <option>WhatsApp</option>
-            <option>Email</option>
-            <option>Phone</option>
-            <option>In-Person</option>
-            <option>Referral</option>
-            <option>Content</option>
+            <option>LinkedIn</option><option>WhatsApp</option><option>Email</option>
+            <option>Phone</option><option>In-Person</option><option>Referral</option><option>Content</option>
           </select>
         </div>
         <div class="field">
@@ -671,10 +473,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
         </div>
       </div>
       <div class="field">
-        <label for="or-desc">Description (optional)</label>
+        <label for="or-desc">Description</label>
         <input type="text" id="or-desc" placeholder="e.g. LinkedIn DMs to Nairobi investors">
       </div>
-      <button class="btn" onclick="logOutreach()">
+      <button class="btn" id="btn-log-outreach" onclick="logOutreach()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Log Outreach
       </button>
@@ -691,72 +493,41 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <div class="ph-desc">Track every deal from origination to close. You need 2B KES volume. 3 deals minimum.</div>
   </div>
-
   <div class="grid-2">
-    <div class="metric-card">
-      <div class="mc-val" id="pipe-total-kes">KShs 0</div>
-      <div class="mc-lbl">Total Value</div>
-    </div>
-    <div class="metric-card">
-      <div class="mc-val" id="pipe-risk-adj">KShs 0</div>
-      <div class="mc-lbl">Risk-Adj Revenue</div>
-    </div>
+    <div class="metric-card"><div class="mc-val" id="pipe-total-kes">KShs 0</div><div class="mc-lbl">Total Value</div></div>
+    <div class="metric-card"><div class="mc-val" id="pipe-risk-adj">KShs 0</div><div class="mc-lbl">Risk-Adj Revenue</div></div>
   </div>
-
   <div class="sec-lbl">Active Deals</div>
-  <div id="active-deals-list"><div class="skeleton"></div><div class="skeleton"></div></div>
-
+  <div id="active-deals-list"></div>
   <div class="sec-lbl" style="margin-top:14px">Dead / Paused</div>
   <div id="dead-deals-list"></div>
-
   <div style="margin-top:18px">
     <div class="sec-lbl">Add New Deal</div>
-    <div class="card" style="border:none;box-shadow:none;background:var(--white);border:1px solid var(--border)">
-      <div style="padding:14px">
-        <div class="field-row">
-          <div class="field">
-            <label class="req" for="np-asset">Asset Name</label>
-            <input type="text" id="np-asset" placeholder="Property name">
-          </div>
-          <div class="field">
-            <label class="req" for="np-market">Market</label>
-            <input type="text" id="np-market" placeholder="Nairobi CBD">
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="req" for="np-size">Deal Size (KShs)</label>
-            <input type="number" id="np-size" placeholder="1000000000">
-          </div>
-          <div class="field">
-            <label class="req" for="np-fee">Fee % (decimal)</label>
-            <input type="number" step="0.001" id="np-fee" placeholder="0.03">
-          </div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label class="req" for="np-stage">Stage</label>
-            <select id="np-stage">
-              <option>Origination</option><option>Initial Underwriting</option>
-              <option>Site Tour</option><option>LOI Submitted</option>
-              <option>Due Diligence</option><option>Capital Call</option>
-              <option>Closed</option><option>Dead</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="np-source">Lead Source</label>
-            <input type="text" id="np-source" placeholder="Direct / Referral">
-          </div>
-        </div>
-        <div class="field">
-          <label class="req" for="np-action">Next Action Required</label>
-          <textarea id="np-action" placeholder="Be specific — what happens next?"></textarea>
-        </div>
-        <button class="btn" onclick="addDeal()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          Add to Pipeline
-        </button>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px">
+      <div class="field-row">
+        <div class="field"><label class="req" for="np-asset">Asset Name</label><input type="text" id="np-asset" placeholder="Property name"></div>
+        <div class="field"><label class="req" for="np-market">Market</label><input type="text" id="np-market" placeholder="Nairobi CBD"></div>
       </div>
+      <div class="field-row">
+        <div class="field"><label class="req" for="np-size">Deal Size (KShs)</label><input type="number" id="np-size" placeholder="1000000000"></div>
+        <div class="field"><label class="req" for="np-fee">Fee % (decimal)</label><input type="number" step="0.001" id="np-fee" placeholder="0.03"></div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="req" for="np-stage">Stage</label>
+          <select id="np-stage">
+            <option>Origination</option><option>Initial Underwriting</option><option>Site Tour</option>
+            <option>LOI Submitted</option><option>Due Diligence</option><option>Capital Call</option>
+            <option>Closed</option><option>Dead</option>
+          </select>
+        </div>
+        <div class="field"><label for="np-source">Lead Source</label><input type="text" id="np-source" placeholder="Direct / Referral"></div>
+      </div>
+      <div class="field"><label class="req" for="np-action">Next Action Required</label><textarea id="np-action" placeholder="Be specific — what happens next?"></textarea></div>
+      <button class="btn" id="btn-add-deal" onclick="addDeal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Add to Pipeline
+      </button>
     </div>
   </div>
 </section>
@@ -768,23 +539,17 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Execution Ledger
     </div>
-    <div class="ph-desc">Log every strategic activity — your momentum score depends on it. If you don't log it, it didn't happen.</div>
+    <div class="ph-desc">Log every strategic activity. If you don't log it, it didn't happen.</div>
   </div>
-
   <div class="field">
     <label class="req" for="log-act">Strategic Activity</label>
     <select id="log-act">
-      <option>Cold Outreach</option><option>Capital Intro Call</option>
-      <option>LOI Drafted / Submitted</option><option>Underwriting Model</option>
-      <option>Strategy / Research</option><option>Site Tour</option>
-      <option>Due Diligence</option><option>Investor Meeting</option>
-      <option>Content Published</option><option>Follow-up Call</option>
+      <option>Cold Outreach</option><option>Capital Intro Call</option><option>LOI Drafted / Submitted</option>
+      <option>Underwriting Model</option><option>Strategy / Research</option><option>Site Tour</option>
+      <option>Due Diligence</option><option>Investor Meeting</option><option>Content Published</option><option>Follow-up Call</option>
     </select>
   </div>
-  <div class="field">
-    <label class="req" for="log-cp">Counterparty / Asset</label>
-    <input type="text" id="log-cp" placeholder="Name or asset">
-  </div>
+  <div class="field"><label class="req" for="log-cp">Counterparty / Asset</label><input type="text" id="log-cp" placeholder="Name or asset"></div>
   <div class="field">
     <label>Impact Level</label>
     <div class="impact-grp">
@@ -794,22 +559,15 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <input type="hidden" id="log-impact" value="Medium">
   </div>
-  <div class="field">
-    <label class="req" for="log-out">Outcome &amp; Next Steps</label>
-    <textarea id="log-out" placeholder="What moved forward? What happens next?"></textarea>
-  </div>
-  <div class="field">
-    <label for="log-followup">Follow-up Date</label>
-    <input type="date" id="log-followup">
-  </div>
-  <button class="btn" onclick="logActivity()">
+  <div class="field"><label class="req" for="log-out">Outcome &amp; Next Steps</label><textarea id="log-out" placeholder="What moved forward? What happens next?"></textarea></div>
+  <div class="field"><label for="log-followup">Follow-up Date</label><input type="date" id="log-followup"></div>
+  <button class="btn" id="btn-log-activity" onclick="logActivity()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     Log Execution
   </button>
-
   <div style="margin-top:20px">
     <div class="sec-lbl">Recent Activity</div>
-    <div id="log-list"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+    <div id="log-list"></div>
   </div>
 </section>
 
@@ -822,7 +580,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <div class="ph-desc">Critical path — every item here is blocking KShs 50M. No mercy.</div>
   </div>
-  <div id="flagship-list"><div class="skeleton"></div><div class="skeleton"></div></div>
+  <div id="flagship-list"></div>
   <div style="margin-top:18px">
     <div class="sec-lbl">Add Critical Task</div>
     <div class="field"><label class="req" for="ft-asset">Asset</label><input type="text" id="ft-asset" placeholder="e.g. Trust Building, Suite Life"></div>
@@ -834,7 +592,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       </div>
       <div class="field"><label class="req" for="ft-deadline">Hard Deadline</label><input type="date" id="ft-deadline"></div>
     </div>
-    <button class="btn" onclick="addFlagship()">
+    <button class="btn" id="btn-add-flagship" onclick="addFlagship()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Register Task
     </button>
@@ -854,7 +612,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     <div class="metric-card"><div class="mc-val" id="cap-total">KShs 0</div><div class="mc-lbl">Weighted Pipeline</div></div>
     <div class="metric-card"><div class="mc-val" id="cap-overdue" style="color:var(--danger)">0</div><div class="mc-lbl">Overdue Touchpoints</div></div>
   </div>
-  <div class="card"><div style="padding:14px"><div id="capital-list"><div class="skeleton"></div></div></div></div>
+  <div class="card"><div style="padding:14px"><div id="capital-list"></div></div></div>
   <div style="margin-top:18px">
     <div class="sec-lbl">Add Capital Partner</div>
     <div class="field"><label class="req" for="cp-name">Entity / Investor Name</label><input type="text" id="cp-name" placeholder="Name or fund"></div>
@@ -871,7 +629,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       <div class="field"><label class="req" for="cp-prob">Probability (0–1)</label><input type="number" step="0.01" id="cp-prob" placeholder="0.60"></div>
     </div>
     <div class="field"><label class="req" for="cp-touch">Next Touchpoint Date</label><input type="date" id="cp-touch"></div>
-    <button class="btn" onclick="addCapital()">
+    <button class="btn" id="btn-add-capital" onclick="addCapital()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
       Log Partner
     </button>
@@ -887,17 +645,21 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <div class="ph-desc">Authority to sell — your right to earn commission. No mandate = no money.</div>
   </div>
-  <div class="card"><div style="padding:14px"><div id="mandates-list"><div class="skeleton"></div></div></div></div>
+  <div class="card"><div style="padding:14px"><div id="mandates-list"></div></div></div>
   <div style="margin-top:18px">
     <div class="sec-lbl">Register Mandate</div>
     <div class="field-row">
       <div class="field"><label class="req" for="mn-asset">Asset Name</label><input type="text" id="mn-asset" placeholder="Property"></div>
-      <div class="field"><label class="req" for="mn-type">Asset Type</label><select id="mn-type"><option>Office</option><option>Retail</option><option>Mixed-Use</option><option>Hospitality</option><option>Industrial</option><option>Residential</option><option>Land</option></select></div>
+      <div class="field"><label class="req" for="mn-type">Asset Type</label>
+        <select id="mn-type"><option>Office</option><option>Retail</option><option>Mixed-Use</option><option>Hospitality</option><option>Industrial</option><option>Residential</option><option>Land</option></select>
+      </div>
     </div>
     <div class="field"><label class="req" for="mn-location">Location</label><input type="text" id="mn-location" placeholder="Full address or market"></div>
     <div class="field-row">
       <div class="field"><label class="req" for="mn-provider">Provider / Vendor</label><input type="text" id="mn-provider" placeholder="Owner / agent name"></div>
-      <div class="field"><label class="req" for="mn-mtype">Mandate Type</label><select id="mn-mtype"><option>Exclusive</option><option>Non-Exclusive</option><option>Open Listing</option><option>Co-Broker</option></select></div>
+      <div class="field"><label class="req" for="mn-mtype">Mandate Type</label>
+        <select id="mn-mtype"><option>Exclusive</option><option>Non-Exclusive</option><option>Open Listing</option><option>Co-Broker</option></select>
+      </div>
     </div>
     <div class="field-row">
       <div class="field"><label class="req" for="mn-price">Asking Price (KShs)</label><input type="number" id="mn-price" placeholder="1000000000"></div>
@@ -908,7 +670,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       <div class="field"><label class="req" for="mn-expiry">Expiry Date</label><input type="date" id="mn-expiry"></div>
     </div>
     <div class="field"><label for="mn-notes">Notes</label><textarea id="mn-notes" placeholder="Special conditions, contacts..."></textarea></div>
-    <button class="btn" onclick="addMandate()">
+    <button class="btn" id="btn-add-mandate" onclick="addMandate()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       Create Mandate
     </button>
@@ -924,7 +686,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <div class="ph-desc">Track temperature — don't let leads go cold. A cold lead is a dead lead.</div>
   </div>
-  <div id="traffic-list"><div class="skeleton"></div></div>
+  <div id="traffic-list"></div>
   <div style="margin-top:18px">
     <div class="sec-lbl">Log New Prospect</div>
     <div class="field-row">
@@ -938,9 +700,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     <div class="field"><label class="req" for="tr-property">Property Shown</label><input type="text" id="tr-property" placeholder="e.g. Suite Life Apartments"></div>
     <div class="field-row">
       <div class="field"><label class="req" for="tr-date">Date</label><input type="date" id="tr-date"></div>
-      <div class="field"><label class="req" for="tr-temp">Temperature</label><select id="tr-temp"><option>Hot — Ready</option><option selected>Warm — Reviewing</option><option>Cold</option><option>Offer Submitted</option><option>Dead</option></select></div>
+      <div class="field"><label class="req" for="tr-temp">Temperature</label>
+        <select id="tr-temp"><option>Hot — Ready</option><option selected>Warm — Reviewing</option><option>Cold</option><option>Offer Submitted</option><option>Dead</option></select>
+      </div>
     </div>
-    <button class="btn" onclick="addTraffic()">
+    <button class="btn" id="btn-add-traffic" onclick="addTraffic()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
       Log Prospect
     </button>
@@ -956,19 +720,13 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     </div>
     <div class="ph-desc">GC rule: publish daily — build authority, attract investors. No content = no credibility.</div>
   </div>
-
-  <div class="gc-banner">
-    "You have to become known. Post content every day that shows you operate at this level. Investors must feel they are missing opportunities without you."
-  </div>
-
+  <div class="gc-banner">"You have to become known. Post content every day that shows you operate at this level."</div>
   <div class="grid-2" style="margin-bottom:14px">
     <div class="metric-card"><div class="mc-val" id="ct-posts">0</div><div class="mc-lbl">Posts This Month</div></div>
     <div class="metric-card"><div class="mc-val" id="ct-leads">0</div><div class="mc-lbl">Leads Generated</div></div>
   </div>
-
   <div class="sec-lbl">Content Log</div>
-  <div id="content-list"><div class="skeleton"></div></div>
-
+  <div id="content-list"></div>
   <div style="margin-top:18px">
     <div class="sec-lbl">Log Content Published</div>
     <div class="field-row">
@@ -986,7 +744,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       <div class="field"><label for="ct-url">URL (optional)</label><input type="url" id="ct-url" placeholder="https://..."></div>
       <div class="field"><label for="ct-leads-gen">Leads Generated</label><input type="number" id="ct-leads-gen" placeholder="0" min="0"></div>
     </div>
-    <button class="btn" onclick="logContent()">
+    <button class="btn" id="btn-log-content" onclick="logContent()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       Log Content
     </button>
@@ -994,245 +752,110 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 </section>
 
 </main>
-</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════════════════════
-const TARGET = 50000000;
-const WEIGHTS = {
-  'Cold Outreach': 1,'Capital Intro Call': 3,'LOI Drafted / Submitted': 10,
-  'Underwriting Model': 5,'Strategy / Research': 2,'Site Tour': 5,
-  'Due Diligence': 8,'Investor Meeting': 4,'Content Published': 1,'Follow-up Call': 2
-};
-const STAGE_PROB = {
-  'Origination': 0.05,'Initial Underwriting': 0.15,'Site Tour': 0.30,
-  'LOI Submitted': 0.50,'Due Diligence': 0.75,'Capital Call': 0.90,'Closed': 1.0,'Dead': 0
-};
-
-// ═══════════════════════════════════════════════════════════
-// SUPABASE CONFIGURATION — PRODUCTION READY
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════
 const SUPABASE_URL = "https://idbekogmcmqhwetngpvt.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYmVrb2dtY21xaHdldG5ncHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMjE4MjEsImV4cCI6MjA5Mjc5NzgyMX0.rYyK2qqJBj0EXFhQMLAGp2_X8WYfDNSFdnYDBhuah5Q";
 
-let supabase = null;
-let currentUser = null;
-let appEntered = false;
-let authSubscription = null;
+// IMPORTANT: Replace this with your actual user ID from Supabase Auth dashboard
+// Auth → Users → copy the UUID of your user
+// Or set to null to use a shared/demo mode (data visible to all anon users)
+const HARDCODED_USER_ID = "00000000-0000-0000-0000-000000000001";
+
+const TARGET = 50000000;
+const WEIGHTS = {
+  'Cold Outreach': 1, 'Capital Intro Call': 3, 'LOI Drafted / Submitted': 10,
+  'Underwriting Model': 5, 'Strategy / Research': 2, 'Site Tour': 5,
+  'Due Diligence': 8, 'Investor Meeting': 4, 'Content Published': 1, 'Follow-up Call': 2
+};
+const STAGE_PROB = {
+  'Origination': 0.05, 'Initial Underwriting': 0.15, 'Site Tour': 0.30,
+  'LOI Submitted': 0.50, 'Due Diligence': 0.75, 'Capital Call': 0.90, 'Closed': 1.0, 'Dead': 0
+};
+
+let sb_client = null;
 let DATA = { pipeline: [], log: [], flagship: [], capital: [], mandates: [], traffic: [], outreach: [], content: [] };
 
-function initSupabase() {
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
   try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
-    });
-    authSubscription = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) { currentUser = session.user; enterApp(); }
-      else if (event === 'SIGNED_OUT') { currentUser = null; exitApp(); }
-    });
-    return true;
+    sb_client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   } catch(e) {
-    console.error('Supabase init failed:', e);
-    toast('Database connection failed', false);
-    return false;
+    console.error('Supabase init failed', e);
+    toast('DB connection failed — check console', false);
   }
-}
-
-async function checkAuth() {
-  if (!supabase) return;
-  showLoading();
-  try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error) throw error;
-    if (session?.user) { currentUser = session.user; enterApp(); }
-    else { hideLoading(); showAuthScreen(); }
-  } catch(e) {
-    hideLoading(); console.error(e); showAuthScreen();
-  }
-}
-
-function showAuthScreen() {
-  appEntered = false;
-  document.getElementById('app').classList.remove('ready');
-  document.getElementById('auth-screen').style.display = 'flex';
-  const cfg = document.getElementById('cfg-modal');
-  if (cfg) cfg.classList.remove('show');
-}
-
-function exitApp() {
-  appEntered = false;
-  DATA = { pipeline: [], log: [], flagship: [], capital: [], mandates: [], traffic: [], outreach: [], content: [] };
-  document.getElementById('app').classList.remove('ready');
-  document.getElementById('auth-screen').style.display = 'flex';
-  const ae = document.getElementById('auth-email');
-  const ap = document.getElementById('auth-password');
-  if (ae) ae.value = '';
-  if (ap) ap.value = '';
-}
-
-function enterApp() {
-  if (appEntered) return;
-  appEntered = true;
-  document.getElementById('auth-screen').style.display = 'none';
-  const cfg = document.getElementById('cfg-modal');
-  if (cfg) cfg.classList.remove('show');
-  document.getElementById('app').classList.add('ready');
-  setSyncStatus('live');
   const td = today();
   document.querySelectorAll('input[type="date"]').forEach(el => { if (!el.value) el.value = td; });
   loadAllData();
-}
+});
 
-// ═══════════════════════════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════════════════════════
-function showSignup() {
-  document.getElementById('login-form').style.display = 'none';
-  document.getElementById('signup-form').style.display = 'block';
-  clearAuthErrors();
-}
-function showLogin() {
-  document.getElementById('signup-form').style.display = 'none';
-  document.getElementById('login-form').style.display = 'block';
-  clearAuthErrors();
-}
-function clearAuthErrors() {
-  const ae = document.getElementById('auth-error');
-  const se = document.getElementById('signup-error');
-  if (ae) ae.style.display = 'none';
-  if (se) se.style.display = 'none';
-}
+// ═══════════════════════════════════════
+// DATA LAYER
+// ═══════════════════════════════════════
+function uid() { return HARDCODED_USER_ID; }
 
-async function signIn() {
-  if (!supabase) { toast('System initializing…', false); return; }
-  const email = document.getElementById('auth-email').value.trim().toLowerCase();
-  const pass = document.getElementById('auth-password').value;
-  const errEl = document.getElementById('auth-error');
-  clearAuthErrors();
-  if (!email || !pass) { errEl.textContent = 'Enter email and password'; errEl.style.display = 'block'; return; }
-  showLoading();
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-    if (error) throw error;
-    currentUser = data.user;
-    enterApp();
-  } catch(err) {
-    hideLoading();
-    errEl.textContent = err.message || 'Invalid credentials';
-    errEl.style.display = 'block';
-  }
-}
-
-async function signUp() {
-  if (!supabase) { toast('System initializing…', false); return; }
-  const email = document.getElementById('signup-email').value.trim().toLowerCase();
-  const pass = document.getElementById('signup-password').value;
-  const errEl = document.getElementById('signup-error');
-  clearAuthErrors();
-  if (!email || !pass) { errEl.textContent = 'Enter email and password'; errEl.style.display = 'block'; return; }
-  if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters'; errEl.style.display = 'block'; return; }
-  showLoading();
-  try {
-    const { data, error } = await supabase.auth.signUp({ email, password: pass, options: { emailRedirectTo: window.location.href } });
-    if (error) throw error;
-    hideLoading();
-    if (data.session) { currentUser = data.user; toast('Welcome to Murivest OS'); enterApp(); }
-    else { toast('Account created! Confirm your email, then sign in.'); showLogin(); }
-  } catch(err) {
-    hideLoading();
-    errEl.textContent = err.message || 'Signup failed. Try again.';
-    errEl.style.display = 'block';
-  }
-}
-
-async function signOut() {
-  if (!supabase) return;
-  showLoading();
-  try { await supabase.auth.signOut(); currentUser = null; exitApp(); }
-  catch(e) { console.error(e); }
-  finally { hideLoading(); }
-}
-
-function saveConfig() {
-  document.getElementById('cfg-modal')?.classList.remove('show');
-  checkAuth();
-}
-
-// ═══════════════════════════════════════════════════════════
-// LOADING & SYNC
-// ═══════════════════════════════════════════════════════════
-function showLoading() { document.getElementById('loading').classList.add('show'); }
-function hideLoading() { document.getElementById('loading').classList.remove('show'); }
-function setSyncStatus(s) {
-  const dot = document.getElementById('sync-dot');
-  if (dot) dot.className = 'sync-dot ' + s;
-}
-function forceSync() { setSyncStatus('syncing'); loadAllData(); }
-
-// ═══════════════════════════════════════════════════════════
-// DATA LAYER — BULLETPROOF
-// ═══════════════════════════════════════════════════════════
-async function sb(table, queryFn) {
-  if (!supabase || !currentUser) return [];
+async function dbSelect(table, orderCol, orderAsc) {
+  if (!sb_client) return [];
   setSyncStatus('syncing');
   try {
-    let builder = supabase.from(table).select('*').eq('user_id', currentUser.id);
-    if (queryFn) builder = queryFn(builder);
-    const { data, error } = await builder;
+    let q = sb_client.from(table).select('*').eq('user_id', uid());
+    if (orderCol) q = q.order(orderCol, { ascending: !!orderAsc });
+    const { data, error } = await q;
     setSyncStatus('live');
-    if (error) { console.error(`[${table}]`, error); return []; }
+    if (error) { console.error(`[${table}]`, error.message); return []; }
     return data || [];
   } catch(e) { setSyncStatus(''); console.error(e); return []; }
 }
 
-async function sbInsert(table, row) {
-  if (!supabase || !currentUser) { toast('Not authenticated', false); return null; }
+async function dbInsert(table, row) {
+  if (!sb_client) { toast('No DB connection', false); return null; }
   setSyncStatus('syncing');
   try {
-    const { data, error } = await supabase.from(table).insert({ ...row, user_id: currentUser.id }).select();
+    const { data, error } = await sb_client.from(table).insert({ ...row, user_id: uid() }).select();
     setSyncStatus(error ? '' : 'live');
-    if (error) { toast('Save failed: ' + error.message, false); return null; }
+    if (error) { toast('Save failed: ' + error.message, false); console.error(error); return null; }
     return data?.[0] || null;
-  } catch(e) {
-    setSyncStatus(''); toast('Network error while saving', false); console.error(e); return null;
-  }
+  } catch(e) { setSyncStatus(''); toast('Network error', false); console.error(e); return null; }
 }
 
-async function sbUpdate(table, id, updates) {
-  if (!supabase || !currentUser) return;
+async function dbUpdate(table, id, updates) {
+  if (!sb_client) return;
   setSyncStatus('syncing');
   try {
-    const { error } = await supabase.from(table).update(updates).eq('id', id).eq('user_id', currentUser.id);
+    const { error } = await sb_client.from(table).update(updates).eq('id', id).eq('user_id', uid());
     setSyncStatus(error ? '' : 'live');
-    if (error) toast('Update failed: ' + error.message, false);
-  } catch(e) { setSyncStatus(''); toast('Network error while updating', false); console.error(e); }
+    if (error) { toast('Update failed: ' + error.message, false); console.error(error); }
+  } catch(e) { setSyncStatus(''); toast('Network error', false); console.error(e); }
 }
 
-async function sbDelete(table, id) {
-  if (!supabase || !currentUser) return;
+async function dbDelete(table, id) {
+  if (!sb_client) return false;
   try {
-    const { error } = await supabase.from(table).delete().eq('id', id).eq('user_id', currentUser.id);
-    if (error) toast('Delete failed: ' + error.message, false);
-  } catch(e) { toast('Network error while deleting', false); console.error(e); }
+    const { error } = await sb_client.from(table).delete().eq('id', id).eq('user_id', uid());
+    if (error) { toast('Delete failed: ' + error.message, false); console.error(error); return false; }
+    return true;
+  } catch(e) { toast('Network error', false); console.error(e); return false; }
 }
 
 async function loadAllData() {
-  if (!supabase || !currentUser) return;
   showLoading();
   try {
     const results = await Promise.allSettled([
-      sb('pipeline', q => q.order('created_at', { ascending: false })),
-      sb('daily_log', q => q.order('logged_at', { ascending: false })),
-      sb('flagship_tasks', q => q.order('deadline', { ascending: true })),
-      sb('capital_partners', q => q.order('tier', { ascending: true })),
-      sb('mandates', q => q.order('expiry_date', { ascending: true })),
-      sb('prospect_traffic', q => q.order('interaction_date', { ascending: false })),
-      sb('outreach_log', q => q.order('outreach_date', { ascending: false })),
-      sb('content_tracker', q => q.order('published_at', { ascending: false })),
+      dbSelect('pipeline', 'created_at', false),
+      dbSelect('daily_log', 'logged_at', false),
+      dbSelect('flagship_tasks', 'deadline', true),
+      dbSelect('capital_partners', 'tier', true),
+      dbSelect('mandates', 'expiry_date', true),
+      dbSelect('prospect_traffic', 'interaction_date', false),
+      dbSelect('outreach_log', 'outreach_date', false),
+      dbSelect('content_tracker', 'published_at', false),
     ]);
     DATA = {
       pipeline: results[0].status === 'fulfilled' ? results[0].value : [],
@@ -1244,42 +867,52 @@ async function loadAllData() {
       outreach: results[6].status === 'fulfilled' ? results[6].value : [],
       content: results[7].status === 'fulfilled' ? results[7].value : [],
     };
-    hideLoading(); render();
-  } catch(e) { hideLoading(); toast('Data load error', false); console.error(e); }
+  } catch(e) { console.error('loadAllData', e); }
+  hideLoading();
+  render();
 }
 
-// ═══════════════════════════════════════════════════════════
+function forceSync() { loadAllData(); }
+
+// ═══════════════════════════════════════
 // HELPERS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 function fmtKes(n) {
   if (!n || n === 0) return 'KShs 0';
-  if (n >= 1e9) return 'KShs ' + (n/1e9).toFixed(1) + 'B';
-  if (n >= 1e6) return 'KShs ' + (n/1e6).toFixed(0) + 'M';
+  if (n >= 1e9) return 'KShs ' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return 'KShs ' + (n/1e6).toFixed(1) + 'M';
   if (n >= 1e3) return 'KShs ' + (n/1e3).toFixed(0) + 'K';
   return 'KShs ' + Math.round(n).toLocaleString();
 }
 function fmtDate(d) {
-  if (!d) return '';
-  return new Date(d).toLocaleDateString('en-KE', {day:'numeric',month:'short',year:'numeric'});
+  if (!d) return '—';
+  try { return new Date(d).toLocaleDateString('en-KE', { day:'numeric', month:'short', year:'numeric' }); }
+  catch { return d; }
 }
 function today() { return new Date().toISOString().split('T')[0]; }
-function daysSince(d) { return Math.floor((new Date() - new Date(d)) / 86400000); }
-function daysUntil(d) { return Math.ceil((new Date(d) - new Date()) / 86400000); }
-function toast(msg, ok=true) {
+function daysUntil(d) { return d ? Math.ceil((new Date(d) - new Date()) / 86400000) : 999; }
+function h(s) {
+  if (!s && s !== 0) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function toast(msg, ok = true) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg;
   t.className = 'toast show ' + (ok ? 'ok' : 'err');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
 }
-function escapeHtml(text) {
-  if (!text) return '';
-  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function showLoading() { document.getElementById('loading').classList.remove('hide'); }
+function hideLoading() { document.getElementById('loading').classList.add('hide'); }
+function setSyncStatus(s) {
+  const d = document.getElementById('sync-dot');
+  if (d) d.className = 'sync-dot ' + s;
 }
 
-// ═══════════════════════════════════════════════════════════
-// TAB SWITCHING
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
 function switchTab(id, btn) {
   document.querySelectorAll('.ntab').forEach(t => t.classList.remove('act'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('act'));
@@ -1292,264 +925,254 @@ function switchTab(id, btn) {
 
 function setImpact(val) {
   ['h','m','l'].forEach(x => { const el = document.getElementById('imp-' + x); if (el) el.className = 'imp'; });
-  const map = {High:'h',Medium:'m',Low:'l'};
+  const map = { High:'h', Medium:'m', Low:'l' };
   const el = document.getElementById('imp-' + map[val]);
   if (el) el.className = 'imp sel-' + map[val].toLowerCase();
   document.getElementById('log-impact').value = val;
 }
 
-// ═══════════════════════════════════════════════════════════
-// CALCULATIONS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════
 function calcStats() {
   const active = DATA.pipeline.filter(d => d.stage !== 'Dead' && d.stage !== 'Closed');
   const closed = DATA.pipeline.filter(d => d.stage === 'Closed');
-  const totalPipe = active.reduce((s,d) => s + (d.size||0), 0);
-  const riskAdj = active.reduce((s,d) => s + (d.size||0) * (STAGE_PROB[d.stage]||0) * (d.fee||0), 0);
-  const commEarned = closed.reduce((s,d) => s + (d.size||0) * (d.fee||0), 0);
+  const totalPipe = active.reduce((s, d) => s + (Number(d.size) || 0), 0);
+  const riskAdj = active.reduce((s, d) => s + (Number(d.size)||0) * (STAGE_PROB[d.stage]||0) * (Number(d.fee)||0), 0);
+  const commEarned = closed.reduce((s, d) => s + (Number(d.size)||0) * (Number(d.fee)||0), 0);
   const todayStr = today();
   const weekAgo = new Date(Date.now() - 7*86400000);
   let todayPts = 0, weekPts = 0;
   DATA.log.forEach(l => {
-    const ld = new Date(l.logged_at);
-    if (l.logged_at?.startsWith(todayStr)) todayPts += (l.points||0);
-    if (ld >= weekAgo) weekPts += (l.points||0);
+    const pts = Number(l.points) || 0;
+    if (l.logged_at?.startsWith(todayStr)) todayPts += pts;
+    if (new Date(l.logged_at) >= weekAgo) weekPts += pts;
   });
   return { active: active.length, totalPipe, riskAdj, commEarned, todayPts: Math.round(todayPts), weekPts: Math.round(weekPts) };
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER STATS BAR
-// ═══════════════════════════════════════════════════════════
 function renderStats() {
   const st = calcStats();
-  const sActive = document.getElementById('s-active');
-  const sPipe = document.getElementById('s-pipeline');
-  const sToday = document.getElementById('s-today');
-  const sMom = document.getElementById('s-momentum');
-  const pBadge = document.getElementById('pipe-badge');
-  if (sActive) sActive.textContent = st.active;
-  if (sPipe) sPipe.textContent = fmtKes(st.totalPipe);
-  if (sToday) sToday.textContent = st.todayPts;
-  if (sMom) sMom.textContent = st.weekPts;
-  if (pBadge) pBadge.textContent = st.active;
-  const earned = st.commEarned;
-  const pct = Math.min(100, (earned / TARGET) * 100);
+  setText('s-active', st.active);
+  setText('s-pipeline', fmtKes(st.totalPipe));
+  setText('s-today', st.todayPts);
+  setText('s-momentum', st.weekPts);
+  setText('pipe-badge', DATA.pipeline.filter(d => d.stage !== 'Dead').length);
+  const pct = Math.min(100, (st.commEarned / TARGET) * 100);
   const pbFill = document.getElementById('pb-fill');
-  const pbEarned = document.getElementById('pb-earned');
-  const pbPct = document.getElementById('pb-pct');
-  const pbRem = document.getElementById('pb-remaining');
   if (pbFill) pbFill.style.width = pct + '%';
-  if (pbEarned) pbEarned.textContent = fmtKes(earned);
-  if (pbPct) pbPct.textContent = pct.toFixed(1) + '%';
-  if (pbRem) pbRem.textContent = fmtKes(Math.max(0, TARGET - earned)) + ' remaining';
+  setText('pb-earned', fmtKes(st.commEarned));
+  setText('pb-pct', pct.toFixed(1) + '%');
+  setText('pb-remaining', fmtKes(Math.max(0, TARGET - st.commEarned)) + ' remaining');
 }
 
-// ═══════════════════════════════════════════════════════════
-// RENDER PANELS
-// ═══════════════════════════════════════════════════════════
-function renderPanel(id) {
-  if (id === 'dashboard') renderDashboard();
-  else if (id === 'scorecard') renderScorecard();
-  else if (id === 'pipeline') renderPipeline();
-  else if (id === 'log') renderLog();
-  else if (id === 'flagship') renderFlagship();
-  else if (id === 'capital') renderCapital();
-  else if (id === 'mandates') renderMandates();
-  else if (id === 'traffic') renderTraffic();
-  else if (id === 'content') renderContent();
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }
 
+// ═══════════════════════════════════════
+// RENDER ROUTER
+// ═══════════════════════════════════════
 function render() {
   renderStats();
   const active = document.querySelector('.panel.act');
-  const id = active ? active.id.replace('panel-','') : 'dashboard';
+  const id = active ? active.id.replace('panel-', '') : 'dashboard';
   renderPanel(id);
+}
+
+function renderPanel(id) {
+  const map = {
+    dashboard: renderDashboard,
+    scorecard: renderScorecard,
+    pipeline: renderPipeline,
+    log: renderLog,
+    flagship: renderFlagship,
+    capital: renderCapital,
+    mandates: renderMandates,
+    traffic: renderTraffic,
+    content: renderContent
+  };
+  if (map[id]) map[id]();
 }
 
 // ── DASHBOARD ──
 function renderDashboard() {
   const st = calcStats();
-  const dtPts = document.getElementById('dt-today-pts');
-  const dtDays = document.getElementById('dt-days-left');
-  const dtNeed = document.getElementById('dt-daily-needed');
-  if (dtPts) dtPts.textContent = st.todayPts;
+  setText('dt-today-pts', st.todayPts);
   const end2026 = new Date('2026-12-31');
   const daysLeft = Math.ceil((end2026 - new Date()) / 86400000);
-  if (dtDays) dtDays.textContent = daysLeft;
+  setText('dt-days-left', daysLeft);
   const remaining = TARGET - st.commEarned;
-  if (dtNeed) dtNeed.textContent = remaining > 0 ? fmtKes(remaining / daysLeft) + ' commission/day needed' : '🎯 TARGET REACHED!';
+  setText('dt-daily-needed', remaining > 0 ? fmtKes(remaining / daysLeft) + ' commission/day needed' : '🎯 TARGET REACHED!');
 
+  // Priority deals
   const priority = DATA.pipeline.filter(d => ['Site Tour','LOI Submitted','Due Diligence','Capital Call'].includes(d.stage));
+  const show = (priority.length ? priority : DATA.pipeline.filter(d => d.stage !== 'Dead')).slice(0, 3);
   const pEl = document.getElementById('priority-deals');
-  if (pEl) pEl.innerHTML = (priority.length ? priority : DATA.pipeline.filter(d=>d.stage!=='Dead')).slice(0,3).map(d => `
-    <div class="deal-card ${stageClass(d.stage)}" style="margin-bottom:7px">
-      <div class="deal-top" onclick="switchTab('pipeline')">
+  if (pEl) pEl.innerHTML = show.map(d => `
+    <div class="deal-card ${stageClass(d.stage)}" style="margin-bottom:7px;cursor:pointer" onclick="switchTab('pipeline')">
+      <div class="deal-top">
         <div>
-          <div class="deal-name">${escapeHtml(d.asset)} ${stageTag(d.stage)}</div>
-          <div class="deal-loc">${escapeHtml(d.market)}</div>
+          <div class="deal-name">${h(d.asset)} ${stageTag(d.stage)}</div>
+          <div class="deal-loc">${h(d.market)}</div>
         </div>
         <div class="deal-right">
-          <div class="deal-price">${fmtKes(d.size)}</div>
-          <div class="deal-fee">Comm: ${fmtKes(d.size * d.fee)}</div>
+          <div class="deal-price">${fmtKes(Number(d.size))}</div>
+          <div class="deal-fee">Comm: ${fmtKes(Number(d.size) * Number(d.fee))}</div>
         </div>
       </div>
-    </div>`).join('') || '<div class="empty">No active deals — add your 3 priority deals above</div>';
+    </div>`).join('') || '<div class="empty">No active deals — use quick-add above</div>';
 
+  // Momentum chart
   const days = [];
-  for (let i=6; i>=0; i--) {
-    const d = new Date(); d.setDate(d.getDate()-i);
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
     const ds = d.toISOString().split('T')[0];
-    const pts = DATA.log.filter(l => l.logged_at?.startsWith(ds)).reduce((s,l) => s+(l.points||0), 0);
-    days.push({ds, pts, label: d.toLocaleDateString('en-KE',{weekday:'short'}), isToday: i===0});
+    const pts = DATA.log.filter(l => l.logged_at?.startsWith(ds)).reduce((s, l) => s + (Number(l.points)||0), 0);
+    days.push({ ds, pts, label: d.toLocaleDateString('en-KE', { weekday:'short' }), isToday: i === 0 });
   }
-  const maxPts = Math.max(...days.map(d=>d.pts), 1);
+  const maxPts = Math.max(...days.map(d => d.pts), 1);
   const momChart = document.getElementById('momentum-chart');
   const momLabels = document.getElementById('momentum-labels');
-  if (momChart) momChart.innerHTML = days.map(d => {
-    const h = Math.max(3, (d.pts / maxPts) * 52);
-    return `<div class="mom-bar ${d.isToday?'today':''}" style="height:${h}px" title="${d.label}: ${Math.round(d.pts)} pts"></div>`;
-  }).join('');
+  if (momChart) momChart.innerHTML = days.map(d => `<div class="mom-bar ${d.isToday?'today':''}" style="height:${Math.max(3,(d.pts/maxPts)*52)}px" title="${d.label}: ${Math.round(d.pts)} pts"></div>`).join('');
   if (momLabels) momLabels.innerHTML = days.map(d => `<span>${d.label}</span>`).join('');
 
+  // Required actions
   const todayStr = today();
-  const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o)=>s+(o.count||0),0);
+  const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o) => s+(Number(o.count)||0), 0);
   const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
-  const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr)).length;
-  const reqActions = document.getElementById('required-actions');
-  if (reqActions) reqActions.innerHTML = `
-    <div style="display:grid;gap:6px">
-      ${requiredItem('📤 20+ Outreach Touches', todayOutreach, 20, 'switchTab("scorecard")')}
-      ${requiredItem('📝 2 Content Pieces Posted', todayContent, 2, 'switchTab("content")')}
-      ${requiredItem('🔄 3+ Deals Moved Forward', todayLog, 3, 'switchTab("log")')}
-      ${requiredItem('📞 1 Investor Call', DATA.log.filter(l=>l.logged_at?.startsWith(todayStr)&&l.activity.includes('Call')).length, 1, 'switchTab("log")')}
-    </div>`;
+  const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
+  const todayCalls = todayLog.filter(l => l.activity?.includes('Call') || l.activity?.includes('Meeting')).length;
+  const ra = document.getElementById('required-actions');
+  if (ra) ra.innerHTML = `<div style="display:grid;gap:6px">
+    ${reqItem('📤 20+ Outreach Touches', todayOutreach, 20, 'scorecard')}
+    ${reqItem('📝 2 Content Pieces Posted', todayContent, 2, 'content')}
+    ${reqItem('🔄 3+ Deals Moved Forward', todayLog.length, 3, 'log')}
+    ${reqItem('📞 1 Investor Call', todayCalls, 1, 'log')}
+  </div>`;
 
+  // Exec breakdown
   const actCounts = {};
   DATA.log.forEach(l => { actCounts[l.activity] = (actCounts[l.activity]||0) + 1; });
-  const top4 = Object.entries(actCounts).sort((a,b)=>b[1]-a[1]).slice(0,4);
-  const execBreak = document.getElementById('exec-breakdown');
-  if (execBreak) execBreak.innerHTML = top4.length ? top4.map(([act,cnt]) =>
-    `<div class="metric-card"><div class="mc-val">${cnt}</div><div class="mc-lbl">${escapeHtml(act)}</div></div>`
-  ).join('') : '<div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:60px"></div>';
+  const top4 = Object.entries(actCounts).sort((a,b) => b[1]-a[1]).slice(0,4);
+  const eb = document.getElementById('exec-breakdown');
+  if (eb) eb.innerHTML = top4.length ? top4.map(([act,cnt]) =>
+    `<div class="metric-card"><div class="mc-val">${cnt}</div><div class="mc-lbl">${h(act)}</div></div>`
+  ).join('') : '<div class="metric-card"><div class="mc-val">0</div><div class="mc-lbl">No activity yet</div></div>';
 }
 
-function requiredItem(label, current, target, onclick) {
+function reqItem(label, current, target, tab) {
   const done = current >= target;
-  const warn = current > 0 && current < target;
+  const warn = current > 0 && !done;
   const pct = Math.min(100, (current/target)*100);
   const color = done ? 'var(--success)' : warn ? 'var(--warn)' : 'var(--danger)';
-  return `
-    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;cursor:pointer;box-shadow:var(--shadow)" onclick="${onclick}">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <div style="font-size:12px;font-weight:600;color:var(--ink)">${label}</div>
-        <div style="font-size:12px;font-weight:700;color:${color}">${current}/${target}</div>
-      </div>
-      <div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">
-        <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width 0.4s"></div>
-      </div>
-    </div>`;
+  return `<div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;cursor:pointer;box-shadow:var(--shadow)" onclick="switchTab('${tab}')">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+      <div style="font-size:12px;font-weight:600">${label}</div>
+      <div style="font-size:12px;font-weight:700;color:${color}">${current}/${target}</div>
+    </div>
+    <div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width 0.4s"></div>
+    </div>
+  </div>`;
 }
 
 // ── SCORECARD ──
 function renderScorecard() {
   const todayStr = today();
   const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
-  const todayPts = todayLog.reduce((s,l)=>s+(l.points||0),0);
-  const todayOutreach = DATA.outreach.filter(o=>o.outreach_date===todayStr).reduce((s,o)=>s+(o.count||0),0);
-  const todayContent = DATA.content.filter(c=>c.published_at===todayStr).length;
-  const todayCalls = todayLog.filter(l=>l.activity.includes('Call')||l.activity.includes('Meeting')).length;
-  const todayMoves = todayLog.length;
+  const todayPts = todayLog.reduce((s,l) => s+(Number(l.points)||0), 0);
+  const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o) => s+(Number(o.count)||0), 0);
+  const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
+  const todayCalls = todayLog.filter(l => l.activity?.includes('Call')||l.activity?.includes('Meeting')).length;
 
   const checks = [
-    {icon:'📤',label:'Outreach Touches',current:todayOutreach,target:20},
-    {icon:'📝',label:'Content Published',current:todayContent,target:2},
-    {icon:'📞',label:'Investor Calls / Meetings',current:todayCalls,target:1},
-    {icon:'🔄',label:'Deals Moved Forward',current:todayMoves,target:3},
-    {icon:'⚡',label:'Execution Points',current:Math.round(todayPts),target:30},
+    { icon:'📤', label:'Outreach Touches', current:todayOutreach, target:20 },
+    { icon:'📝', label:'Content Published', current:todayContent, target:2 },
+    { icon:'📞', label:'Investor Calls / Meetings', current:todayCalls, target:1 },
+    { icon:'🔄', label:'Deals Moved Forward', current:todayLog.length, target:3 },
+    { icon:'⚡', label:'Execution Points', current:Math.round(todayPts), target:30 },
   ];
-  const score = checks.filter(c=>c.current>=c.target).length;
+  const score = checks.filter(c => c.current >= c.target).length;
   const scorePct = Math.round((score/checks.length)*100);
+  const scoreColor = scorePct>=80 ? '#2ECC71' : scorePct>=60 ? 'var(--gold2)' : '#E74C3C';
 
-  const scCard = document.getElementById('scorecard-card');
-  if (scCard) scCard.innerHTML = `
+  const sc = document.getElementById('scorecard-card');
+  if (sc) sc.innerHTML = `
     <div class="sc-head">
-      <div class="sc-title">Daily Execution Score — ${fmtDate(new Date())}</div>
-      <div class="sc-date" style="font-family:'Playfair Display',serif;font-size:18px;color:${scorePct>=80?'#2ECC71':scorePct>=60?'var(--gold2)':'#E74C3C'}">${scorePct}%</div>
+      <div class="sc-title">Daily Score — ${new Date().toLocaleDateString('en-KE',{weekday:'long',day:'numeric',month:'long'})}</div>
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:${scoreColor}">${scorePct}%</div>
     </div>
-    <div class="sc-body">
-      ${checks.map(c => {
-        const ok = c.current >= c.target;
-        const warn = c.current > 0 && !ok;
-        const cls = ok ? 'sc-ok' : warn ? 'sc-warn' : 'sc-fail';
-        const ico = ok ? '✅' : warn ? '⚠️' : '❌';
-        return `
-        <div class="sc-row">
-          <div class="sc-icon ${cls}">${ico}</div>
-          <div class="sc-label">${c.icon} ${c.label}</div>
-          <div class="sc-target">${c.target} req'd</div>
-          <div class="sc-val ${ok?'ok':warn?'warn':'fail'}">${c.current}</div>
-        </div>`;
-      }).join('')}
-    </div>`;
+    <div class="sc-body">${checks.map(c => {
+      const ok = c.current >= c.target;
+      const warn = c.current > 0 && !ok;
+      const cls = ok ? 'sc-ok' : warn ? 'sc-warn' : 'sc-fail';
+      return `<div class="sc-row">
+        <div class="sc-icon ${cls}">${ok?'✅':warn?'⚠️':'❌'}</div>
+        <div class="sc-label">${c.icon} ${c.label}</div>
+        <div class="sc-target">${c.target} req'd</div>
+        <div class="sc-val ${ok?'ok':warn?'warn':'fail'}">${c.current}</div>
+      </div>`;
+    }).join('')}</div>`;
 
+  // Outreach by channel
   const byChannel = {};
-  DATA.outreach.filter(o=>o.outreach_date===todayStr).forEach(o => {
-    byChannel[o.channel] = (byChannel[o.channel]||0) + (o.count||0);
+  DATA.outreach.filter(o => o.outreach_date === todayStr).forEach(o => {
+    byChannel[o.channel] = (byChannel[o.channel]||0) + (Number(o.count)||0);
   });
   const channels = ['LinkedIn','WhatsApp','Email','Phone','In-Person','Content'];
-  const targets = {LinkedIn:20,WhatsApp:10,Email:10,Phone:5,'In-Person':2,Content:2};
-  const orGrid = document.getElementById('outreach-today');
-  if (orGrid) orGrid.innerHTML = channels.map(ch => {
+  const targets = { LinkedIn:20, WhatsApp:10, Email:10, Phone:5, 'In-Person':2, Content:2 };
+  const og = document.getElementById('outreach-today');
+  if (og) og.innerHTML = channels.map(ch => {
     const cnt = byChannel[ch]||0;
-    const tgt = targets[ch]||10;
-    const done = cnt >= tgt;
-    return `
-      <div class="or-card ${done?'done-card':''}" onclick="document.getElementById('or-channel').value='${ch}';document.getElementById('or-count').focus()">
-        <div class="or-val">${cnt}</div>
-        <div class="or-lbl">${ch}</div>
-        <div class="or-target">Target: ${tgt}</div>
-      </div>`;
+    const done = cnt >= targets[ch];
+    return `<div class="or-card ${done?'done-card':''}" onclick="document.getElementById('or-channel').value='${ch}';document.getElementById('or-count').focus()">
+      <div class="or-val">${cnt}</div>
+      <div class="or-lbl">${ch}</div>
+      <div class="or-target">Target: ${targets[ch]}</div>
+    </div>`;
   }).join('');
 }
 
 // ── PIPELINE ──
 function stageClass(s) {
-  const m={'LOI Submitted':'loi','Due Diligence':'tour','Capital Call':'tour','Closed':'tour','Dead':'dead','Origination':'active','Initial Underwriting':'active','Site Tour':'tour'};
-  return m[s]||'active';
+  const m = { 'LOI Submitted':'loi','Due Diligence':'tour','Capital Call':'tour','Closed':'tour','Dead':'dead','Origination':'active','Initial Underwriting':'active','Site Tour':'tour' };
+  return m[s] || 'active';
 }
 function stageTag(s) {
-  const cls={'LOI Submitted':'loi','Site Tour':'tour','Due Diligence':'tour','Closed':'tour','Dead':'dead','Origination':'orig','Initial Underwriting':'uw','Capital Call':'active'};
-  return `<span class="stage ${cls[s]||'active'}">${escapeHtml(s)}</span>`;
+  const cls = { 'LOI Submitted':'loi','Site Tour':'tour','Due Diligence':'tour','Closed':'tour','Dead':'dead','Origination':'orig','Initial Underwriting':'uw','Capital Call':'active' };
+  return `<span class="stage ${cls[s]||'active'}">${h(s)}</span>`;
 }
 
 function renderPipeline() {
-  const active = DATA.pipeline.filter(d=>d.stage!=='Dead');
-  const dead = DATA.pipeline.filter(d=>d.stage==='Dead');
-  let totalKes=0, riskKes=0;
-  active.forEach(d=>{totalKes+=d.size||0;riskKes+=(d.size||0)*(STAGE_PROB[d.stage]||0)*(d.fee||0);});
-  const ptk = document.getElementById('pipe-total-kes');
-  const pra = document.getElementById('pipe-risk-adj');
-  if (ptk) ptk.textContent = fmtKes(totalKes);
-  if (pra) pra.textContent = fmtKes(riskKes);
+  const active = DATA.pipeline.filter(d => d.stage !== 'Dead');
+  const dead = DATA.pipeline.filter(d => d.stage === 'Dead');
+  let totalKes = 0, riskKes = 0;
+  active.forEach(d => {
+    totalKes += Number(d.size)||0;
+    riskKes += (Number(d.size)||0) * (STAGE_PROB[d.stage]||0) * (Number(d.fee)||0);
+  });
+  setText('pipe-total-kes', fmtKes(totalKes));
+  setText('pipe-risk-adj', fmtKes(riskKes));
   const adl = document.getElementById('active-deals-list');
   const ddl = document.getElementById('dead-deals-list');
-  if (adl) adl.innerHTML = active.map(d=>dealCard(d)).join('')||'<div class="empty">No active deals — add your 3 priority deals.</div>';
-  if (ddl) ddl.innerHTML = dead.map(d=>dealCard(d)).join('')||'<div class="empty">None</div>';
+  if (adl) adl.innerHTML = active.map(dealCard).join('') || '<div class="empty">No active deals — add your 3 priority deals above</div>';
+  if (ddl) ddl.innerHTML = dead.map(dealCard).join('') || '<div class="empty">None</div>';
 }
 
 function dealCard(d) {
-  const prob = STAGE_PROB[d.stage]||0;
-  const grossFee = (d.size||0)*(d.fee||0);
-  return `
-  <div class="deal-card ${stageClass(d.stage)}" id="deal-${d.id}">
+  const prob = STAGE_PROB[d.stage] || 0;
+  const grossFee = (Number(d.size)||0) * (Number(d.fee)||0);
+  const stages = ['Origination','Initial Underwriting','Site Tour','LOI Submitted','Due Diligence','Capital Call','Closed','Dead'];
+  return `<div class="deal-card ${stageClass(d.stage)}" id="deal-${d.id}">
     <div class="deal-top" onclick="toggleDeal('${d.id}')">
       <div>
-        <div class="deal-name">${escapeHtml(d.asset)} ${stageTag(d.stage)}</div>
-        <div class="deal-loc">${escapeHtml(d.market)}</div>
+        <div class="deal-name">${h(d.asset)} ${stageTag(d.stage)}</div>
+        <div class="deal-loc">${h(d.market)}</div>
       </div>
       <div class="deal-right">
-        <div class="deal-price">${fmtKes(d.size)}</div>
+        <div class="deal-price">${fmtKes(Number(d.size))}</div>
         <div class="deal-fee">Comm: ${fmtKes(grossFee)}</div>
       </div>
     </div>
@@ -1557,12 +1180,12 @@ function dealCard(d) {
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;font-size:11px;color:var(--ink2)">
         <span>Risk-Adj: <strong>${fmtKes(grossFee*prob)}</strong></span>
         <span>Prob: <strong>${(prob*100).toFixed(0)}%</strong></span>
-        <span>Source: <strong>${escapeHtml(d.source||'Direct')}</strong></span>
+        <span>Source: <strong>${h(d.source||'Direct')}</strong></span>
       </div>
-      <div style="font-size:11px;color:var(--ink3);line-height:1.5;margin-bottom:10px"><strong>Next:</strong> ${escapeHtml(d.next_action||'—')}</div>
+      <div style="font-size:11px;color:var(--ink3);line-height:1.5;margin-bottom:10px"><strong>Next:</strong> ${h(d.next_action||'—')}</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <select onchange="updateDealStage('${d.id}',this.value)" style="width:auto;padding:6px 10px;font-size:11px">
-          ${['Origination','Initial Underwriting','Site Tour','LOI Submitted','Due Diligence','Capital Call','Closed','Dead'].map(s=>`<option ${s===d.stage?'selected':''}>${s}</option>`).join('')}
+          ${stages.map(s => `<option ${s===d.stage?'selected':''}>${s}</option>`).join('')}
         </select>
         <button class="btn btn-ghost" onclick="deleteDeal('${d.id}')">Remove</button>
       </div>
@@ -1576,203 +1199,239 @@ function toggleDeal(id) {
 }
 
 async function updateDealStage(id, stage) {
-  await sbUpdate('pipeline', id, {stage});
-  const d = DATA.pipeline.find(x=>x.id===id);
+  await dbUpdate('pipeline', id, { stage });
+  const d = DATA.pipeline.find(x => x.id === id);
   if (d) d.stage = stage;
   renderStats(); renderPipeline();
   toast('Stage → ' + stage);
 }
 
 async function deleteDeal(id) {
-  if (!confirm('Remove this deal?')) return;
-  await sbDelete('pipeline', id);
-  DATA.pipeline = DATA.pipeline.filter(x=>x.id!==id);
-  render();
-  toast('Deal removed');
+  if (!confirm('Remove this deal from pipeline?')) return;
+  const ok = await dbDelete('pipeline', id);
+  if (ok) {
+    DATA.pipeline = DATA.pipeline.filter(x => x.id !== id);
+    render(); toast('Deal removed');
+  }
 }
 
 function quickAddDeal(asset, market, size, fee, stage, nextAction) {
-  const npAsset = document.getElementById('np-asset');
-  const npMarket = document.getElementById('np-market');
-  const npSize = document.getElementById('np-size');
-  const npFee = document.getElementById('np-fee');
-  const npStage = document.getElementById('np-stage');
-  const npAction = document.getElementById('np-action');
-  if (npAsset) npAsset.value = asset;
-  if (npMarket) npMarket.value = market;
-  if (npSize) npSize.value = size;
-  if (npFee) npFee.value = fee;
-  if (npStage) npStage.value = stage;
-  if (npAction) npAction.value = nextAction;
+  ['np-asset','np-market','np-size','np-fee','np-stage','np-action'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const vals = [asset, market, size, fee, stage, nextAction];
+    if (id === 'np-stage') el.value = vals[i];
+    else el.value = vals[i];
+  });
   switchTab('pipeline');
   toast('Quick-add populated — review and submit');
 }
 
 // ── LOG ──
 function renderLog() {
-  const sorted = [...DATA.log].sort((a,b)=>new Date(b.logged_at)-new Date(a.logged_at));
-  const logList = document.getElementById('log-list');
-  if (!logList) return;
-  logList.innerHTML = sorted.slice(0,40).map(l => {
-    const dot = l.activity.includes('LOI')||l.activity.includes('Underwriting')?'loi':l.activity.includes('Capital')||l.activity.includes('Meeting')?'call':l.activity.includes('Cold')||l.activity.includes('Follow')?'cold':'strat';
-    return `
-    <div class="log-entry">
+  const sorted = [...DATA.log].sort((a,b) => new Date(b.logged_at) - new Date(a.logged_at));
+  const ll = document.getElementById('log-list');
+  if (!ll) return;
+  ll.innerHTML = sorted.slice(0, 40).map(l => {
+    const dot = l.activity?.includes('LOI')||l.activity?.includes('Underwriting') ? 'loi' : l.activity?.includes('Capital')||l.activity?.includes('Meeting') ? 'call' : l.activity?.includes('Cold')||l.activity?.includes('Follow') ? 'cold' : 'strat';
+    return `<div class="log-entry">
       <div class="log-dot ${dot}"></div>
       <div class="log-content">
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div class="log-activity">${escapeHtml(l.activity)}</div>
-          <span class="log-pts">${Math.round(l.points||0)} pts</span>
+          <div class="log-activity">${h(l.activity)}</div>
+          <span class="log-pts">${Math.round(Number(l.points)||0)} pts</span>
         </div>
-        <div class="log-cp">${escapeHtml(l.counterparty)}</div>
-        <div class="log-note">${escapeHtml(l.outcome)}</div>
+        <div class="log-cp">${h(l.counterparty)}</div>
+        <div class="log-note">${h(l.outcome)}</div>
         <div class="log-meta">
           <span>${fmtDate(l.logged_at)}</span>
-          <span>${escapeHtml(l.impact||'Medium')} impact</span>
-          ${l.follow_up_date?`<span>Follow-up: ${fmtDate(l.follow_up_date)}</span>`:''}
+          <span>${h(l.impact||'Medium')} impact</span>
+          ${l.follow_up_date ? `<span>Follow-up: ${fmtDate(l.follow_up_date)}</span>` : ''}
+          <button class="del-btn" onclick="deleteLog('${l.id}')" title="Delete">✕</button>
         </div>
       </div>
     </div>`;
-  }).join('')||'<div class="empty">No activity logged yet — start your execution log below.</div>';
+  }).join('') || '<div class="empty">No activity logged yet — start your execution log.</div>';
+}
+
+async function deleteLog(id) {
+  if (!confirm('Delete this log entry?')) return;
+  const ok = await dbDelete('daily_log', id);
+  if (ok) { DATA.log = DATA.log.filter(x => x.id !== id); render(); toast('Entry deleted'); }
 }
 
 // ── FLAGSHIP ──
 function renderFlagship() {
-  const sorted = [...DATA.flagship].sort((a,b)=>{
-    const ord={Blocked:0,'Not Started':1,'In Progress':2,Done:3};
-    return (ord[a.status]||0)-(ord[b.status]||0);
+  const sorted = [...DATA.flagship].sort((a,b) => {
+    const ord = { Blocked:0, 'Not Started':1, 'In Progress':2, Done:3 };
+    return (ord[a.status]||1) - (ord[b.status]||1);
   });
   const fl = document.getElementById('flagship-list');
   if (!fl) return;
-  fl.innerHTML = `
-    <div class="card"><div style="padding:14px">
-      ${sorted.map(t=>`
-        <div class="task-row">
-          <div class="task-cb ${t.status==='Done'?'done':t.status==='Blocked'?'blocked':''}" onclick="cycleTask('${t.id}','${t.status}')"></div>
-          <div class="task-info">
-            <div class="task-asset">${escapeHtml(t.asset)}</div>
-            <div class="task-name ${t.status==='Done'?'done-text':''}">${escapeHtml(t.task)}</div>
-            <div class="task-meta">
-              Deadline: ${fmtDate(t.deadline)} · 
-              ${t.status==='Done'?'<span class="velocity v-done">✅ Done</span>':t.status==='Blocked'?'<span class="velocity v-crit">🔴 Blocked</span>':daysUntil(t.deadline)<0?'<span class="velocity v-crit">🔴 OVERDUE</span>':daysUntil(t.deadline)<7?'<span class="velocity v-warn">⚠️ Due Soon</span>':'<span class="velocity v-ok">🟢 On Track</span>'}
-            </div>
-          </div>
-          <button class="btn btn-ghost" onclick="deleteFlagship('${t.id}')" style="padding:4px 8px;font-size:10px">✕</button>
-        </div>`).join('')||'<div class="empty">No tasks registered — add your critical path items</div>'}
-    </div></div>`;
+  fl.innerHTML = sorted.length ? `<div class="card"><div style="padding:14px">
+    ${sorted.map(t => {
+      const du = daysUntil(t.deadline);
+      const vel = t.status==='Done' ? '<span class="velocity v-done">✅ Done</span>' : t.status==='Blocked' ? '<span class="velocity v-crit">🔴 Blocked</span>' : du<0 ? '<span class="velocity v-crit">🔴 OVERDUE</span>' : du<7 ? '<span class="velocity v-warn">⚠️ Due Soon</span>' : '<span class="velocity v-ok">🟢 On Track</span>';
+      return `<div class="task-row">
+        <div class="task-cb ${t.status==='Done'?'done':t.status==='Blocked'?'blocked':''}" onclick="cycleTask('${t.id}','${t.status}')"></div>
+        <div class="task-info">
+          <div class="task-asset">${h(t.asset)}</div>
+          <div class="task-name ${t.status==='Done'?'done-text':''}">${h(t.task)}</div>
+          <div class="task-meta">Deadline: ${fmtDate(t.deadline)} · ${vel}</div>
+        </div>
+        <button class="del-btn" onclick="deleteFlagship('${t.id}')" title="Delete">✕</button>
+      </div>`;
+    }).join('')}
+  </div></div>` : '<div class="empty">No tasks registered — add your critical path items</div>';
 }
 
 async function cycleTask(id, currentStatus) {
   const cycle = ['Not Started','In Progress','Done','Blocked'];
-  const next = cycle[(cycle.indexOf(currentStatus)+1)%cycle.length];
-  await sbUpdate('flagship_tasks', id, {status: next});
-  const t = DATA.flagship.find(x=>x.id===id);
+  const next = cycle[(cycle.indexOf(currentStatus)+1) % cycle.length];
+  await dbUpdate('flagship_tasks', id, { status: next });
+  const t = DATA.flagship.find(x => x.id === id);
   if (t) t.status = next;
-  renderFlagship();
-  toast('Task → ' + next);
+  renderFlagship(); toast('Task → ' + next);
 }
 
 async function deleteFlagship(id) {
   if (!confirm('Delete this task?')) return;
-  await sbDelete('flagship_tasks', id);
-  DATA.flagship = DATA.flagship.filter(x=>x.id!==id);
-  renderFlagship();
+  const ok = await dbDelete('flagship_tasks', id);
+  if (ok) { DATA.flagship = DATA.flagship.filter(x => x.id !== id); renderFlagship(); toast('Task deleted'); }
 }
 
 // ── CAPITAL ──
 function renderCapital() {
   const now = new Date();
-  let total=0, overdue=0;
-  DATA.capital.forEach(c=>{total+=(c.target_deployment||0)*(c.probability||0);if(new Date(c.next_touchpoint)<now)overdue++;});
-  const ct = document.getElementById('cap-total');
-  const co = document.getElementById('cap-overdue');
-  if (ct) ct.textContent = fmtKes(total);
-  if (co) co.textContent = overdue;
-  const sorted = [...DATA.capital].sort((a,b)=>a.tier-b.tier);
+  let total = 0, overdue = 0;
+  DATA.capital.forEach(c => {
+    total += (Number(c.target_deployment)||0) * (Number(c.probability)||0);
+    if (c.next_touchpoint && new Date(c.next_touchpoint) < now) overdue++;
+  });
+  setText('cap-total', fmtKes(total));
+  setText('cap-overdue', overdue);
+  const sorted = [...DATA.capital].sort((a,b) => (Number(a.tier)||3) - (Number(b.tier)||3));
   const cl = document.getElementById('capital-list');
   if (!cl) return;
-  cl.innerHTML = sorted.map(c=>{
-    const od = new Date(c.next_touchpoint)<now;
-    return `
-    <div class="cap-row">
+  cl.innerHTML = sorted.map(c => {
+    const od = c.next_touchpoint && new Date(c.next_touchpoint) < now;
+    return `<div class="cap-row">
       <div>
-        <div class="cap-name">${escapeHtml(c.entity_name)}<span class="tier-pill t${c.tier}">T${c.tier}</span></div>
-        <div class="cap-mandate">${escapeHtml(c.mandate)}</div>
+        <div class="cap-name">${h(c.entity_name)}<span class="tier-pill t${c.tier}">T${c.tier}</span></div>
+        <div class="cap-mandate">${h(c.mandate)}</div>
         <div style="font-size:10px;color:${od?'var(--danger)':'var(--ink3)'};margin-top:1px">Touchpoint: ${fmtDate(c.next_touchpoint)} ${od?'⚠️ OVERDUE':''}</div>
       </div>
       <div class="cap-r">
-        <div class="cap-weighted">${fmtKes((c.target_deployment||0)*(c.probability||0))}</div>
-        <div class="cap-prob">${((c.probability||0)*100).toFixed(0)}% · ${fmtKes(c.target_deployment)}</div>
+        <div class="cap-weighted">${fmtKes((Number(c.target_deployment)||0)*(Number(c.probability)||0))}</div>
+        <div class="cap-prob">${((Number(c.probability)||0)*100).toFixed(0)}% · ${fmtKes(Number(c.target_deployment))}</div>
+        <button class="del-btn" onclick="deleteCapital('${c.id}')" title="Delete" style="margin-top:4px">✕</button>
       </div>
     </div>`;
-  }).join('')||'<div class="empty">No capital partners logged — start with your first 10 targets</div>';
+  }).join('') || '<div class="empty">No capital partners logged — start with your first 10 targets</div>';
+}
+
+async function deleteCapital(id) {
+  if (!confirm('Remove this capital partner?')) return;
+  const ok = await dbDelete('capital_partners', id);
+  if (ok) { DATA.capital = DATA.capital.filter(x => x.id !== id); renderCapital(); toast('Partner removed'); }
 }
 
 // ── MANDATES ──
 function renderMandates() {
   const ml = document.getElementById('mandates-list');
   if (!ml) return;
-  ml.innerHTML = DATA.mandates.map(m=>{
+  ml.innerHTML = DATA.mandates.map(m => {
     const d = daysUntil(m.expiry_date);
-    const st = d<0?{cls:'ms-expired',lbl:'Expired'}:d<60?{cls:'ms-expiring',lbl:`Expiring ${d}d`}:{cls:'ms-active',lbl:'Active'};
-    return `
-    <div class="mandate-row">
+    const st = d < 0 ? { cls:'ms-expired', lbl:'Expired' } : d < 60 ? { cls:'ms-expiring', lbl:`Expiring ${d}d` } : { cls:'ms-active', lbl:'Active' };
+    return `<div class="mandate-row">
       <div class="man-top">
-        <div class="man-name">${escapeHtml(m.asset)}</div>
-        <span class="man-status ${st.cls}">${st.lbl}</span>
+        <div class="man-name">${h(m.asset)}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="man-status ${st.cls}">${st.lbl}</span>
+          <button class="del-btn" onclick="deleteMandate('${m.id}')" title="Delete">✕</button>
+        </div>
       </div>
-      <div class="man-meta">${escapeHtml(m.asset_type)} · ${escapeHtml(m.location)} · ${escapeHtml(m.mandate_type)}</div>
-      <div class="man-meta">Provider: ${escapeHtml(m.provider)} · Expires: ${fmtDate(m.expiry_date)}</div>
-      <div class="man-fee">${fmtKes(m.asking_price)} · Gross fee: ${fmtKes((m.asking_price||0)*(m.fee||0))} (${((m.fee||0)*100).toFixed(1)}%)</div>
+      <div class="man-meta">${h(m.asset_type)} · ${h(m.location)} · ${h(m.mandate_type)}</div>
+      <div class="man-meta">Provider: ${h(m.provider)} · Expires: ${fmtDate(m.expiry_date)}</div>
+      <div class="man-fee">${fmtKes(Number(m.asking_price))} · Gross fee: ${fmtKes((Number(m.asking_price)||0)*(Number(m.fee)||0))} (${((Number(m.fee)||0)*100).toFixed(1)}%)</div>
     </div>`;
-  }).join('')||'<div class="empty">No mandates registered — get your first mandate immediately</div>';
+  }).join('') || '<div class="empty">No mandates registered — get your first mandate immediately</div>';
+}
+
+async function deleteMandate(id) {
+  if (!confirm('Delete this mandate?')) return;
+  const ok = await dbDelete('mandates', id);
+  if (ok) { DATA.mandates = DATA.mandates.filter(x => x.id !== id); renderMandates(); toast('Mandate deleted'); }
 }
 
 // ── TRAFFIC ──
 function renderTraffic() {
-  const tempCls={'Hot — Ready':'temp-hot','Warm — Reviewing':'temp-warm','Cold':'temp-cold','Offer Submitted':'temp-offer','Dead':'temp-dead'};
+  const tempCls = { 'Hot — Ready':'temp-hot','Warm — Reviewing':'temp-warm','Cold':'temp-cold','Offer Submitted':'temp-offer','Dead':'temp-dead' };
   const tl = document.getElementById('traffic-list');
   if (!tl) return;
-  tl.innerHTML = DATA.traffic.map(t=>`
+  tl.innerHTML = DATA.traffic.map(t => `
     <div class="traffic-row">
       <div>
-        <div class="tr-name">${escapeHtml(t.prospect_name)}</div>
-        ${t.company?`<div class="tr-co">${escapeHtml(t.company)}</div>`:''}
-        <div class="tr-prop">${escapeHtml(t.property_shown)}</div>
-        <div style="font-size:10px;color:var(--ink3)">${escapeHtml(t.phone||'')} ${t.email?'· '+escapeHtml(t.email):''}</div>
+        <div class="tr-name">${h(t.prospect_name)}</div>
+        ${t.company ? `<div class="tr-co">${h(t.company)}</div>` : ''}
+        <div class="tr-prop">${h(t.property_shown)}</div>
+        <div style="font-size:10px;color:var(--ink3)">${h(t.phone||'')} ${t.email ? '· '+h(t.email) : ''}</div>
       </div>
-      <div style="text-align:right">
-        <span class="tr-temp ${tempCls[t.temperature]||'temp-warm'}">${escapeHtml((t.temperature||'').split(' — ')[0])}</span>
-        <div style="font-size:10px;color:var(--ink3);margin-top:3px">${fmtDate(t.interaction_date)}</div>
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="tr-temp ${tempCls[t.temperature]||'temp-warm'}">${h((t.temperature||'').split(' — ')[0])}</span>
+        <div style="font-size:10px;color:var(--ink3)">${fmtDate(t.interaction_date)}</div>
+        <button class="del-btn" onclick="deleteTraffic('${t.id}')" title="Delete">✕</button>
       </div>
-    </div>`).join('')||'<div class="empty">No prospects logged yet — every viewing must be tracked</div>';
+    </div>`).join('') || '<div class="empty">No prospects logged yet — every viewing must be tracked</div>';
+}
+
+async function deleteTraffic(id) {
+  if (!confirm('Remove this prospect?')) return;
+  const ok = await dbDelete('prospect_traffic', id);
+  if (ok) { DATA.traffic = DATA.traffic.filter(x => x.id !== id); renderTraffic(); toast('Prospect removed'); }
 }
 
 // ── CONTENT ──
 function renderContent() {
   const thisMonth = DATA.content.filter(c => c.published_at?.startsWith(new Date().toISOString().slice(0,7)));
-  const cp = document.getElementById('ct-posts');
-  const cl = document.getElementById('ct-leads');
-  if (cp) cp.textContent = thisMonth.length;
-  if (cl) cl.textContent = thisMonth.reduce((s,c)=>s+(c.leads_generated||0),0);
+  setText('ct-posts', thisMonth.length);
+  setText('ct-leads', thisMonth.reduce((s,c) => s+(Number(c.leads_generated)||0), 0));
   const cList = document.getElementById('content-list');
   if (!cList) return;
-  cList.innerHTML = DATA.content.slice(0,20).map(c=>`
+  cList.innerHTML = DATA.content.slice(0,20).map(c => `
     <div class="content-row">
       <div>
-        <div class="ct-title">${escapeHtml(c.title)}</div>
-        <div class="ct-platform">${escapeHtml(c.platform)} · <span class="ct-type">${escapeHtml(c.content_type)}</span></div>
+        <div class="ct-title">${h(c.title)}</div>
+        <div class="ct-platform">${h(c.platform)} · <span class="ct-type">${h(c.content_type)}</span></div>
         <div style="font-size:10px;color:var(--ink3)">${fmtDate(c.published_at)}</div>
       </div>
-      <div style="text-align:right">
-        ${c.leads_generated>0?`<span class="ct-badge">+${c.leads_generated} leads</span>`:''}
-        ${c.url?`<div style="margin-top:4px"><a href="${escapeHtml(c.url)}" target="_blank" style="font-size:10px;color:var(--gold)">View →</a></div>`:''}
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        ${Number(c.leads_generated)>0 ? `<span class="ct-badge">+${c.leads_generated} leads</span>` : ''}
+        ${c.url ? `<a href="${h(c.url)}" target="_blank" style="font-size:10px;color:var(--gold)">View →</a>` : ''}
+        <button class="del-btn" onclick="deleteContent('${c.id}')" title="Delete">✕</button>
       </div>
-    </div>`).join('')||'<div class="empty">No content logged — start publishing daily. Authority = deals.</div>';
+    </div>`).join('') || '<div class="empty">No content logged — start publishing daily.</div>';
 }
 
-// ═══════════════════════════════════════════════════════════
-// ADD ACTIONS — PRODUCTION HARDENED
-// ═══════════════════════════════════════════════════════════
+async function deleteContent(id) {
+  if (!confirm('Delete this content entry?')) return;
+  const ok = await dbDelete('content_tracker', id);
+  if (ok) { DATA.content = DATA.content.filter(x => x.id !== id); renderContent(); toast('Content entry deleted'); }
+}
+
+// ═══════════════════════════════════════
+// ADD / WRITE OPERATIONS
+// ═══════════════════════════════════════
+function disableBtn(id) {
+  const b = document.getElementById(id);
+  if (b) b.disabled = true;
+  return b;
+}
+function enableBtn(id) {
+  const b = document.getElementById(id);
+  if (b) b.disabled = false;
+}
+
 async function addDeal() {
   const asset = document.getElementById('np-asset').value.trim();
   const market = document.getElementById('np-market').value.trim();
@@ -1781,17 +1440,19 @@ async function addDeal() {
   const stage = document.getElementById('np-stage').value;
   const source = document.getElementById('np-source').value.trim() || 'Direct';
   const next_action = document.getElementById('np-action').value.trim();
-  if (!asset || !market || !size || isNaN(size) || !fee || isNaN(fee) || !next_action) {
+  if (!asset || !market || isNaN(size) || !size || isNaN(fee) || !fee || !next_action) {
     toast('Fill all required fields with valid numbers', false); return;
   }
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('pipeline', { asset, market, size, fee, stage, source, next_action });
-    if (!row) return;
-    DATA.pipeline.unshift(row);
-    ['np-asset','np-market','np-size','np-fee','np-source','np-action'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    render(); toast('Deal added to pipeline ✓');
-  } finally { btn.disabled = false; }
+  disableBtn('btn-add-deal');
+  const row = await dbInsert('pipeline', { asset, market, size, fee, stage, source, next_action });
+  enableBtn('btn-add-deal');
+  if (!row) return;
+  DATA.pipeline.unshift(row);
+  ['np-asset','np-market','np-size','np-fee','np-source','np-action'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('np-stage').value = 'Origination';
+  render(); toast('Deal added to pipeline ✓');
 }
 
 async function logActivity() {
@@ -1804,15 +1465,14 @@ async function logActivity() {
   const base = WEIGHTS[activity] || 1;
   const mult = impact === 'High' ? 2 : impact === 'Low' ? 0.5 : 1;
   const points = base * mult;
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('daily_log', { activity, counterparty, outcome, impact, follow_up_date, points, logged_at: new Date().toISOString() });
-    if (!row) return;
-    DATA.log.unshift(row);
-    document.getElementById('log-cp').value = '';
-    document.getElementById('log-out').value = '';
-    render(); toast(`Logged: ${Math.round(points)} execution points ✓`);
-  } finally { btn.disabled = false; }
+  disableBtn('btn-log-activity');
+  const row = await dbInsert('daily_log', { activity, counterparty, outcome, impact, follow_up_date, points, logged_at: new Date().toISOString() });
+  enableBtn('btn-log-activity');
+  if (!row) return;
+  DATA.log.unshift(row);
+  document.getElementById('log-cp').value = '';
+  document.getElementById('log-out').value = '';
+  render(); toast(`Logged: ${Math.round(points)} execution points ✓`);
 }
 
 async function addFlagship() {
@@ -1821,15 +1481,14 @@ async function addFlagship() {
   const status = document.getElementById('ft-status').value;
   const deadline = document.getElementById('ft-deadline').value;
   if (!asset || !task || !deadline) { toast('Asset, task and deadline required', false); return; }
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('flagship_tasks', { asset, task, status, deadline });
-    if (!row) return;
-    DATA.flagship.push(row);
-    document.getElementById('ft-asset').value = '';
-    document.getElementById('ft-task').value = '';
-    renderFlagship(); toast('Task registered ✓');
-  } finally { btn.disabled = false; }
+  disableBtn('btn-add-flagship');
+  const row = await dbInsert('flagship_tasks', { asset, task, status, deadline });
+  enableBtn('btn-add-flagship');
+  if (!row) return;
+  DATA.flagship.push(row);
+  document.getElementById('ft-asset').value = '';
+  document.getElementById('ft-task').value = '';
+  renderFlagship(); toast('Task registered ✓');
 }
 
 async function addCapital() {
@@ -1843,14 +1502,15 @@ async function addCapital() {
   if (!entity_name || !mandate || isNaN(target_deployment) || isNaN(probability) || !next_touchpoint) {
     toast('All capital fields required with valid numbers', false); return;
   }
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('capital_partners', { entity_name, tier, region, mandate, target_deployment, probability, next_touchpoint });
-    if (!row) return;
-    DATA.capital.push(row);
-    ['cp-name','cp-region','cp-mandate','cp-size','cp-prob','cp-touch'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    renderCapital(); toast('Capital partner logged ✓');
-  } finally { btn.disabled = false; }
+  disableBtn('btn-add-capital');
+  const row = await dbInsert('capital_partners', { entity_name, tier, region, mandate, target_deployment, probability, next_touchpoint });
+  enableBtn('btn-add-capital');
+  if (!row) return;
+  DATA.capital.push(row);
+  ['cp-name','cp-region','cp-mandate','cp-size','cp-prob','cp-touch'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderCapital(); toast('Capital partner logged ✓');
 }
 
 async function addMandate() {
@@ -1867,15 +1527,16 @@ async function addMandate() {
   if (!asset || !location || !provider || isNaN(asking_price) || isNaN(fee) || !start_date || !expiry_date) {
     toast('All mandate fields required with valid numbers', false); return;
   }
-  const mandate_ref = 'MND-' + new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 15);
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('mandates', { mandate_ref, asset, asset_type, location, provider, mandate_type, asking_price, fee, start_date, expiry_date, notes });
-    if (!row) return;
-    DATA.mandates.push(row);
-    ['mn-asset','mn-location','mn-provider','mn-price','mn-fee','mn-start','mn-expiry','mn-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    renderMandates(); toast('Mandate registered — ' + mandate_ref + ' ✓');
-  } finally { btn.disabled = false; }
+  const mandate_ref = 'MND-' + new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,15);
+  disableBtn('btn-add-mandate');
+  const row = await dbInsert('mandates', { mandate_ref, asset, asset_type, location, provider, mandate_type, asking_price, fee, start_date, expiry_date, notes });
+  enableBtn('btn-add-mandate');
+  if (!row) return;
+  DATA.mandates.push(row);
+  ['mn-asset','mn-location','mn-provider','mn-price','mn-fee','mn-start','mn-expiry','mn-notes'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderMandates(); toast('Mandate registered — ' + mandate_ref + ' ✓');
 }
 
 async function addTraffic() {
@@ -1889,14 +1550,15 @@ async function addTraffic() {
   if (!prospect_name || !phone || !property_shown || !interaction_date) {
     toast('Name, phone, property and date required', false); return;
   }
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('prospect_traffic', { prospect_name, company, phone, email, property_shown, interaction_date, temperature });
-    if (!row) return;
-    DATA.traffic.unshift(row);
-    ['tr-name','tr-company','tr-phone','tr-email','tr-property'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-    renderTraffic(); toast(prospect_name + ' logged ✓');
-  } finally { btn.disabled = false; }
+  disableBtn('btn-add-traffic');
+  const row = await dbInsert('prospect_traffic', { prospect_name, company, phone, email, property_shown, interaction_date, temperature });
+  enableBtn('btn-add-traffic');
+  if (!row) return;
+  DATA.traffic.unshift(row);
+  ['tr-name','tr-company','tr-phone','tr-email','tr-property'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderTraffic(); toast(prospect_name + ' logged ✓');
 }
 
 async function logOutreach() {
@@ -1904,15 +1566,14 @@ async function logOutreach() {
   const count = parseInt(document.getElementById('or-count').value);
   const description = document.getElementById('or-desc').value.trim();
   if (!count || isNaN(count) || count < 1) { toast('Enter a valid count', false); return; }
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('outreach_log', { channel, count, description, outreach_date: today() });
-    if (!row) return;
-    DATA.outreach.unshift(row);
-    document.getElementById('or-count').value = '';
-    document.getElementById('or-desc').value = '';
-    renderScorecard(); renderDashboard(); toast(`${count} ${channel} touches logged ✓`);
-  } finally { btn.disabled = false; }
+  disableBtn('btn-log-outreach');
+  const row = await dbInsert('outreach_log', { channel, count, description, outreach_date: today() });
+  enableBtn('btn-log-outreach');
+  if (!row) return;
+  DATA.outreach.unshift(row);
+  document.getElementById('or-count').value = '';
+  document.getElementById('or-desc').value = '';
+  renderScorecard(); renderDashboard(); toast(`${count} ${channel} touches logged ✓`);
 }
 
 async function logContent() {
@@ -1922,27 +1583,16 @@ async function logContent() {
   const url = document.getElementById('ct-url').value.trim();
   const leads_generated = parseInt(document.getElementById('ct-leads-gen').value) || 0;
   if (!title) { toast('Title required', false); return; }
-  const btn = event.target.closest('.btn'); btn.disabled = true;
-  try {
-    const row = await sbInsert('content_tracker', { platform, content_type, title, url, leads_generated, published_at: today() });
-    if (!row) return;
-    DATA.content.unshift(row);
-    document.getElementById('ct-title').value = '';
-    document.getElementById('ct-url').value = '';
-    document.getElementById('ct-leads-gen').value = '';
-    renderContent(); renderDashboard(); toast('Content logged ✓ — authority built');
-  } finally { btn.disabled = false; }
+  disableBtn('btn-log-content');
+  const row = await dbInsert('content_tracker', { platform, content_type, title, url, leads_generated, published_at: today() });
+  enableBtn('btn-log-content');
+  if (!row) return;
+  DATA.content.unshift(row);
+  document.getElementById('ct-title').value = '';
+  document.getElementById('ct-url').value = '';
+  document.getElementById('ct-leads-gen').value = '';
+  renderContent(); renderDashboard(); toast('Content logged ✓ — authority built');
 }
-
-// ═══════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  initSupabase();
-  checkAuth();
-  const td = today();
-  document.querySelectorAll('input[type="date"]').forEach(el => { if (!el.value) el.value = td; });
-});
 </script>
 </body>
 </html>
