@@ -2049,10 +2049,12 @@ function buildReportSection(period) {
   // GC quote based on score
   const dayScore = period === 'daily' ? Math.round((Math.min(totalPts/30,1) + Math.min(totalOutreach/20,1) + Math.min(contentItems.length/2,1) + Math.min(calls/1,1)) / 4 * 100) : null;
   const gcQuote = dayScore !== null
-    ? dayScore >= 80 ? '"Massive action produces massive results. Keep this up every day."'
-    : dayScore >= 50 ? '"You're halfway there. Halfway doesn't pay the bills — double it."'
-    : '"You didn't even come close today. That's fine — start now. Not tomorrow. Now."'
-    : '"Success is your duty, obligation, and responsibility."';
+    ? (dayScore >= 80
+      ? `“Massive action produces massive results. Keep this up every day.”`
+      : dayScore >= 50
+      ? `“Halfway does not cut it. Double your output right now.”`
+      : `“You missed your targets today. Start now, not tomorrow. No excuses.”`)
+    : `“Success is your duty, obligation, and responsibility.”`;
 
   // Activity breakdown
   const actBreakdown = {};
