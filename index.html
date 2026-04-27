@@ -164,7 +164,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--border);width:auto;padding:6px 12px;border-radius:100px;font-size:10px}
 .btn-ghost:hover{background:var(--cream);box-shadow:none}
 .btn-danger{background:var(--danger);color:var(--white);border:none}
-.btn-danger:hover{background:#8B2020}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--white);padding:10px 22px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:0.04em;z-index:500;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap}
@@ -193,6 +192,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 
 /* ── GRID ── */
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
 .metric-card{background:var(--cream);border-radius:var(--r2);padding:10px 12px;border:1px solid var(--border)}
 .mc-val{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:2px}
 .mc-lbl{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:700}
@@ -257,7 +257,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .scorecard{background:var(--white);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow)}
 .sc-head{background:var(--ink);padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
 .sc-title{font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.6)}
-.sc-date{font-size:11px;color:rgba(255,255,255,0.4)}
 .sc-body{padding:0}
 .sc-row{display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border2);gap:10px}
 .sc-row:last-child{border-bottom:none}
@@ -289,7 +288,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .ct-type{font-size:10px;color:var(--ink3)}
 .ct-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;background:var(--success-bg);color:var(--success)}
 
-/* ── EMPTY STATES ── */
+/* ── EMPTY / SKELETON ── */
 .empty{font-size:12px;color:var(--ink3);padding:16px 0;text-align:center}
 .skeleton{background:linear-gradient(90deg,var(--cream2) 25%,var(--cream) 50%,var(--cream2) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:var(--r);height:16px;margin-bottom:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -319,8 +318,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .notif-clear{font-size:10px;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;padding:3px 8px;border-radius:100px;transition:all 0.15s}
 .notif-clear:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
 .notif-close{font-size:16px;color:rgba(255,255,255,0.4);background:none;border:none;cursor:pointer;line-height:1;padding:2px 4px}
-.notif-close:hover{color:var(--white)}
-.notif-item{padding:12px 16px;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start;cursor:default;transition:background 0.15s}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start;transition:background 0.15s}
 .notif-item:hover{background:var(--cream)}
 .notif-item.unread{background:rgba(184,149,90,0.04)}
 .notif-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
@@ -335,7 +333,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .notif-time{font-size:10px;color:var(--ink3);margin-top:3px}
 .notif-empty{padding:24px 16px;text-align:center;font-size:12px;color:var(--ink3)}
 
-/* ── ALERT MODAL (Daily Brief / Report) ── */
+/* ── ALERT MODAL ── */
 .alert-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s}
 .alert-overlay.show{opacity:1;pointer-events:all}
 .alert-box{background:var(--white);border-radius:var(--r2);width:100%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow2)}
@@ -358,21 +356,104 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 .alert-task-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px}
 .alert-task-meta{font-size:11px;color:var(--ink3)}
 .alert-gc{background:var(--ink);color:rgba(255,255,255,0.7);font-size:11px;line-height:1.7;padding:12px 14px;border-left:2px solid var(--gold);border-radius:0 var(--r) var(--r) 0;font-style:italic;margin-bottom:12px}
-.report-tab-row{display:flex;gap:4px;margin-bottom:14px}
+.report-tab-row{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
 .report-tab{padding:6px 12px;background:var(--cream);border:1px solid var(--border);border-radius:100px;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;color:var(--ink3);transition:all 0.15s}
 .report-tab.act{background:var(--ink);color:var(--white);border-color:var(--ink)}
 
-/* ── PERM NOTIF REQUEST BANNER ── */
-.perm-banner{background:var(--gold-light);border:1px solid rgba(184,149,90,0.25);border-radius:var(--r2);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;display:none}
-.perm-banner.show{display:flex}
-.perm-banner-text{font-size:11px;color:var(--ink2)}
-.perm-banner-btn{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:var(--gold);color:var(--ink);border:none;border-radius:100px;padding:5px 12px;cursor:pointer;white-space:nowrap;font-family:'Syne',sans-serif}
-.perm-banner-btn:hover{background:var(--gold2)}
+/* ══════════════════════════════════════════
+   NEW: 10X REVENUE SYSTEM CYCLE WIDGET
+══════════════════════════════════════════ */
+.tenx-cycle{background:var(--ink);border-radius:var(--r2);padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
+.tenx-cycle::before{content:'10X';position:absolute;font-family:'Playfair Display',serif;font-size:80px;font-weight:700;color:rgba(255,255,255,0.03);right:-10px;top:50%;transform:translateY(-50%);pointer-events:none}
+.tenx-title{font-size:9px;font-weight:700;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px}
+.tenx-stages{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.tenx-stage{text-align:center;padding:8px 4px;border-radius:var(--r);cursor:pointer;transition:all 0.2s;position:relative}
+.tenx-stage:hover{background:rgba(255,255,255,0.05)}
+.tenx-icon{font-size:16px;margin-bottom:4px;line-height:1}
+.tenx-label{font-size:8px;letter-spacing:0.06em;color:rgba(255,255,255,0.4);line-height:1.3;font-weight:600;text-transform:uppercase}
+.tenx-count{font-family:'Playfair Display',serif;font-size:14px;color:var(--gold2);font-weight:500;line-height:1;margin-top:3px}
+.tenx-bar{height:2px;border-radius:1px;margin-top:4px;background:rgba(255,255,255,0.08)}
+.tenx-bar-fill{height:100%;border-radius:1px;background:var(--gold);transition:width 0.6s ease}
+.tenx-stage.active-stage .tenx-label{color:var(--gold2)}
+@media(max-width:500px){
+  .tenx-stages{grid-template-columns:repeat(4,1fr)}
+  .tenx-stage:nth-child(5),.tenx-stage:nth-child(6),.tenx-stage:nth-child(7){margin-top:4px}
+}
+
+/* ══════════════════════════════════════════
+   NEW: PAID ADS TRACKER
+══════════════════════════════════════════ */
+.ads-row{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start}
+.ads-row:last-child{border-bottom:none}
+.ads-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.ads-platform{font-size:10px;color:var(--gold);font-weight:600}
+.ads-meta{font-size:11px;color:var(--ink3);margin-top:1px}
+.ads-r{text-align:right;flex-shrink:0;margin-left:10px}
+.ads-spend{font-family:'Playfair Display',serif;font-size:14px;font-weight:500;color:var(--ink)}
+.ads-cpl{font-size:10px;margin-top:2px;font-weight:700}
+.cpl-ok{color:var(--success)}
+.cpl-warn{color:var(--warn)}
+.cpl-bad{color:var(--danger)}
+.ads-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.ads-kpi{background:var(--cream);border-radius:var(--r2);padding:8px 10px;border:1px solid var(--border);text-align:center}
+.ads-kpi-val{font-family:'Playfair Display',serif;font-size:16px;font-weight:500;color:var(--ink)}
+.ads-kpi-lbl{font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-top:2px}
+
+/* ══════════════════════════════════════════
+   NEW: LEAD PIPELINE BOARD (Kanban-style)
+══════════════════════════════════════════ */
+.lead-pipeline-wrap{overflow-x:auto;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+.lead-pipeline-board{display:flex;gap:8px;min-width:max-content;padding-bottom:8px}
+.lp-col{width:160px;flex-shrink:0}
+.lp-col-head{background:var(--ink);color:var(--white);padding:7px 10px;border-radius:var(--r2) var(--r2) 0 0;display:flex;justify-content:space-between;align-items:center}
+.lp-col-title{font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase}
+.lp-col-count{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px}
+.lp-col-body{background:var(--cream2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r2) var(--r2);padding:8px;min-height:80px}
+.lp-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:8px;margin-bottom:6px;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow)}
+.lp-card:hover{border-color:var(--gold);box-shadow:0 2px 8px rgba(184,149,90,0.15)}
+.lp-card:last-child{margin-bottom:0}
+.lp-card-name{font-size:11px;font-weight:600;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-card-prop{font-size:10px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-card-date{font-size:9px;color:var(--ink3);margin-top:3px}
+.lp-card-age{font-size:9px;font-weight:700;padding:1px 5px;border-radius:100px}
+.age-new{background:var(--success-bg);color:var(--success)}
+.age-warm{background:var(--warn-bg);color:var(--warn)}
+.age-cold{background:var(--danger-bg);color:var(--danger)}
+.lp-col-head.stage-new{background:#1A3A5C}
+.lp-col-head.stage-contacted{background:#2D4A1E}
+.lp-col-head.stage-qualified{background:#7A4A00}
+.lp-col-head.stage-proposal{background:#5C1A6B}
+.lp-col-head.stage-close{background:#1A5C3A}
+.lp-conv-bar{display:flex;gap:2px;align-items:center;margin-bottom:14px;overflow-x:auto}
+.lp-conv-stage{flex:1;min-width:60px;text-align:center;padding:6px 4px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);position:relative}
+.lp-conv-pct{font-family:'Playfair Display',serif;font-size:14px;font-weight:500;color:var(--ink)}
+.lp-conv-lbl{font-size:8px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.1em}
+.lp-conv-arrow{font-size:12px;color:var(--ink3);flex-shrink:0}
+
+/* ══════════════════════════════════════════
+   NEW: SALES ACQUISITIONS SCORECARD
+══════════════════════════════════════════ */
+.sa-funnel{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.sa-funnel-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:var(--r);position:relative;overflow:hidden}
+.sa-funnel-fill{position:absolute;left:0;top:0;bottom:0;background:var(--gold-light);border-right:2px solid rgba(184,149,90,0.3);transition:width 0.8s ease;z-index:0}
+.sa-funnel-content{position:relative;z-index:1;flex:1;display:flex;justify-content:space-between;align-items:center}
+.sa-funnel-label{font-size:12px;font-weight:600;color:var(--ink)}
+.sa-funnel-num{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--ink)}
+.sa-funnel-pct{font-size:10px;color:var(--ink3)}
+.sa-offer-row{padding:10px 0;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:flex-start}
+.sa-offer-row:last-child{border-bottom:none}
+.sa-offer-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.sa-offer-prop{font-size:11px;color:var(--gold)}
+.sa-offer-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px}
+.offer-pending{background:var(--warn-bg);color:var(--warn)}
+.offer-accepted{background:var(--success-bg);color:var(--success)}
+.offer-rejected{background:var(--danger-bg);color:var(--danger)}
+.offer-countered{background:var(--info-bg);color:var(--info)}
+
 </style>
 </head>
 <body>
 
-<!-- Loading -->
 <div class="loading-overlay" id="loading">
   <div class="loading-logo">Murivest <span>OS</span></div>
   <div class="loading-bar"><div class="loading-fill"></div></div>
@@ -389,14 +470,13 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       <span class="notif-badge" id="notif-badge">0</span>
     </button>
-    <button class="notif-btn" onclick="openDailyBrief()" title="Daily Brief &amp; Reports">
+    <button class="notif-btn" onclick="openDailyBrief()" title="Daily Brief">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </button>
     <div class="target-chip">KShs 50M · 2026</div>
   </div>
 </header>
 
-<!-- Notification Panel -->
 <div class="notif-panel" id="notif-panel">
   <div class="notif-header">
     <div class="notif-title">Alerts &amp; Notifications</div>
@@ -408,7 +488,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   <div id="notif-list"><div class="notif-empty">Checking your data…</div></div>
 </div>
 
-<!-- Daily Brief / Report Modal -->
 <div class="alert-overlay" id="alert-overlay" onclick="closeAlertModal(event)">
   <div class="alert-box" onclick="event.stopPropagation()">
     <div class="alert-head">
@@ -419,7 +498,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   </div>
 </div>
 
-<!-- Progress Bar -->
 <div class="progress-bar-wrap">
   <div class="pb-header">
     <div class="pb-label">Commission Progress — 2026</div>
@@ -429,7 +507,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   <div class="pb-subs"><span>KShs 0</span><span id="pb-remaining">KShs 50M remaining</span><span>KShs 50M</span></div>
 </div>
 
-<!-- Stats Rail -->
 <div class="stats-rail">
   <div class="stat" onclick="switchTab('pipeline')">
     <div class="stat-n" id="s-active">—</div>
@@ -449,7 +526,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   </div>
 </div>
 
-<!-- Nav -->
 <nav class="nav">
   <div class="nav-inner">
     <button class="ntab act" data-tab="dashboard" onclick="switchTab('dashboard',this)">
@@ -463,6 +539,18 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
     <button class="ntab" data-tab="pipeline" onclick="switchTab('pipeline',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       Pipeline <span class="badge" id="pipe-badge">0</span>
+    </button>
+    <button class="ntab" data-tab="leads" onclick="switchTab('leads',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+      Leads <span class="badge" id="leads-badge">0</span>
+    </button>
+    <button class="ntab" data-tab="ads" onclick="switchTab('ads',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Paid Ads
+    </button>
+    <button class="ntab" data-tab="sales" onclick="switchTab('sales',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Sales Acq
     </button>
     <button class="ntab" data-tab="log" onclick="switchTab('log',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -513,6 +601,12 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       days remaining
       <div style="font-size:10px;color:var(--gold);margin-top:3px" id="dt-daily-needed"></div>
     </div>
+  </div>
+
+  <!-- NEW: 10X CYCLE WIDGET -->
+  <div class="tenx-cycle" id="tenx-widget">
+    <div class="tenx-title">10X Revenue System — Your Cycle Status</div>
+    <div class="tenx-stages" id="tenx-stages"></div>
   </div>
 
   <div class="gc-banner">
@@ -623,6 +717,184 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
       <button class="btn" id="btn-add-deal" onclick="addDeal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         Add to Pipeline
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     NEW: LEAD PIPELINE BOARD
+══════════════════════════════════════════ -->
+<section id="panel-leads" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+      Lead Management Pipeline
+    </div>
+    <div class="ph-desc">GC Stage 3–4 — every lead must be managed from New → Contacted → Qualified → Proposal → Close.</div>
+  </div>
+
+  <div class="gc-banner">"Lead management is where the money is made. A lead without follow-up is a dead lead."</div>
+
+  <div class="sec-lbl">Conversion Funnel</div>
+  <div id="lp-conv-bar" class="lp-conv-bar"></div>
+
+  <div class="sec-lbl">Lead Board</div>
+  <div class="lead-pipeline-wrap">
+    <div class="lead-pipeline-board" id="lead-board"></div>
+  </div>
+
+  <div class="sec-lbl" style="margin-top:14px">Add Lead to Pipeline</div>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px">
+    <div class="field-row">
+      <div class="field"><label class="req" for="lp-name">Lead Name</label><input type="text" id="lp-name" placeholder="Full name"></div>
+      <div class="field"><label for="lp-company">Company</label><input type="text" id="lp-company" placeholder="Optional"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="lp-phone">Phone</label><input type="tel" id="lp-phone" placeholder="07XX XXX XXX"></div>
+      <div class="field"><label for="lp-budget">Budget (KShs)</label><input type="number" id="lp-budget" placeholder="e.g. 50000000"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label class="req" for="lp-property">Property Interest</label><input type="text" id="lp-property" placeholder="e.g. Trust Building, CBD Office"></div>
+      <div class="field">
+        <label class="req" for="lp-stage">Stage</label>
+        <select id="lp-stage">
+          <option value="New">New</option>
+          <option value="Contacted">Contacted</option>
+          <option value="Qualified">Qualified</option>
+          <option value="Proposal">Proposal Sent</option>
+          <option value="Close">Closing</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="lp-source">Lead Source</label>
+        <select id="lp-source">
+          <option>Organic Content</option><option>Paid Ad</option><option>Referral</option>
+          <option>Cold Outreach</option><option>Walk-In</option><option>Event</option>
+        </select>
+      </div>
+      <div class="field"><label for="lp-date">Date Added</label><input type="date" id="lp-date"></div>
+    </div>
+    <div class="field"><label for="lp-notes">Notes</label><textarea id="lp-notes" placeholder="Key info about this lead..." style="min-height:50px"></textarea></div>
+    <button class="btn" id="btn-add-lead" onclick="addLead()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+      Add to Lead Pipeline
+    </button>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     NEW: PAID ADS TRACKER
+══════════════════════════════════════════ -->
+<section id="panel-ads" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      Paid Lead Generation
+    </div>
+    <div class="ph-desc">GC Stage 2 — paid advertising drives qualified leads at scale. Track every shilling spent and every lead earned.</div>
+  </div>
+
+  <div class="gc-banner">"You don't have a money problem, you have a marketing problem. Invest in ads like your income depends on it — because it does."</div>
+
+  <div class="ads-kpi-grid" id="ads-kpi-grid">
+    <div class="ads-kpi"><div class="ads-kpi-val" id="ads-total-spend">KShs 0</div><div class="ads-kpi-lbl">Total Spend</div></div>
+    <div class="ads-kpi"><div class="ads-kpi-val" id="ads-total-leads">0</div><div class="ads-kpi-lbl">Leads Generated</div></div>
+    <div class="ads-kpi"><div class="ads-kpi-val" id="ads-avg-cpl">—</div><div class="ads-kpi-lbl">Avg Cost/Lead</div></div>
+    <div class="ads-kpi"><div class="ads-kpi-val" id="ads-best-channel">—</div><div class="ads-kpi-lbl">Best Channel</div></div>
+  </div>
+
+  <div class="sec-lbl">Active Campaigns</div>
+  <div class="card"><div style="padding:14px"><div id="ads-list"></div></div></div>
+
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Log Ad Campaign</div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px">
+      <div class="field-row">
+        <div class="field"><label class="req" for="ad-name">Campaign Name</label><input type="text" id="ad-name" placeholder="e.g. Trust Building — LinkedIn"></div>
+        <div class="field">
+          <label class="req" for="ad-platform">Platform</label>
+          <select id="ad-platform">
+            <option>LinkedIn Ads</option><option>Facebook/Meta</option><option>Google Ads</option>
+            <option>Instagram</option><option>Twitter/X</option><option>WhatsApp Broadcast</option><option>Email Campaign</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="req" for="ad-spend">Spend (KShs)</label><input type="number" id="ad-spend" placeholder="50000"></div>
+        <div class="field"><label class="req" for="ad-leads">Leads Generated</label><input type="number" id="ad-leads" placeholder="10" min="0"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="ad-clicks">Impressions / Clicks</label><input type="number" id="ad-clicks" placeholder="5000"></div>
+        <div class="field">
+          <label for="ad-status">Status</label>
+          <select id="ad-status"><option>Active</option><option>Paused</option><option>Ended</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="ad-start">Start Date</label><input type="date" id="ad-start"></div>
+        <div class="field"><label for="ad-end">End Date</label><input type="date" id="ad-end"></div>
+      </div>
+      <div class="field"><label for="ad-notes">Notes / Target Audience</label><textarea id="ad-notes" placeholder="Who are you targeting? What's the offer?" style="min-height:50px"></textarea></div>
+      <button class="btn" id="btn-add-ad" onclick="addAd()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Log Campaign
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     NEW: SALES ACQUISITIONS SCORECARD
+══════════════════════════════════════════ -->
+<section id="panel-sales" class="panel">
+  <div class="ph">
+    <div class="ph-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Sales Acquisitions
+    </div>
+    <div class="ph-desc">GC Stage 5–6 — track every offer made, accepted, rejected. Your close rate determines your income.</div>
+  </div>
+
+  <div class="gc-banner">"Sales is not something you do to someone, it's something you do for someone. Make offers. Track every one."</div>
+
+  <div class="grid-3" id="sa-metrics"></div>
+
+  <div class="sec-lbl">Sales Funnel</div>
+  <div class="sa-funnel" id="sa-funnel"></div>
+
+  <div class="sec-lbl" style="margin-top:14px">Offers Tracker</div>
+  <div class="card"><div style="padding:14px"><div id="sa-offers-list"></div></div></div>
+
+  <div style="margin-top:18px">
+    <div class="sec-lbl">Log New Offer</div>
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r2);padding:14px">
+      <div class="field-row">
+        <div class="field"><label class="req" for="sa-buyer">Buyer Name</label><input type="text" id="sa-buyer" placeholder="Investor / buyer name"></div>
+        <div class="field"><label class="req" for="sa-property">Property</label><input type="text" id="sa-property" placeholder="e.g. Trust Building"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="req" for="sa-offer-price">Offer Price (KShs)</label><input type="number" id="sa-offer-price" placeholder="950000000"></div>
+        <div class="field"><label class="req" for="sa-ask-price">Asking Price (KShs)</label><input type="number" id="sa-ask-price" placeholder="1000000000"></div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="req" for="sa-status">Offer Status</label>
+          <select id="sa-status">
+            <option value="Pending">Pending — Awaiting Response</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Countered">Counter Offer Received</option>
+          </select>
+        </div>
+        <div class="field"><label for="sa-date">Offer Date</label><input type="date" id="sa-date"></div>
+      </div>
+      <div class="field"><label for="sa-notes">Notes / Conditions</label><textarea id="sa-notes" placeholder="Key conditions, financing terms, timeline..." style="min-height:50px"></textarea></div>
+      <button class="btn" id="btn-add-offer" onclick="addOffer()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Log Offer
       </button>
     </div>
   </div>
@@ -848,7 +1120,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 </section>
 
 </main>
-
 <div class="toast" id="toast"></div>
 
 <script>
@@ -857,12 +1128,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 // ═══════════════════════════════════════
 const SUPABASE_URL = "https://idbekogmcmqhwetngpvt.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkYmVrb2dtY21xaHdldG5ncHZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMjE4MjEsImV4cCI6MjA5Mjc5NzgyMX0.rYyK2qqJBj0EXFhQMLAGp2_X8WYfDNSFdnYDBhuah5Q";
-
-// IMPORTANT: Replace this with your actual user ID from Supabase Auth dashboard
-// Auth → Users → copy the UUID of your user
-// Or set to null to use a shared/demo mode (data visible to all anon users)
 const HARDCODED_USER_ID = "96f370cb-479f-49ad-9ef0-668b9363a0c6";
-
 const TARGET = 50000000;
 const WEIGHTS = {
   'Cold Outreach': 1, 'Capital Intro Call': 3, 'LOI Drafted / Submitted': 10,
@@ -875,18 +1141,18 @@ const STAGE_PROB = {
 };
 
 let sb_client = null;
-let DATA = { pipeline: [], log: [], flagship: [], capital: [], mandates: [], traffic: [], outreach: [], content: [] };
+let DATA = {
+  pipeline: [], log: [], flagship: [], capital: [], mandates: [],
+  traffic: [], outreach: [], content: [],
+  // NEW tables
+  leads: [], ads: [], offers: []
+};
 
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    sb_client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  } catch(e) {
-    console.error('Supabase init failed', e);
-    toast('DB connection failed — check console', false);
-  }
+  try { sb_client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e) { console.error(e); }
   const td = today();
   document.querySelectorAll('input[type="date"]').forEach(el => { if (!el.value) el.value = td; });
   initNotifications();
@@ -919,7 +1185,7 @@ async function dbInsert(table, row) {
     setSyncStatus(error ? '' : 'live');
     if (error) { toast('Save failed: ' + error.message, false); console.error(error); return null; }
     return data?.[0] || null;
-  } catch(e) { setSyncStatus(''); toast('Network error', false); console.error(e); return null; }
+  } catch(e) { setSyncStatus(''); toast('Network error', false); return null; }
 }
 
 async function dbUpdate(table, id, updates) {
@@ -928,17 +1194,17 @@ async function dbUpdate(table, id, updates) {
   try {
     const { error } = await sb_client.from(table).update(updates).eq('id', id).eq('user_id', uid());
     setSyncStatus(error ? '' : 'live');
-    if (error) { toast('Update failed: ' + error.message, false); console.error(error); }
-  } catch(e) { setSyncStatus(''); toast('Network error', false); console.error(e); }
+    if (error) toast('Update failed: ' + error.message, false);
+  } catch(e) { setSyncStatus(''); toast('Network error', false); }
 }
 
 async function dbDelete(table, id) {
   if (!sb_client) return false;
   try {
     const { error } = await sb_client.from(table).delete().eq('id', id).eq('user_id', uid());
-    if (error) { toast('Delete failed: ' + error.message, false); console.error(error); return false; }
+    if (error) { toast('Delete failed: ' + error.message, false); return false; }
     return true;
-  } catch(e) { toast('Network error', false); console.error(e); return false; }
+  } catch(e) { toast('Network error', false); return false; }
 }
 
 async function loadAllData() {
@@ -953,6 +1219,9 @@ async function loadAllData() {
       dbSelect('prospect_traffic', 'interaction_date', false),
       dbSelect('outreach_log', 'outreach_date', false),
       dbSelect('content_tracker', 'published_at', false),
+      dbSelect('lead_pipeline', 'created_at', false),
+      dbSelect('paid_ads', 'start_date', false),
+      dbSelect('sales_offers', 'offer_date', false),
     ]);
     DATA = {
       pipeline: results[0].status === 'fulfilled' ? results[0].value : [],
@@ -963,6 +1232,9 @@ async function loadAllData() {
       traffic: results[5].status === 'fulfilled' ? results[5].value : [],
       outreach: results[6].status === 'fulfilled' ? results[6].value : [],
       content: results[7].status === 'fulfilled' ? results[7].value : [],
+      leads: results[8].status === 'fulfilled' ? results[8].value : [],
+      ads: results[9].status === 'fulfilled' ? results[9].value : [],
+      offers: results[10].status === 'fulfilled' ? results[10].value : [],
     };
   } catch(e) { console.error('loadAllData', e); }
   hideLoading();
@@ -989,6 +1261,7 @@ function fmtDate(d) {
 }
 function today() { return new Date().toISOString().split('T')[0]; }
 function daysUntil(d) { return d ? Math.ceil((new Date(d) - new Date()) / 86400000) : 999; }
+function daysAgo(d) { return d ? Math.floor((new Date() - new Date(d)) / 86400000) : 0; }
 function h(s) {
   if (!s && s !== 0) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1003,10 +1276,8 @@ function toast(msg, ok = true) {
 }
 function showLoading() { document.getElementById('loading').classList.remove('hide'); }
 function hideLoading() { document.getElementById('loading').classList.add('hide'); }
-function setSyncStatus(s) {
-  const d = document.getElementById('sync-dot');
-  if (d) d.className = 'sync-dot ' + s;
-}
+function setSyncStatus(s) { const d = document.getElementById('sync-dot'); if (d) d.className = 'sync-dot ' + s; }
+function setText(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
 
 // ═══════════════════════════════════════
 // NAVIGATION
@@ -1056,17 +1327,13 @@ function renderStats() {
   setText('s-today', st.todayPts);
   setText('s-momentum', st.weekPts);
   setText('pipe-badge', DATA.pipeline.filter(d => d.stage !== 'Dead').length);
+  setText('leads-badge', DATA.leads.length);
   const pct = Math.min(100, (st.commEarned / TARGET) * 100);
   const pbFill = document.getElementById('pb-fill');
   if (pbFill) pbFill.style.width = pct + '%';
   setText('pb-earned', fmtKes(st.commEarned));
   setText('pb-pct', pct.toFixed(1) + '%');
   setText('pb-remaining', fmtKes(Math.max(0, TARGET - st.commEarned)) + ' remaining');
-}
-
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
 }
 
 // ═══════════════════════════════════════
@@ -1081,17 +1348,47 @@ function render() {
 
 function renderPanel(id) {
   const map = {
-    dashboard: renderDashboard,
-    scorecard: renderScorecard,
-    pipeline: renderPipeline,
-    log: renderLog,
-    flagship: renderFlagship,
-    capital: renderCapital,
-    mandates: renderMandates,
-    traffic: renderTraffic,
-    content: renderContent
+    dashboard: renderDashboard, scorecard: renderScorecard, pipeline: renderPipeline,
+    leads: renderLeads, ads: renderAds, sales: renderSales,
+    log: renderLog, flagship: renderFlagship, capital: renderCapital,
+    mandates: renderMandates, traffic: renderTraffic, content: renderContent
   };
   if (map[id]) map[id]();
+}
+
+// ══════════════════════════════════════════
+// NEW: 10X CYCLE WIDGET RENDER
+// ══════════════════════════════════════════
+function render10XCycle() {
+  const todayStr = today();
+  const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
+  const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o) => s+(Number(o.count)||0), 0);
+  const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
+  const todayAds = DATA.ads.filter(a => a.status === 'Active').length;
+  const totalLeads = DATA.leads.length;
+  const qualLeads = DATA.leads.filter(l => l.stage === 'Qualified' || l.stage === 'Proposal' || l.stage === 'Close').length;
+  const activeSales = DATA.offers.filter(o => o.status === 'Pending' || o.status === 'Countered').length;
+  const closedSales = DATA.offers.filter(o => o.status === 'Accepted').length;
+
+  const stages = [
+    { num:'01', icon:'🎯', label:'Targets', count: '50M', fill: 10, tab: 'dashboard' },
+    { num:'02', icon:'📢', label:'Marketing', count: todayContent, fill: Math.min(100, todayContent*50), tab: 'content' },
+    { num:'03', icon:'📊', label:'Leads', count: totalLeads, fill: Math.min(100, totalLeads*5), tab: 'leads' },
+    { num:'04', icon:'🔄', label:'Lead Mgmt', count: qualLeads, fill: Math.min(100, qualLeads*10), tab: 'leads' },
+    { num:'05', icon:'💼', label:'Sales', count: activeSales, fill: Math.min(100, activeSales*20), tab: 'sales' },
+    { num:'06', icon:'📈', label:'Sales Mgmt', count: closedSales, fill: Math.min(100, closedSales*25), tab: 'sales' },
+    { num:'07', icon:'🚀', label:'Scale', count: fmtKes(DATA.pipeline.reduce((s,d)=>s+(Number(d.size)||0),0)).replace('KShs ',''), fill: Math.min(100, (DATA.pipeline.length/3)*33), tab: 'pipeline' },
+  ];
+
+  const el = document.getElementById('tenx-stages');
+  if (!el) return;
+  el.innerHTML = stages.map(s => `
+    <div class="tenx-stage" onclick="switchTab('${s.tab}')" title="Go to ${s.label}">
+      <div class="tenx-icon">${s.icon}</div>
+      <div class="tenx-label">${s.label}</div>
+      <div class="tenx-count">${s.count}</div>
+      <div class="tenx-bar"><div class="tenx-bar-fill" style="width:${s.fill}%"></div></div>
+    </div>`).join('');
 }
 
 // ── DASHBOARD ──
@@ -1103,6 +1400,8 @@ function renderDashboard() {
   setText('dt-days-left', daysLeft);
   const remaining = TARGET - st.commEarned;
   setText('dt-daily-needed', remaining > 0 ? fmtKes(remaining / daysLeft) + ' commission/day needed' : '🎯 TARGET REACHED!');
+
+  render10XCycle();
 
   // Priority deals
   const priority = DATA.pipeline.filter(d => ['Site Tour','LOI Submitted','Due Diligence','Capital Call'].includes(d.stage));
@@ -1142,12 +1441,14 @@ function renderDashboard() {
   const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
   const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
   const todayCalls = todayLog.filter(l => l.activity?.includes('Call') || l.activity?.includes('Meeting')).length;
+  const todayAds = DATA.ads.filter(a => a.status === 'Active').length;
   const ra = document.getElementById('required-actions');
   if (ra) ra.innerHTML = `<div style="display:grid;gap:6px">
     ${reqItem('📤 20+ Outreach Touches', todayOutreach, 20, 'scorecard')}
     ${reqItem('📝 2 Content Pieces Posted', todayContent, 2, 'content')}
     ${reqItem('🔄 3+ Deals Moved Forward', todayLog.length, 3, 'log')}
     ${reqItem('📞 1 Investor Call', todayCalls, 1, 'log')}
+    ${reqItem('💰 1+ Active Ad Campaign', todayAds, 1, 'ads')}
   </div>`;
 
   // Exec breakdown
@@ -1184,6 +1485,8 @@ function renderScorecard() {
   const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o) => s+(Number(o.count)||0), 0);
   const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
   const todayCalls = todayLog.filter(l => l.activity?.includes('Call')||l.activity?.includes('Meeting')).length;
+  const todayAds = DATA.ads.filter(a => a.status === 'Active').length;
+  const todayLeads = DATA.leads.filter(l => l.created_at?.startsWith(todayStr)).length;
 
   const checks = [
     { icon:'📤', label:'Outreach Touches', current:todayOutreach, target:20 },
@@ -1191,6 +1494,8 @@ function renderScorecard() {
     { icon:'📞', label:'Investor Calls / Meetings', current:todayCalls, target:1 },
     { icon:'🔄', label:'Deals Moved Forward', current:todayLog.length, target:3 },
     { icon:'⚡', label:'Execution Points', current:Math.round(todayPts), target:30 },
+    { icon:'💰', label:'Active Ad Campaigns', current:todayAds, target:1 },
+    { icon:'🎯', label:'New Leads in Pipeline', current:todayLeads, target:2 },
   ];
   const score = checks.filter(c => c.current >= c.target).length;
   const scorePct = Math.round((score/checks.length)*100);
@@ -1214,7 +1519,6 @@ function renderScorecard() {
       </div>`;
     }).join('')}</div>`;
 
-  // Outreach by channel
   const byChannel = {};
   DATA.outreach.filter(o => o.outreach_date === todayStr).forEach(o => {
     byChannel[o.channel] = (byChannel[o.channel]||0) + (Number(o.count)||0);
@@ -1291,29 +1595,20 @@ function dealCard(d) {
   </div>`;
 }
 
-function toggleDeal(id) {
-  const el = document.getElementById('deal-'+id);
-  if (el) el.classList.toggle('open');
-}
+function toggleDeal(id) { const el = document.getElementById('deal-'+id); if (el) el.classList.toggle('open'); }
 
 async function updateDealStage(id, stage) {
   await dbUpdate('pipeline', id, { stage });
   const d = DATA.pipeline.find(x => x.id === id);
   if (d) d.stage = stage;
   renderStats(); renderPipeline();
-  notifCrud('update','Deal Stage', d ? d.asset + ' → ' + stage : stage);
   toast('Stage → ' + stage);
 }
 
 async function deleteDeal(id) {
-  if (!confirm('Remove this deal from pipeline?')) return;
+  if (!confirm('Remove this deal?')) return;
   const ok = await dbDelete('pipeline', id);
-  if (ok) {
-    const d = DATA.pipeline.find(x=>x.id===id);
-    DATA.pipeline = DATA.pipeline.filter(x => x.id !== id);
-    notifCrud('delete','Deal', d ? d.asset : '');
-    render(); toast('Deal removed');
-  }
+  if (ok) { DATA.pipeline = DATA.pipeline.filter(x => x.id !== id); render(); toast('Deal removed'); }
 }
 
 function quickAddDeal(asset, market, size, fee, stage, nextAction) {
@@ -1321,14 +1616,226 @@ function quickAddDeal(asset, market, size, fee, stage, nextAction) {
     const el = document.getElementById(id);
     if (!el) return;
     const vals = [asset, market, size, fee, stage, nextAction];
-    if (id === 'np-stage') el.value = vals[i];
-    else el.value = vals[i];
+    el.value = vals[i];
   });
   switchTab('pipeline');
   toast('Quick-add populated — review and submit');
 }
 
-// ── LOG ──
+// ══════════════════════════════════════════
+// NEW: LEAD PIPELINE RENDER
+// ══════════════════════════════════════════
+function renderLeads() {
+  const stageOrder = ['New','Contacted','Qualified','Proposal','Close'];
+  const stageCls = ['stage-new','stage-contacted','stage-qualified','stage-proposal','stage-close'];
+  const stageIcons = ['🆕','📞','✅','📄','🏆'];
+
+  // Conversion funnel
+  const counts = {};
+  stageOrder.forEach(s => { counts[s] = DATA.leads.filter(l => l.stage === s).length; });
+  const total = DATA.leads.length || 1;
+  const convBar = document.getElementById('lp-conv-bar');
+  if (convBar) {
+    convBar.innerHTML = stageOrder.map((s, i) => {
+      const cnt = counts[s];
+      const pct = i === 0 ? 100 : total ? Math.round((cnt / total) * 100) : 0;
+      return `
+        ${i > 0 ? '<div class="lp-conv-arrow">→</div>' : ''}
+        <div class="lp-conv-stage">
+          <div class="lp-conv-pct">${cnt}</div>
+          <div class="lp-conv-lbl">${s}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Board
+  const board = document.getElementById('lead-board');
+  if (!board) return;
+  board.innerHTML = stageOrder.map((s, i) => {
+    const leads = DATA.leads.filter(l => l.stage === s);
+    return `<div class="lp-col">
+      <div class="lp-col-head ${stageCls[i]}">
+        <span class="lp-col-title">${stageIcons[i]} ${s}</span>
+        <span class="lp-col-count">${leads.length}</span>
+      </div>
+      <div class="lp-col-body">
+        ${leads.map(l => {
+          const age = daysAgo(l.created_at || l.date_added);
+          const ageCls = age <= 2 ? 'age-new' : age <= 7 ? 'age-warm' : 'age-cold';
+          const ageLabel = age <= 2 ? 'New' : age <= 7 ? `${age}d` : `${age}d ⚠️`;
+          return `<div class="lp-card" onclick="moveLead('${l.id}','${s}')">
+            <div class="lp-card-name">${h(l.name)}</div>
+            <div class="lp-card-prop">${h(l.property_interest||'')}</div>
+            ${l.budget ? `<div style="font-size:9px;color:var(--ink3)">${fmtKes(Number(l.budget))}</div>` : ''}
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+              <span class="lp-card-age ${ageCls}">${ageLabel}</span>
+              <button class="del-btn" onclick="event.stopPropagation();deleteLead('${l.id}')" style="font-size:11px">✕</button>
+            </div>
+          </div>`;
+        }).join('') || '<div style="font-size:11px;color:var(--ink3);padding:8px 4px;text-align:center">Empty</div>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function moveLead(id, currentStage) {
+  const stages = ['New','Contacted','Qualified','Proposal','Close'];
+  const nextIdx = (stages.indexOf(currentStage) + 1) % stages.length;
+  const nextStage = stages[nextIdx];
+  if (!confirm(`Move to ${nextStage}?`)) return;
+  await dbUpdate('lead_pipeline', id, { stage: nextStage });
+  const l = DATA.leads.find(x => x.id === id);
+  if (l) l.stage = nextStage;
+  renderLeads(); toast(`Lead → ${nextStage}`);
+}
+
+async function deleteLead(id) {
+  if (!confirm('Remove lead?')) return;
+  const ok = await dbDelete('lead_pipeline', id);
+  if (ok) { DATA.leads = DATA.leads.filter(x => x.id !== id); renderLeads(); renderStats(); toast('Lead removed'); }
+}
+
+// ══════════════════════════════════════════
+// NEW: PAID ADS RENDER
+// ══════════════════════════════════════════
+function renderAds() {
+  const totalSpend = DATA.ads.reduce((s,a) => s+(Number(a.spend)||0), 0);
+  const totalLeads = DATA.ads.reduce((s,a) => s+(Number(a.leads_generated)||0), 0);
+  const avgCPL = totalLeads > 0 ? totalSpend / totalLeads : 0;
+
+  // Best channel
+  const byChannel = {};
+  DATA.ads.forEach(a => {
+    if (!byChannel[a.platform]) byChannel[a.platform] = { spend:0, leads:0 };
+    byChannel[a.platform].spend += Number(a.spend)||0;
+    byChannel[a.platform].leads += Number(a.leads_generated)||0;
+  });
+  let bestChannel = '—';
+  let bestCPL = Infinity;
+  Object.entries(byChannel).forEach(([ch, d]) => {
+    if (d.leads > 0) {
+      const cpl = d.spend / d.leads;
+      if (cpl < bestCPL) { bestCPL = cpl; bestChannel = ch.split('/')[0].split(' ')[0]; }
+    }
+  });
+
+  setText('ads-total-spend', fmtKes(totalSpend));
+  setText('ads-total-leads', totalLeads);
+  setText('ads-avg-cpl', avgCPL > 0 ? fmtKes(avgCPL) : '—');
+  setText('ads-best-channel', bestChannel);
+
+  const list = document.getElementById('ads-list');
+  if (!list) return;
+  const sorted = [...DATA.ads].sort((a,b) => new Date(b.start_date||0) - new Date(a.start_date||0));
+  list.innerHTML = sorted.map(a => {
+    const cpl = Number(a.leads_generated) > 0 ? Number(a.spend) / Number(a.leads_generated) : 0;
+    const cplCls = cpl === 0 ? '' : cpl < 5000 ? 'cpl-ok' : cpl < 20000 ? 'cpl-warn' : 'cpl-bad';
+    const statusCls = a.status === 'Active' ? 'ms-active' : a.status === 'Paused' ? 'ms-expiring' : 'ms-expired';
+    return `<div class="ads-row">
+      <div>
+        <div class="ads-name">${h(a.campaign_name)}</div>
+        <div class="ads-platform">${h(a.platform)}</div>
+        <div class="ads-meta">${h(a.target_audience||a.notes||'')} · ${h(a.leads_generated||0)} leads · ${h(a.impressions||0)} impressions</div>
+        <div style="margin-top:4px"><span class="man-status ${statusCls}">${h(a.status)}</span></div>
+      </div>
+      <div class="ads-r">
+        <div class="ads-spend">${fmtKes(Number(a.spend))}</div>
+        ${cpl > 0 ? `<div class="ads-cpl ${cplCls}">CPL: ${fmtKes(cpl)}</div>` : ''}
+        <button class="del-btn" onclick="deleteAd('${a.id}')" style="margin-top:4px">✕</button>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">No campaigns logged — start tracking your ad spend</div>';
+}
+
+async function deleteAd(id) {
+  if (!confirm('Delete campaign?')) return;
+  const ok = await dbDelete('paid_ads', id);
+  if (ok) { DATA.ads = DATA.ads.filter(x => x.id !== id); renderAds(); toast('Campaign deleted'); }
+}
+
+// ══════════════════════════════════════════
+// NEW: SALES ACQUISITIONS RENDER
+// ══════════════════════════════════════════
+function renderSales() {
+  const total = DATA.offers.length;
+  const accepted = DATA.offers.filter(o => o.status === 'Accepted').length;
+  const pending = DATA.offers.filter(o => o.status === 'Pending').length;
+  const rejected = DATA.offers.filter(o => o.status === 'Rejected').length;
+  const countered = DATA.offers.filter(o => o.status === 'Countered').length;
+  const closeRate = total > 0 ? Math.round((accepted/total)*100) : 0;
+  const totalOfferVal = DATA.offers.reduce((s,o) => s+(Number(o.offer_price)||0), 0);
+
+  // Metrics
+  const sm = document.getElementById('sa-metrics');
+  if (sm) sm.innerHTML = `
+    <div class="metric-card"><div class="mc-val" style="color:var(--success)">${closeRate}%</div><div class="mc-lbl">Close Rate</div></div>
+    <div class="metric-card"><div class="mc-val">${total}</div><div class="mc-lbl">Total Offers</div></div>
+    <div class="metric-card"><div class="mc-val" style="color:var(--gold)">${fmtKes(totalOfferVal)}</div><div class="mc-lbl">Offer Volume</div></div>`;
+
+  // Funnel
+  const funnel = document.getElementById('sa-funnel');
+  const funnelData = [
+    { label:'Total Leads', count: DATA.leads.length, max: DATA.leads.length || 1 },
+    { label:'Qualified', count: DATA.leads.filter(l=>l.stage==='Qualified'||l.stage==='Proposal'||l.stage==='Close').length, max: DATA.leads.length || 1 },
+    { label:'Offers Made', count: total, max: DATA.leads.length || 1 },
+    { label:'Accepted', count: accepted, max: DATA.leads.length || 1 },
+  ];
+  const fMax = funnelData[0].max || 1;
+  if (funnel) funnel.innerHTML = funnelData.map(f => `
+    <div class="sa-funnel-row">
+      <div class="sa-funnel-fill" style="width:${Math.max(8, Math.round((f.count/fMax)*100))}%"></div>
+      <div class="sa-funnel-content">
+        <div class="sa-funnel-label">${f.label}</div>
+        <div>
+          <span class="sa-funnel-num">${f.count}</span>
+          ${funnelData.indexOf(f) > 0 && funnelData[funnelData.indexOf(f)-1].count > 0 ?
+            `<span class="sa-funnel-pct"> (${Math.round((f.count/funnelData[funnelData.indexOf(f)-1].count)*100)}%)</span>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Offers list
+  const offerList = document.getElementById('sa-offers-list');
+  if (!offerList) return;
+  const sorted = [...DATA.offers].sort((a,b) => new Date(b.offer_date||0) - new Date(a.offer_date||0));
+  const statusCls = { Pending:'offer-pending', Accepted:'offer-accepted', Rejected:'offer-rejected', Countered:'offer-countered' };
+  offerList.innerHTML = sorted.map(o => {
+    const discount = Number(o.asking_price) > 0 ? Math.round(((Number(o.asking_price)-Number(o.offer_price))/Number(o.asking_price))*100) : 0;
+    return `<div class="sa-offer-row">
+      <div>
+        <div class="sa-offer-name">${h(o.buyer_name)}</div>
+        <div class="sa-offer-prop">${h(o.property)}</div>
+        <div style="font-size:10px;color:var(--ink3);margin-top:2px">${fmtDate(o.offer_date)} · Ask: ${fmtKes(Number(o.asking_price))} · ${discount > 0 ? discount+'% below ask' : 'at ask'}</div>
+        ${o.notes ? `<div style="font-size:10px;color:var(--ink3);margin-top:2px">${h(o.notes)}</div>` : ''}
+      </div>
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="sa-offer-status ${statusCls[o.status]||'offer-pending'}">${h(o.status)}</span>
+        <div style="font-family:'Playfair Display',serif;font-size:14px">${fmtKes(Number(o.offer_price))}</div>
+        <div style="display:flex;gap:4px;align-items:center">
+          <select onchange="updateOfferStatus('${o.id}',this.value)" style="font-size:10px;padding:3px 6px;width:auto">
+            ${['Pending','Accepted','Rejected','Countered'].map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="del-btn" onclick="deleteOffer('${o.id}')">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">No offers logged yet — start making offers!</div>';
+}
+
+async function updateOfferStatus(id, status) {
+  await dbUpdate('sales_offers', id, { status });
+  const o = DATA.offers.find(x => x.id === id);
+  if (o) o.status = status;
+  renderSales(); toast('Offer → ' + status);
+}
+
+async function deleteOffer(id) {
+  if (!confirm('Delete offer?')) return;
+  const ok = await dbDelete('sales_offers', id);
+  if (ok) { DATA.offers = DATA.offers.filter(x => x.id !== id); renderSales(); toast('Offer deleted'); }
+}
+
+// ── EXISTING RENDERS ──
 function renderLog() {
   const sorted = [...DATA.log].sort((a,b) => new Date(b.logged_at) - new Date(a.logged_at));
   const ll = document.getElementById('log-list');
@@ -1348,20 +1855,19 @@ function renderLog() {
           <span>${fmtDate(l.logged_at)}</span>
           <span>${h(l.impact||'Medium')} impact</span>
           ${l.follow_up_date ? `<span>Follow-up: ${fmtDate(l.follow_up_date)}</span>` : ''}
-          <button class="del-btn" onclick="deleteLog('${l.id}')" title="Delete">✕</button>
+          <button class="del-btn" onclick="deleteLog('${l.id}')">✕</button>
         </div>
       </div>
     </div>`;
-  }).join('') || '<div class="empty">No activity logged yet — start your execution log.</div>';
+  }).join('') || '<div class="empty">No activity logged yet.</div>';
 }
 
 async function deleteLog(id) {
-  if (!confirm('Delete this log entry?')) return;
+  if (!confirm('Delete entry?')) return;
   const ok = await dbDelete('daily_log', id);
-  if (ok) { DATA.log = DATA.log.filter(x => x.id !== id); notifCrud('delete','Log Entry',''); render(); toast('Entry deleted'); }
+  if (ok) { DATA.log = DATA.log.filter(x => x.id !== id); render(); toast('Entry deleted'); }
 }
 
-// ── FLAGSHIP ──
 function renderFlagship() {
   const sorted = [...DATA.flagship].sort((a,b) => {
     const ord = { Blocked:0, 'Not Started':1, 'In Progress':2, Done:3 };
@@ -1380,10 +1886,10 @@ function renderFlagship() {
           <div class="task-name ${t.status==='Done'?'done-text':''}">${h(t.task)}</div>
           <div class="task-meta">Deadline: ${fmtDate(t.deadline)} · ${vel}</div>
         </div>
-        <button class="del-btn" onclick="deleteFlagship('${t.id}')" title="Delete">✕</button>
+        <button class="del-btn" onclick="deleteFlagship('${t.id}')">✕</button>
       </div>`;
     }).join('')}
-  </div></div>` : '<div class="empty">No tasks registered — add your critical path items</div>';
+  </div></div>` : '<div class="empty">No tasks registered</div>';
 }
 
 async function cycleTask(id, currentStatus) {
@@ -1396,12 +1902,11 @@ async function cycleTask(id, currentStatus) {
 }
 
 async function deleteFlagship(id) {
-  if (!confirm('Delete this task?')) return;
+  if (!confirm('Delete task?')) return;
   const ok = await dbDelete('flagship_tasks', id);
   if (ok) { DATA.flagship = DATA.flagship.filter(x => x.id !== id); renderFlagship(); toast('Task deleted'); }
 }
 
-// ── CAPITAL ──
 function renderCapital() {
   const now = new Date();
   let total = 0, overdue = 0;
@@ -1425,19 +1930,18 @@ function renderCapital() {
       <div class="cap-r">
         <div class="cap-weighted">${fmtKes((Number(c.target_deployment)||0)*(Number(c.probability)||0))}</div>
         <div class="cap-prob">${((Number(c.probability)||0)*100).toFixed(0)}% · ${fmtKes(Number(c.target_deployment))}</div>
-        <button class="del-btn" onclick="deleteCapital('${c.id}')" title="Delete" style="margin-top:4px">✕</button>
+        <button class="del-btn" onclick="deleteCapital('${c.id}')" style="margin-top:4px">✕</button>
       </div>
     </div>`;
-  }).join('') || '<div class="empty">No capital partners logged — start with your first 10 targets</div>';
+  }).join('') || '<div class="empty">No capital partners logged</div>';
 }
 
 async function deleteCapital(id) {
-  if (!confirm('Remove this capital partner?')) return;
+  if (!confirm('Remove partner?')) return;
   const ok = await dbDelete('capital_partners', id);
   if (ok) { DATA.capital = DATA.capital.filter(x => x.id !== id); renderCapital(); toast('Partner removed'); }
 }
 
-// ── MANDATES ──
 function renderMandates() {
   const ml = document.getElementById('mandates-list');
   if (!ml) return;
@@ -1449,23 +1953,22 @@ function renderMandates() {
         <div class="man-name">${h(m.asset)}</div>
         <div style="display:flex;align-items:center;gap:6px">
           <span class="man-status ${st.cls}">${st.lbl}</span>
-          <button class="del-btn" onclick="deleteMandate('${m.id}')" title="Delete">✕</button>
+          <button class="del-btn" onclick="deleteMandate('${m.id}')">✕</button>
         </div>
       </div>
       <div class="man-meta">${h(m.asset_type)} · ${h(m.location)} · ${h(m.mandate_type)}</div>
       <div class="man-meta">Provider: ${h(m.provider)} · Expires: ${fmtDate(m.expiry_date)}</div>
-      <div class="man-fee">${fmtKes(Number(m.asking_price))} · Gross fee: ${fmtKes((Number(m.asking_price)||0)*(Number(m.fee)||0))} (${((Number(m.fee)||0)*100).toFixed(1)}%)</div>
+      <div class="man-fee">${fmtKes(Number(m.asking_price))} · Gross fee: ${fmtKes((Number(m.asking_price)||0)*(Number(m.fee)||0))}</div>
     </div>`;
-  }).join('') || '<div class="empty">No mandates registered — get your first mandate immediately</div>';
+  }).join('') || '<div class="empty">No mandates registered</div>';
 }
 
 async function deleteMandate(id) {
-  if (!confirm('Delete this mandate?')) return;
+  if (!confirm('Delete mandate?')) return;
   const ok = await dbDelete('mandates', id);
   if (ok) { DATA.mandates = DATA.mandates.filter(x => x.id !== id); renderMandates(); toast('Mandate deleted'); }
 }
 
-// ── TRAFFIC ──
 function renderTraffic() {
   const tempCls = { 'Hot — Ready':'temp-hot','Warm — Reviewing':'temp-warm','Cold':'temp-cold','Offer Submitted':'temp-offer','Dead':'temp-dead' };
   const tl = document.getElementById('traffic-list');
@@ -1476,23 +1979,22 @@ function renderTraffic() {
         <div class="tr-name">${h(t.prospect_name)}</div>
         ${t.company ? `<div class="tr-co">${h(t.company)}</div>` : ''}
         <div class="tr-prop">${h(t.property_shown)}</div>
-        <div style="font-size:10px;color:var(--ink3)">${h(t.phone||'')} ${t.email ? '· '+h(t.email) : ''}</div>
+        <div style="font-size:10px;color:var(--ink3)">${h(t.phone||'')} ${t.email?'· '+h(t.email):''}</div>
       </div>
       <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         <span class="tr-temp ${tempCls[t.temperature]||'temp-warm'}">${h((t.temperature||'').split(' — ')[0])}</span>
         <div style="font-size:10px;color:var(--ink3)">${fmtDate(t.interaction_date)}</div>
-        <button class="del-btn" onclick="deleteTraffic('${t.id}')" title="Delete">✕</button>
+        <button class="del-btn" onclick="deleteTraffic('${t.id}')">✕</button>
       </div>
-    </div>`).join('') || '<div class="empty">No prospects logged yet — every viewing must be tracked</div>';
+    </div>`).join('') || '<div class="empty">No prospects logged yet</div>';
 }
 
 async function deleteTraffic(id) {
-  if (!confirm('Remove this prospect?')) return;
+  if (!confirm('Remove prospect?')) return;
   const ok = await dbDelete('prospect_traffic', id);
-  if (ok) { DATA.traffic = DATA.traffic.filter(x => x.id !== id); renderTraffic(); toast('Prospect removed'); }
+  if (ok) { DATA.traffic = DATA.traffic.filter(x => x.id !== id); renderTraffic(); toast('Removed'); }
 }
 
-// ── CONTENT ──
 function renderContent() {
   const thisMonth = DATA.content.filter(c => c.published_at?.startsWith(new Date().toISOString().slice(0,7)));
   setText('ct-posts', thisMonth.length);
@@ -1509,29 +2011,22 @@ function renderContent() {
       <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
         ${Number(c.leads_generated)>0 ? `<span class="ct-badge">+${c.leads_generated} leads</span>` : ''}
         ${c.url ? `<a href="${h(c.url)}" target="_blank" style="font-size:10px;color:var(--gold)">View →</a>` : ''}
-        <button class="del-btn" onclick="deleteContent('${c.id}')" title="Delete">✕</button>
+        <button class="del-btn" onclick="deleteContent('${c.id}')">✕</button>
       </div>
-    </div>`).join('') || '<div class="empty">No content logged — start publishing daily.</div>';
+    </div>`).join('') || '<div class="empty">No content logged</div>';
 }
 
 async function deleteContent(id) {
-  if (!confirm('Delete this content entry?')) return;
+  if (!confirm('Delete?')) return;
   const ok = await dbDelete('content_tracker', id);
-  if (ok) { DATA.content = DATA.content.filter(x => x.id !== id); renderContent(); toast('Content entry deleted'); }
+  if (ok) { DATA.content = DATA.content.filter(x => x.id !== id); renderContent(); toast('Deleted'); }
 }
 
 // ═══════════════════════════════════════
 // ADD / WRITE OPERATIONS
 // ═══════════════════════════════════════
-function disableBtn(id) {
-  const b = document.getElementById(id);
-  if (b) b.disabled = true;
-  return b;
-}
-function enableBtn(id) {
-  const b = document.getElementById(id);
-  if (b) b.disabled = false;
-}
+function disableBtn(id) { const b = document.getElementById(id); if (b) b.disabled = true; return b; }
+function enableBtn(id) { const b = document.getElementById(id); if (b) b.disabled = false; }
 
 async function addDeal() {
   const asset = document.getElementById('np-asset').value.trim();
@@ -1541,20 +2036,14 @@ async function addDeal() {
   const stage = document.getElementById('np-stage').value;
   const source = document.getElementById('np-source').value.trim() || 'Direct';
   const next_action = document.getElementById('np-action').value.trim();
-  if (!asset || !market || isNaN(size) || !size || isNaN(fee) || !fee || !next_action) {
-    toast('Fill all required fields with valid numbers', false); return;
-  }
+  if (!asset || !market || isNaN(size) || !size || isNaN(fee) || !fee || !next_action) { toast('Fill all required fields', false); return; }
   disableBtn('btn-add-deal');
   const row = await dbInsert('pipeline', { asset, market, size, fee, stage, source, next_action });
   enableBtn('btn-add-deal');
   if (!row) return;
   DATA.pipeline.unshift(row);
-  notifCrud('add','Deal', row.asset + ' — ' + fmtKes(Number(row.size)));
-  ['np-asset','np-market','np-size','np-fee','np-source','np-action'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-  document.getElementById('np-stage').value = 'Origination';
-  render(); toast('Deal added to pipeline ✓');
+  ['np-asset','np-market','np-size','np-fee','np-source','np-action'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  render(); toast('Deal added ✓');
 }
 
 async function logActivity() {
@@ -1572,7 +2061,6 @@ async function logActivity() {
   enableBtn('btn-log-activity');
   if (!row) return;
   DATA.log.unshift(row);
-  notifCrud('add','Activity', row.activity + ' — ' + Math.round(Number(row.points)) + ' pts');
   document.getElementById('log-cp').value = '';
   document.getElementById('log-out').value = '';
   render(); toast(`Logged: ${Math.round(points)} execution points ✓`);
@@ -1583,14 +2071,12 @@ async function addFlagship() {
   const task = document.getElementById('ft-task').value.trim();
   const status = document.getElementById('ft-status').value;
   const deadline = document.getElementById('ft-deadline').value;
-  if (!asset || !task || !deadline) { toast('Asset, task and deadline required', false); return; }
+  if (!asset || !task || !deadline) { toast('All fields required', false); return; }
   disableBtn('btn-add-flagship');
   const row = await dbInsert('flagship_tasks', { asset, task, status, deadline });
   enableBtn('btn-add-flagship');
   if (!row) return;
   DATA.flagship.push(row);
-  notifCrud('add','Flagship Task', row.asset + ': ' + row.task.slice(0,50));
-  checkFlagshipAlerts();
   document.getElementById('ft-asset').value = '';
   document.getElementById('ft-task').value = '';
   renderFlagship(); toast('Task registered ✓');
@@ -1604,18 +2090,13 @@ async function addCapital() {
   const target_deployment = parseFloat(document.getElementById('cp-size').value);
   const probability = parseFloat(document.getElementById('cp-prob').value);
   const next_touchpoint = document.getElementById('cp-touch').value;
-  if (!entity_name || !mandate || isNaN(target_deployment) || isNaN(probability) || !next_touchpoint) {
-    toast('All capital fields required with valid numbers', false); return;
-  }
+  if (!entity_name || !mandate || isNaN(target_deployment) || isNaN(probability) || !next_touchpoint) { toast('All fields required', false); return; }
   disableBtn('btn-add-capital');
   const row = await dbInsert('capital_partners', { entity_name, tier, region, mandate, target_deployment, probability, next_touchpoint });
   enableBtn('btn-add-capital');
   if (!row) return;
   DATA.capital.push(row);
-  notifCrud('add','Capital Partner', row.entity_name);
-  ['cp-name','cp-region','cp-mandate','cp-size','cp-prob','cp-touch'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
+  ['cp-name','cp-region','cp-mandate','cp-size','cp-prob','cp-touch'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   renderCapital(); toast('Capital partner logged ✓');
 }
 
@@ -1630,20 +2111,14 @@ async function addMandate() {
   const start_date = document.getElementById('mn-start').value;
   const expiry_date = document.getElementById('mn-expiry').value;
   const notes = document.getElementById('mn-notes').value.trim();
-  if (!asset || !location || !provider || isNaN(asking_price) || isNaN(fee) || !start_date || !expiry_date) {
-    toast('All mandate fields required with valid numbers', false); return;
-  }
+  if (!asset || !location || !provider || isNaN(asking_price) || isNaN(fee) || !start_date || !expiry_date) { toast('All fields required', false); return; }
   const mandate_ref = 'MND-' + new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,15);
   disableBtn('btn-add-mandate');
   const row = await dbInsert('mandates', { mandate_ref, asset, asset_type, location, provider, mandate_type, asking_price, fee, start_date, expiry_date, notes });
   enableBtn('btn-add-mandate');
   if (!row) return;
   DATA.mandates.push(row);
-  notifCrud('add','Mandate', row.asset + ' — ' + fmtKes(Number(row.asking_price)));
-  checkMandateAlerts();
-  ['mn-asset','mn-location','mn-provider','mn-price','mn-fee','mn-start','mn-expiry','mn-notes'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
+  ['mn-asset','mn-location','mn-provider','mn-price','mn-fee','mn-start','mn-expiry','mn-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   renderMandates(); toast('Mandate registered — ' + mandate_ref + ' ✓');
 }
 
@@ -1655,17 +2130,13 @@ async function addTraffic() {
   const property_shown = document.getElementById('tr-property').value.trim();
   const interaction_date = document.getElementById('tr-date').value;
   const temperature = document.getElementById('tr-temp').value;
-  if (!prospect_name || !phone || !property_shown || !interaction_date) {
-    toast('Name, phone, property and date required', false); return;
-  }
+  if (!prospect_name || !phone || !property_shown || !interaction_date) { toast('Name, phone, property and date required', false); return; }
   disableBtn('btn-add-traffic');
   const row = await dbInsert('prospect_traffic', { prospect_name, company, phone, email, property_shown, interaction_date, temperature });
   enableBtn('btn-add-traffic');
   if (!row) return;
   DATA.traffic.unshift(row);
-  ['tr-name','tr-company','tr-phone','tr-email','tr-property'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
+  ['tr-name','tr-company','tr-phone','tr-email','tr-property'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   renderTraffic(); toast(prospect_name + ' logged ✓');
 }
 
@@ -1699,26 +2170,80 @@ async function logContent() {
   document.getElementById('ct-title').value = '';
   document.getElementById('ct-url').value = '';
   document.getElementById('ct-leads-gen').value = '';
-  renderContent(); renderDashboard(); toast('Content logged ✓ — authority built');
+  renderContent(); renderDashboard(); toast('Content logged ✓');
+}
+
+// ══════════════════════════════════════════
+// NEW: ADD OPERATIONS
+// ══════════════════════════════════════════
+async function addLead() {
+  const name = document.getElementById('lp-name').value.trim();
+  const company = document.getElementById('lp-company').value.trim();
+  const phone = document.getElementById('lp-phone').value.trim();
+  const budget = parseFloat(document.getElementById('lp-budget').value) || 0;
+  const property_interest = document.getElementById('lp-property').value.trim();
+  const stage = document.getElementById('lp-stage').value;
+  const lead_source = document.getElementById('lp-source').value;
+  const date_added = document.getElementById('lp-date').value;
+  const notes = document.getElementById('lp-notes').value.trim();
+  if (!name || !phone || !property_interest) { toast('Name, phone and property required', false); return; }
+  disableBtn('btn-add-lead');
+  const row = await dbInsert('lead_pipeline', { name, company, phone, budget, property_interest, stage, lead_source, date_added, notes, created_at: new Date().toISOString() });
+  enableBtn('btn-add-lead');
+  if (!row) return;
+  DATA.leads.unshift(row);
+  ['lp-name','lp-company','lp-phone','lp-budget','lp-property','lp-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  renderLeads(); renderStats(); toast(name + ' added to lead pipeline ✓');
+}
+
+async function addAd() {
+  const campaign_name = document.getElementById('ad-name').value.trim();
+  const platform = document.getElementById('ad-platform').value;
+  const spend = parseFloat(document.getElementById('ad-spend').value);
+  const leads_generated = parseInt(document.getElementById('ad-leads').value) || 0;
+  const impressions = parseInt(document.getElementById('ad-clicks').value) || 0;
+  const status = document.getElementById('ad-status').value;
+  const start_date = document.getElementById('ad-start').value;
+  const end_date = document.getElementById('ad-end').value;
+  const notes = document.getElementById('ad-notes').value.trim();
+  if (!campaign_name || isNaN(spend) || !spend) { toast('Campaign name and spend required', false); return; }
+  disableBtn('btn-add-ad');
+  const row = await dbInsert('paid_ads', { campaign_name, platform, spend, leads_generated, impressions, status, start_date, end_date, target_audience: notes });
+  enableBtn('btn-add-ad');
+  if (!row) return;
+  DATA.ads.unshift(row);
+  ['ad-name','ad-spend','ad-leads','ad-clicks','ad-start','ad-end','ad-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  renderAds(); render10XCycle(); toast('Campaign logged ✓');
+}
+
+async function addOffer() {
+  const buyer_name = document.getElementById('sa-buyer').value.trim();
+  const property = document.getElementById('sa-property').value.trim();
+  const offer_price = parseFloat(document.getElementById('sa-offer-price').value);
+  const asking_price = parseFloat(document.getElementById('sa-ask-price').value);
+  const status = document.getElementById('sa-status').value;
+  const offer_date = document.getElementById('sa-date').value;
+  const notes = document.getElementById('sa-notes').value.trim();
+  if (!buyer_name || !property || isNaN(offer_price) || isNaN(asking_price)) { toast('Buyer, property and prices required', false); return; }
+  disableBtn('btn-add-offer');
+  const row = await dbInsert('sales_offers', { buyer_name, property, offer_price, asking_price, status, offer_date, notes });
+  enableBtn('btn-add-offer');
+  if (!row) return;
+  DATA.offers.unshift(row);
+  ['sa-buyer','sa-property','sa-offer-price','sa-ask-price','sa-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  renderSales(); render10XCycle(); toast('Offer logged ✓');
 }
 
 // ═══════════════════════════════════════════════════════
-// NOTIFICATION SYSTEM
+// NOTIFICATION SYSTEM (preserved from original)
 // ═══════════════════════════════════════════════════════
-
 const NOTIFS_KEY = 'murivest_notifs';
 let NOTIFS = [];
 let notifPanelOpen = false;
 
-// ── Storage helpers ──
-function saveNotifs() {
-  try { localStorage.setItem(NOTIFS_KEY, JSON.stringify(NOTIFS.slice(0,100))); } catch(e) {}
-}
-function loadNotifs() {
-  try { NOTIFS = JSON.parse(localStorage.getItem(NOTIFS_KEY) || '[]'); } catch(e) { NOTIFS = []; }
-}
+function saveNotifs() { try { localStorage.setItem(NOTIFS_KEY, JSON.stringify(NOTIFS.slice(0,100))); } catch(e) {} }
+function loadNotifs() { try { NOTIFS = JSON.parse(localStorage.getItem(NOTIFS_KEY) || '[]'); } catch(e) { NOTIFS = []; } }
 
-// ── Push a notification into the panel ──
 function pushNotif(msg, sub, type, icon) {
   const n = { id: Date.now() + Math.random(), msg, sub, type, icon, time: new Date().toISOString(), read: false };
   NOTIFS.unshift(n);
@@ -1753,11 +2278,11 @@ function toggleNotifPanel() {
 function renderNotifPanel() {
   const list = document.getElementById('notif-list');
   if (!list) return;
-  if (!NOTIFS.length) { list.innerHTML = '<div class="notif-empty">No alerts yet — check back after syncing data.</div>'; return; }
+  if (!NOTIFS.length) { list.innerHTML = '<div class="notif-empty">No alerts yet.</div>'; return; }
   const typeMap = { critical:'ni-critical', warn:'ni-warn', success:'ni-success', info:'ni-info', gold:'ni-gold' };
   list.innerHTML = NOTIFS.slice(0, 60).map(n => `
     <div class="notif-item ${n.read ? '' : 'unread'}">
-      <div class="notif-icon ${typeMap[n.type]||'ni-info'}">${n.icon}</div>
+      <div class="notif-icon ${typeMap[n.type]||'ni-info'}">${escHtml(n.icon)}</div>
       <div class="notif-body">
         <div class="notif-msg">${escHtml(n.msg)}</div>
         ${n.sub ? `<div class="notif-sub">${escHtml(n.sub)}</div>` : ''}
@@ -1767,7 +2292,6 @@ function renderNotifPanel() {
 }
 
 function escHtml(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
-
 function relTime(iso) {
   const diff = Date.now() - new Date(iso).getTime();
   const m = Math.floor(diff / 60000);
@@ -1778,16 +2302,9 @@ function relTime(iso) {
   return Math.floor(hr/24) + 'd ago';
 }
 
-function clearAllNotifs() {
-  NOTIFS = [];
-  saveNotifs();
-  renderNotifPanel();
-  updateNotifBadge();
-}
+function clearAllNotifs() { NOTIFS = []; saveNotifs(); renderNotifPanel(); updateNotifBadge(); }
 
-// ── Desktop / Browser Notifications ──
 let desktopPermission = false;
-
 async function requestDesktopPermission() {
   if (!('Notification' in window)) return false;
   if (Notification.permission === 'granted') { desktopPermission = true; return true; }
@@ -1800,12 +2317,7 @@ async function requestDesktopPermission() {
 function sendDesktopNotif(title, body, tag) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   try {
-    const n = new Notification('Murivest OS — ' + title, {
-      body,
-      tag: tag || 'murivest-' + Date.now(),
-      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230D0D0D"/><text x="50%" y="60%" text-anchor="middle" font-size="18" fill="%23D4AF78">M</text></svg>',
-      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230D0D0D"/></svg>'
-    });
+    const n = new Notification('Murivest OS — ' + title, { body, tag: tag || 'murivest-' + Date.now() });
     n.onclick = () => { window.focus(); n.close(); };
     setTimeout(() => n.close(), 8000);
   } catch(e) {}
@@ -1814,181 +2326,136 @@ function sendDesktopNotif(title, body, tag) {
 function checkAndPromptDesktopPerm() {
   if (!('Notification' in window)) return;
   if (Notification.permission === 'default') {
-    // Show a gentle in-app prompt after 3 seconds
-    setTimeout(() => {
-      pushNotif(
-        'Enable desktop alerts',
-        'Get notified about task deadlines even when the tab is in background. Click to enable.',
-        'gold', '🔔'
-      );
-    }, 3000);
+    setTimeout(() => pushNotif('Enable desktop alerts', 'Get notified about deadlines. Click to enable.', 'gold', '🔔'), 3000);
   } else if (Notification.permission === 'granted') {
     desktopPermission = true;
   }
 }
 
-// ── CRUD Event Notifications ──
-function notifCrud(action, entity, name) {
-  const icons = { add:'✅', update:'🔄', delete:'🗑️' };
-  const types = { add:'success', update:'info', delete:'warn' };
-  const labels = { add:'added', update:'updated', delete:'removed' };
-  pushNotif(
-    `${entity} ${labels[action] || action}`,
-    name || '',
-    types[action] || 'info',
-    icons[action] || '📌'
-  );
-}
-
-// ── FLAGSHIP TASK ALERTS ──
 function checkFlagshipAlerts() {
-  if (!DATA.flagship || !DATA.flagship.length) return;
-  const now = new Date();
+  if (!DATA.flagship?.length) return;
   const seen = JSON.parse(localStorage.getItem('murivest_seen_task_alerts') || '{}');
   const newSeen = {};
-
   DATA.flagship.forEach(t => {
     if (t.status === 'Done') return;
     const du = daysUntil(t.deadline);
     const key = t.id + '_' + (du <= 0 ? 'overdue' : du <= 1 ? 'due1' : du <= 3 ? 'due3' : du <= 7 ? 'due7' : null);
     if (!key.endsWith('null') && !seen[key]) {
       newSeen[key] = true;
-      if (du < 0) {
-        pushNotif(
-          `🔴 OVERDUE: ${t.asset}`,
-          `"${t.task}" — was due ${Math.abs(du)} day(s) ago. Status: ${t.status}`,
-          'critical', '🚨'
-        );
-        sendDesktopNotif('Overdue Task!', `${t.asset}: "${t.task}" is ${Math.abs(du)} day(s) overdue`, t.id);
-      } else if (du <= 1) {
-        pushNotif(
-          `⚠️ Due TOMORROW: ${t.asset}`,
-          `"${t.task}" — Status: ${t.status}`,
-          'critical', '⏰'
-        );
-        sendDesktopNotif('Task Due Tomorrow!', `${t.asset}: "${t.task}"`, t.id);
-      } else if (du <= 3) {
-        pushNotif(
-          `Due in ${du} days: ${t.asset}`,
-          `"${t.task}" — Status: ${t.status}. Act now.`,
-          'warn', '⚡'
-        );
-        sendDesktopNotif(`Task Due in ${du} Days`, `${t.asset}: "${t.task}"`, t.id);
-      } else if (du <= 7) {
-        pushNotif(
-          `Due in ${du} days: ${t.asset}`,
-          `"${t.task}" — Status: ${t.status}`,
-          'info', '📋'
-        );
-      }
-    } else if (!key.endsWith('null')) {
-      newSeen[key] = seen[key];
-    }
+      if (du < 0) pushNotif(`🔴 OVERDUE: ${t.asset}`, `"${t.task}" — ${Math.abs(du)} days overdue`, 'critical', '🚨');
+      else if (du <= 1) pushNotif(`Due TOMORROW: ${t.asset}`, `"${t.task}"`, 'critical', '⏰');
+      else if (du <= 3) pushNotif(`Due in ${du} days: ${t.asset}`, `"${t.task}"`, 'warn', '⚡');
+    } else if (!key.endsWith('null')) newSeen[key] = seen[key];
   });
-
-  // Blocked tasks alert
   const blocked = DATA.flagship.filter(t => t.status === 'Blocked');
   if (blocked.length) {
     const bkey = 'blocked_' + today();
-    if (!seen[bkey]) {
-      newSeen[bkey] = true;
-      pushNotif(
-        `${blocked.length} Blocked Task${blocked.length>1?'s':''}`,
-        blocked.map(t => t.asset + ': ' + t.task.slice(0,40)).join(' | '),
-        'critical', '🔴'
-      );
-    }
+    if (!seen[bkey]) { newSeen[bkey] = true; pushNotif(`${blocked.length} Blocked Task(s)`, blocked.map(t => t.asset + ': ' + t.task.slice(0,40)).join(' | '), 'critical', '🔴'); }
   }
-
   localStorage.setItem('murivest_seen_task_alerts', JSON.stringify({...seen, ...newSeen}));
 }
 
-// ── CAPITAL TOUCHPOINT ALERTS ──
 function checkCapitalAlerts() {
-  if (!DATA.capital || !DATA.capital.length) return;
+  if (!DATA.capital?.length) return;
   const overdue = DATA.capital.filter(c => c.next_touchpoint && daysUntil(c.next_touchpoint) < 0);
   const dueSoon = DATA.capital.filter(c => c.next_touchpoint && daysUntil(c.next_touchpoint) <= 2 && daysUntil(c.next_touchpoint) >= 0);
   const seen = JSON.parse(localStorage.getItem('murivest_seen_cap_alerts') || '{}');
   const todayKey = today();
-
   if (overdue.length && !seen['capital_overdue_' + todayKey]) {
-    pushNotif(
-      `${overdue.length} Overdue Investor Touchpoint${overdue.length>1?'s':''}`,
-      overdue.slice(0,3).map(c => c.entity_name).join(', ') + (overdue.length>3?'…':''),
-      'critical', '💼'
-    );
-    sendDesktopNotif('Overdue Investor Touchpoints', `${overdue.length} capital partner(s) need contact`, 'cap_overdue');
+    pushNotif(`${overdue.length} Overdue Touchpoint(s)`, overdue.slice(0,3).map(c => c.entity_name).join(', '), 'critical', '💼');
     seen['capital_overdue_' + todayKey] = true;
   }
   if (dueSoon.length && !seen['capital_soon_' + todayKey]) {
-    pushNotif(
-      `${dueSoon.length} Investor Touchpoint${dueSoon.length>1?'s':''} Due Soon`,
-      dueSoon.map(c => c.entity_name).join(', '),
-      'warn', '📞'
-    );
+    pushNotif(`${dueSoon.length} Touchpoint(s) Due Soon`, dueSoon.map(c => c.entity_name).join(', '), 'warn', '📞');
     seen['capital_soon_' + todayKey] = true;
   }
   localStorage.setItem('murivest_seen_cap_alerts', JSON.stringify(seen));
 }
 
-// ── MANDATE EXPIRY ALERTS ──
 function checkMandateAlerts() {
-  if (!DATA.mandates || !DATA.mandates.length) return;
+  if (!DATA.mandates?.length) return;
   const seen = JSON.parse(localStorage.getItem('murivest_seen_man_alerts') || '{}');
   const todayKey = today();
   DATA.mandates.forEach(m => {
     const du = daysUntil(m.expiry_date);
     if (du <= 30 && !seen['man_' + m.id + '_' + todayKey]) {
-      const lvl = du < 0 ? 'critical' : du <= 7 ? 'warn' : 'info';
-      const msg = du < 0 ? `EXPIRED: ${m.asset}` : `Mandate expiring in ${du} days: ${m.asset}`;
-      pushNotif(msg, `${m.mandate_type} · ${fmtKes(Number(m.asking_price))}`, lvl, '📄');
+      pushNotif(du < 0 ? `EXPIRED: ${m.asset}` : `Mandate expiring in ${du} days: ${m.asset}`, `${m.mandate_type} · ${fmtKes(Number(m.asking_price))}`, du < 0 ? 'critical' : du <= 7 ? 'warn' : 'info', '📄');
       seen['man_' + m.id + '_' + todayKey] = true;
     }
   });
   localStorage.setItem('murivest_seen_man_alerts', JSON.stringify(seen));
 }
 
-// ── DAILY SCORECARD CHECK (end of day) ──
+function checkAdAlerts() {
+  if (!DATA.ads?.length) return;
+  const activeAds = DATA.ads.filter(a => a.status === 'Active');
+  if (activeAds.length === 0) {
+    const seen = JSON.parse(localStorage.getItem('murivest_seen_ad_alerts') || '{}');
+    const todayKey = today();
+    if (!seen['no_ads_' + todayKey]) {
+      pushNotif('No Active Ad Campaigns', 'GC Rule: paid lead generation is Stage 2 of your 10X system. Start a campaign.', 'warn', '💰');
+      seen['no_ads_' + todayKey] = true;
+      localStorage.setItem('murivest_seen_ad_alerts', JSON.stringify(seen));
+    }
+  }
+}
+
+function checkLeadStagnation() {
+  if (!DATA.leads?.length) return;
+  const stale = DATA.leads.filter(l => l.stage === 'New' && daysAgo(l.created_at || l.date_added) > 2);
+  if (stale.length) {
+    const seen = JSON.parse(localStorage.getItem('murivest_seen_lead_alerts') || '{}');
+    const todayKey = today();
+    if (!seen['stale_leads_' + todayKey]) {
+      pushNotif(`${stale.length} lead(s) stuck in "New"`, 'Move them to Contacted today. A new lead that isn\'t contacted is wasted.', 'warn', '🎯');
+      seen['stale_leads_' + todayKey] = true;
+      localStorage.setItem('murivest_seen_lead_alerts', JSON.stringify(seen));
+    }
+  }
+}
+
 function checkDailyScoreAlert() {
   const hour = new Date().getHours();
-  if (hour < 17) return; // Only alert after 5pm
+  if (hour < 17) return;
   const todayStr = today();
   const seen = JSON.parse(localStorage.getItem('murivest_seen_score_alerts') || '{}');
   if (seen[todayStr]) return;
-
   const st = calcStats();
   const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
   const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o) => s+(Number(o.count)||0), 0);
   const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
   const checks = [todayOutreach >= 20, todayContent >= 2, todayLog.length >= 3, st.todayPts >= 30];
   const score = checks.filter(Boolean).length;
-
-  if (score < 4) {
-    pushNotif(
-      `Day not complete — ${score}/4 targets hit`,
-      `Points: ${st.todayPts} | Outreach: ${todayOutreach}/20 | Content: ${todayContent}/2 | Moves: ${todayLog.length}/3`,
-      score < 2 ? 'critical' : 'warn', '📊'
-    );
-    sendDesktopNotif('Daily Targets Incomplete', `${score}/4 targets hit today. Execution required.`, 'daily_score');
-  } else {
-    pushNotif('All daily targets hit! 🎯', `${st.todayPts} execution points earned today. Outstanding.`, 'success', '🏆');
-    sendDesktopNotif('Daily Targets Complete!', `All ${score}/4 targets smashed. ${st.todayPts} points today.`, 'daily_complete');
-  }
+  if (score < 4) pushNotif(`Day incomplete — ${score}/4 targets`, `Points: ${st.todayPts} | Outreach: ${todayOutreach}/20 | Content: ${todayContent}/2`, score < 2 ? 'critical' : 'warn', '📊');
+  else pushNotif('All daily targets hit! 🎯', `${st.todayPts} execution points earned.`, 'success', '🏆');
   seen[todayStr] = true;
   localStorage.setItem('murivest_seen_score_alerts', JSON.stringify(seen));
 }
 
-// ── RUN ALL CHECKS (called after data loads) ──
 function runAllAlerts() {
   checkFlagshipAlerts();
   checkCapitalAlerts();
   checkMandateAlerts();
+  checkAdAlerts();
+  checkLeadStagnation();
   checkDailyScoreAlert();
 }
 
-// ═══════════════════════════════════════════════════════
+function startScheduledAlerts() {
+  setInterval(() => { checkFlagshipAlerts(); checkCapitalAlerts(); checkMandateAlerts(); checkAdAlerts(); checkLeadStagnation(); checkDailyScoreAlert(); }, 30 * 60 * 1000);
+}
+
+function initNotifications() {
+  loadNotifs();
+  renderNotifPanel();
+  updateNotifBadge();
+  checkAndPromptDesktopPerm();
+  startScheduledAlerts();
+}
+
+// ═══════════════════════════════════════
 // DAILY BRIEF MODAL
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════
 function closeAlertModal(e) {
   if (e && e.target !== document.getElementById('alert-overlay')) return;
   document.getElementById('alert-overlay').classList.remove('show');
@@ -1996,25 +2463,26 @@ function closeAlertModal(e) {
 
 function openDailyBrief() {
   document.getElementById('alert-title').textContent = 'Daily Brief & Reports';
-  document.getElementById('alert-body').innerHTML = buildBriefHTML('daily');
+  document.getElementById('alert-body').innerHTML = buildBriefHTML();
   document.getElementById('alert-overlay').classList.add('show');
 }
 
-function switchReport(tab) {
-  document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('act'));
-  document.querySelector(`[data-rtab="${tab}"]`).classList.add('act');
-  document.getElementById('report-content').innerHTML = buildReportSection(tab);
-}
-
-function buildBriefHTML(initTab) {
+function buildBriefHTML() {
   return `
     <div class="report-tab-row">
       <button class="report-tab act" data-rtab="daily" onclick="switchReport('daily')">Today</button>
       <button class="report-tab" data-rtab="week" onclick="switchReport('week')">This Week</button>
-      <button class="report-tab" data-rtab="month" onclick="switchReport('month')">This Month</button>
+      <button class="report-tab" data-rtab="month" onclick="switchReport('month')">Month</button>
       <button class="report-tab" data-rtab="all" onclick="switchReport('all')">All Time</button>
     </div>
     <div id="report-content">${buildReportSection('daily')}</div>`;
+}
+
+function switchReport(tab) {
+  document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('act'));
+  const el = document.querySelector(`[data-rtab="${tab}"]`);
+  if (el) el.classList.add('act');
+  document.getElementById('report-content').innerHTML = buildReportSection(tab);
 }
 
 function buildReportSection(period) {
@@ -2035,133 +2503,71 @@ function buildReportSection(period) {
   const logs = DATA.log.filter(l => inPeriod(l.logged_at));
   const outreachItems = DATA.outreach.filter(o => inPeriod(o.outreach_date));
   const contentItems = DATA.content.filter(c => inPeriod(c.published_at));
+  const adItems = DATA.ads.filter(a => inPeriod(a.start_date));
+  const leadItems = DATA.leads.filter(l => inPeriod(l.created_at || l.date_added));
+  const offerItems = DATA.offers.filter(o => inPeriod(o.offer_date));
+
   const totalPts = logs.reduce((s,l) => s+(Number(l.points)||0), 0);
   const totalOutreach = outreachItems.reduce((s,o) => s+(Number(o.count)||0), 0);
-  const leads = contentItems.reduce((s,c) => s+(Number(c.leads_generated)||0), 0);
+  const totalAdSpend = adItems.reduce((s,a) => s+(Number(a.spend)||0), 0);
+  const totalAdLeads = adItems.reduce((s,a) => s+(Number(a.leads_generated)||0), 0);
   const calls = logs.filter(l => l.activity?.includes('Call')||l.activity?.includes('Meeting')).length;
   const lois = logs.filter(l => l.activity?.includes('LOI')).length;
   const st = calcStats();
+  const offersAccepted = offerItems.filter(o => o.status === 'Accepted').length;
+  const closeRate = offerItems.length > 0 ? Math.round((offersAccepted/offerItems.length)*100) : 0;
 
   const pLabel = { daily:'Today', week:'This Week', month:'This Month', all:'All Time' }[period];
   const pTarget = { daily:30, week:210, month:900, all:9999 }[period];
   const outTarget = { daily:20, week:140, month:600, all:9999 }[period];
 
-  // GC quote based on score
-  const dayScore = period === 'daily' ? Math.round((Math.min(totalPts/30,1) + Math.min(totalOutreach/20,1) + Math.min(contentItems.length/2,1) + Math.min(calls/1,1)) / 4 * 100) : null;
-  const gcQuote = dayScore !== null
-    ? (dayScore >= 80
-      ? `“Massive action produces massive results. Keep this up every day.”`
-      : dayScore >= 50
-      ? `“Halfway does not cut it. Double your output right now.”`
-      : `“You missed your targets today. Start now, not tomorrow. No excuses.”`)
-    : `“Success is your duty, obligation, and responsibility.”`;
-
-  // Activity breakdown
-  const actBreakdown = {};
-  logs.forEach(l => { actBreakdown[l.activity] = (actBreakdown[l.activity]||0) + 1; });
-
-  // Overdue tasks
   const overdueTasks = DATA.flagship.filter(t => t.status !== 'Done' && daysUntil(t.deadline) < 0);
   const dueSoonTasks = DATA.flagship.filter(t => t.status !== 'Done' && daysUntil(t.deadline) >= 0 && daysUntil(t.deadline) <= 3);
 
+  const gcQuote = totalPts >= pTarget
+    ? `"Massive action produces massive results. Keep this up every day."`
+    : totalPts >= pTarget * 0.5
+    ? `"Halfway does not cut it. Double your output right now."`
+    : `"You missed your targets. Start now, not tomorrow. No excuses."`;
+
   return `
     <div class="alert-gc">${gcQuote}</div>
-
     <div class="alert-section">
       <div class="alert-section-title">📊 ${pLabel} — Execution Summary</div>
       <div class="alert-row"><span class="alert-row-label">Execution Points</span><span class="alert-row-val ${totalPts>=pTarget?'ok':totalPts>=pTarget*0.5?'warn':'fail'}">${Math.round(totalPts)} / ${pTarget}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Outreach Touches</span><span class="alert-row-val ${totalOutreach>=outTarget?'ok':totalOutreach>=outTarget*0.5?'warn':'fail'}">${totalOutreach} / ${outTarget}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Outreach Touches</span><span class="alert-row-val ${totalOutreach>=outTarget?'ok':'fail'}">${totalOutreach} / ${outTarget}</span></div>
       <div class="alert-row"><span class="alert-row-label">Content Published</span><span class="alert-row-val ${contentItems.length>0?'ok':'fail'}">${contentItems.length}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Investor Calls / Meetings</span><span class="alert-row-val ${calls>0?'ok':'fail'}">${calls}</span></div>
-      <div class="alert-row"><span class="alert-row-label">LOIs Drafted / Submitted</span><span class="alert-row-val">${lois}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Leads from Content</span><span class="alert-row-val ${leads>0?'ok':''}">${leads}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Total Activities Logged</span><span class="alert-row-val">${logs.length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Investor Calls</span><span class="alert-row-val">${calls}</span></div>
+      <div class="alert-row"><span class="alert-row-label">LOIs Drafted</span><span class="alert-row-val">${lois}</span></div>
+      <div class="alert-row"><span class="alert-row-label">New Leads Added</span><span class="alert-row-val ${leadItems.length>0?'ok':''}">${leadItems.length}</span></div>
     </div>
-
     <div class="alert-section">
-      <div class="alert-section-title">💰 Pipeline Status</div>
-      <div class="alert-row"><span class="alert-row-label">Commission Earned (Closed)</span><span class="alert-row-val ok">${fmtKes(st.commEarned)}</span></div>
+      <div class="alert-section-title">💰 Paid Ads Performance</div>
+      <div class="alert-row"><span class="alert-row-label">Ad Spend</span><span class="alert-row-val">${fmtKes(totalAdSpend)}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Paid Leads Generated</span><span class="alert-row-val ${totalAdLeads>0?'ok':''}">${totalAdLeads}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Cost Per Lead</span><span class="alert-row-val">${totalAdLeads>0?fmtKes(totalAdSpend/totalAdLeads):'—'}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Active Campaigns</span><span class="alert-row-val ${DATA.ads.filter(a=>a.status==='Active').length>0?'ok':'fail'}">${DATA.ads.filter(a=>a.status==='Active').length}</span></div>
+    </div>
+    <div class="alert-section">
+      <div class="alert-section-title">🏆 Sales Acquisitions</div>
+      <div class="alert-row"><span class="alert-row-label">Offers Made</span><span class="alert-row-val">${offerItems.length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Accepted</span><span class="alert-row-val ok">${offersAccepted}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Close Rate</span><span class="alert-row-val ${closeRate>=50?'ok':closeRate>0?'warn':'fail'}">${closeRate}%</span></div>
+      <div class="alert-row"><span class="alert-row-label">Total Leads in Pipeline</span><span class="alert-row-val">${DATA.leads.length}</span></div>
+    </div>
+    <div class="alert-section">
+      <div class="alert-section-title">💼 Pipeline Status</div>
+      <div class="alert-row"><span class="alert-row-label">Commission Earned</span><span class="alert-row-val ok">${fmtKes(st.commEarned)}</span></div>
       <div class="alert-row"><span class="alert-row-label">Active Deal Value</span><span class="alert-row-val">${fmtKes(st.totalPipe)}</span></div>
       <div class="alert-row"><span class="alert-row-label">Risk-Adjusted Revenue</span><span class="alert-row-val">${fmtKes(st.riskAdj)}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Active Deals</span><span class="alert-row-val">${st.active}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Target Remaining</span><span class="alert-row-val ${st.commEarned>0?'warn':'fail'}">${fmtKes(Math.max(0, TARGET - st.commEarned))}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Target Remaining</span><span class="alert-row-val fail">${fmtKes(Math.max(0, TARGET - st.commEarned))}</span></div>
     </div>
-
-    ${Object.keys(actBreakdown).length ? `
-    <div class="alert-section">
-      <div class="alert-section-title">⚡ Activity Breakdown</div>
-      ${Object.entries(actBreakdown).sort((a,b)=>b[1]-a[1]).map(([act,cnt]) =>
-        `<div class="alert-row"><span class="alert-row-label">${escHtml(act)}</span><span class="alert-row-val">${cnt}×</span></div>`
-      ).join('')}
-    </div>` : ''}
-
     ${(overdueTasks.length || dueSoonTasks.length) ? `
     <div class="alert-section">
       <div class="alert-section-title">🚨 Flagship Task Alerts</div>
-      ${overdueTasks.map(t => `
-        <div class="alert-task">
-          <div class="alert-task-name">🔴 OVERDUE: ${escHtml(t.asset)}</div>
-          <div class="alert-task-meta">${escHtml(t.task)} — ${Math.abs(daysUntil(t.deadline))} days overdue · ${escHtml(t.status)}</div>
-        </div>`).join('')}
-      ${dueSoonTasks.map(t => `
-        <div class="alert-task warn-task">
-          <div class="alert-task-name">⚠️ Due in ${daysUntil(t.deadline)} day(s): ${escHtml(t.asset)}</div>
-          <div class="alert-task-meta">${escHtml(t.task)} · ${escHtml(t.status)}</div>
-        </div>`).join('')}
-    </div>` : ''}
-
-    <div class="alert-section">
-      <div class="alert-section-title">🏆 Capital & Mandates</div>
-      <div class="alert-row"><span class="alert-row-label">Capital Partners</span><span class="alert-row-val">${DATA.capital.length}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Overdue Touchpoints</span><span class="alert-row-val ${DATA.capital.filter(c=>daysUntil(c.next_touchpoint)<0).length>0?'fail':''}">${DATA.capital.filter(c=>c.next_touchpoint&&daysUntil(c.next_touchpoint)<0).length}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Active Mandates</span><span class="alert-row-val">${DATA.mandates.filter(m=>daysUntil(m.expiry_date)>=0).length}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Expiring in 30 days</span><span class="alert-row-val ${DATA.mandates.filter(m=>daysUntil(m.expiry_date)<=30&&daysUntil(m.expiry_date)>=0).length>0?'warn':''}">${DATA.mandates.filter(m=>daysUntil(m.expiry_date)<=30&&daysUntil(m.expiry_date)>=0).length}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Prospects Logged</span><span class="alert-row-val">${DATA.traffic.length}</span></div>
-      <div class="alert-row"><span class="alert-row-label">Hot Prospects</span><span class="alert-row-val ok">${DATA.traffic.filter(t=>t.temperature==='Hot — Ready'||t.temperature==='Offer Submitted').length}</span></div>
-    </div>`;
-}
-
-// ═══════════════════════════════════════════════════════
-// SCHEDULED CHECKS (interval-based, runs while tab is open)
-// ═══════════════════════════════════════════════════════
-function startScheduledAlerts() {
-  // Check alerts every 30 minutes while the app is open
-  setInterval(() => {
-    checkFlagshipAlerts();
-    checkCapitalAlerts();
-    checkMandateAlerts();
-    checkDailyScoreAlert();
-  }, 30 * 60 * 1000);
-
-  // Daily brief auto-popup at 7pm if targets not met
-  setInterval(() => {
-    const hour = new Date().getHours();
-    const minute = new Date().getMinutes();
-    if (hour === 19 && minute === 0) {
-      const todayStr = today();
-      const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
-      const st = calcStats();
-      if (st.todayPts < 30 || todayLog.length < 3) {
-        openDailyBrief();
-      }
-    }
-  }, 60 * 1000);
-}
-
-// ── Intercept CRUD operations to add notifications ──
-// These wrappers are called AFTER data is saved
-const _origAddDeal = typeof addDeal !== 'undefined' ? addDeal : null;
-const _origLogActivity = typeof logActivity !== 'undefined' ? logActivity : null;
-
-// ═══════════════════════════════════════════════════════
-// INIT NOTIFICATION SYSTEM
-// ═══════════════════════════════════════════════════════
-function initNotifications() {
-  loadNotifs();
-  renderNotifPanel();
-  updateNotifBadge();
-  checkAndPromptDesktopPerm();
-  startScheduledAlerts();
+      ${overdueTasks.map(t => `<div class="alert-task"><div class="alert-task-name">🔴 OVERDUE: ${escHtml(t.asset)}</div><div class="alert-task-meta">${escHtml(t.task)} — ${Math.abs(daysUntil(t.deadline))}d overdue · ${escHtml(t.status)}</div></div>`).join('')}
+      ${dueSoonTasks.map(t => `<div class="alert-task warn-task"><div class="alert-task-name">⚠️ Due in ${daysUntil(t.deadline)}d: ${escHtml(t.asset)}</div><div class="alert-task-meta">${escHtml(t.task)} · ${escHtml(t.status)}</div></div>`).join('')}
+    </div>` : ''}`;
 }
 
 </script>
