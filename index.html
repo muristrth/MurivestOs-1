@@ -466,7 +466,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   </div>
   <div class="mast-r">
     <div class="sync-dot" id="sync-dot" title="Supabase sync" onclick="forceSync()"></div>
-    <button class="notif-btn" id="notif-bell" onclick="toggleNotifPanel()" title="Alerts">
+    <button class="notif-btn" id="notif-bell" onclick="enableMurivestDesktopAlerts(); toggleNotifPanel();" title="Alerts">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
       <span class="notif-badge" id="notif-badge">0</span>
     </button>
@@ -2445,12 +2445,79 @@ function startScheduledAlerts() {
   setInterval(() => { checkFlagshipAlerts(); checkCapitalAlerts(); checkMandateAlerts(); checkAdAlerts(); checkLeadStagnation(); checkDailyScoreAlert(); }, 30 * 60 * 1000);
 }
 
+function checkCriticalAlerts() {
+  const todayStr = today();
+
+  const overdueTasks = DATA.flagship.filter(t =>
+    t.status !== 'Done' && t.deadline && t.deadline < todayStr
+  );
+
+  overdueTasks.forEach(t => {
+    pushNotif(
+      'Overdue flagship task',
+      `${t.asset}: ${t.task}`,
+      'critical',
+      '🚨'
+    );
+
+    sendDesktopNotif(
+      'Overdue flagship task',
+      `${t.asset}: ${t.task}`,
+      'overdue-' + t.id
+    );
+  });
+
+  const overduePartners = DATA.capital.filter(c =>
+    c.next_touchpoint && c.next_touchpoint < todayStr
+  );
+
+  overduePartners.forEach(c => {
+    pushNotif(
+      'Capital partner follow-up due',
+      `${c.name}: follow up immediately.`,
+      'warn',
+      '📞'
+    );
+
+    sendDesktopNotif(
+      'Capital follow-up due',
+      `${c.name}: follow up immediately.`,
+      'capital-' + c.id
+    );
+  });
+}
+
 function initNotifications() {
   loadNotifs();
   renderNotifPanel();
   updateNotifBadge();
   checkAndPromptDesktopPerm();
   startScheduledAlerts();
+  checkCriticalAlerts();
+}
+
+async function enableMurivestDesktopAlerts() {
+  const allowed = await requestDesktopPermission();
+
+  if (!allowed) {
+    toast('Desktop alerts blocked. Enable notifications in browser settings.', false);
+    return;
+  }
+
+  pushNotif(
+    'Desktop alerts enabled',
+    'Murivest OS can now show laptop popups.',
+    'success',
+    '🔔'
+  );
+
+  sendDesktopNotif(
+    'Desktop alerts enabled',
+    'You will now receive Murivest execution alerts.',
+    'desktop-enabled'
+  );
+
+  toast('Desktop alerts enabled ✓');
 }
 
 // ═══════════════════════════════════════
