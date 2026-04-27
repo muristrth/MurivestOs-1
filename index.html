@@ -302,6 +302,72 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
 /* ── DELETE ROW BTN ── */
 .del-btn{background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px;padding:2px 6px;border-radius:var(--r);transition:all 0.15s;line-height:1}
 .del-btn:hover{color:var(--danger);background:var(--danger-bg)}
+
+/* ── NOTIFICATION BELL ── */
+.notif-btn{position:relative;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.5);padding:4px;display:flex;align-items:center;transition:color 0.2s}
+.notif-btn:hover{color:var(--white)}
+.notif-btn svg{width:18px;height:18px}
+.notif-badge{position:absolute;top:-2px;right:-2px;background:var(--danger);color:var(--white);font-size:9px;font-weight:700;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;line-height:1;display:none}
+.notif-badge.show{display:flex}
+
+/* ── NOTIFICATION PANEL ── */
+.notif-panel{position:fixed;top:54px;right:0;width:340px;max-width:100vw;background:var(--white);border-left:1px solid var(--border);border-bottom:1px solid var(--border);box-shadow:var(--shadow2);z-index:300;max-height:calc(100vh - 54px);overflow-y:auto;transform:translateX(100%);transition:transform 0.25s ease;border-radius:0 0 0 var(--r2)}
+.notif-panel.open{transform:translateX(0)}
+.notif-header{background:var(--ink);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1}
+.notif-title{font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7)}
+.notif-actions{display:flex;gap:8px;align-items:center}
+.notif-clear{font-size:10px;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;font-family:'Syne',sans-serif;padding:3px 8px;border-radius:100px;transition:all 0.15s}
+.notif-clear:hover{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
+.notif-close{font-size:16px;color:rgba(255,255,255,0.4);background:none;border:none;cursor:pointer;line-height:1;padding:2px 4px}
+.notif-close:hover{color:var(--white)}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border2);display:flex;gap:10px;align-items:flex-start;cursor:default;transition:background 0.15s}
+.notif-item:hover{background:var(--cream)}
+.notif-item.unread{background:rgba(184,149,90,0.04)}
+.notif-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.ni-critical{background:var(--danger-bg)}
+.ni-warn{background:var(--warn-bg)}
+.ni-success{background:var(--success-bg)}
+.ni-info{background:var(--info-bg)}
+.ni-gold{background:var(--gold-light)}
+.notif-body{flex:1;min-width:0}
+.notif-msg{font-size:12px;font-weight:600;color:var(--ink);line-height:1.4;margin-bottom:2px}
+.notif-sub{font-size:11px;color:var(--ink3);line-height:1.4}
+.notif-time{font-size:10px;color:var(--ink3);margin-top:3px}
+.notif-empty{padding:24px 16px;text-align:center;font-size:12px;color:var(--ink3)}
+
+/* ── ALERT MODAL (Daily Brief / Report) ── */
+.alert-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.alert-overlay.show{opacity:1;pointer-events:all}
+.alert-box{background:var(--white);border-radius:var(--r2);width:100%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow2)}
+.alert-head{background:var(--ink);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+.alert-head-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--white)}
+.alert-head-close{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:20px;line-height:1;padding:2px 6px}
+.alert-head-close:hover{color:var(--white)}
+.alert-body{padding:18px}
+.alert-section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.alert-section:last-child{border-bottom:none;margin-bottom:0}
+.alert-section-title{font-size:9px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.alert-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px}
+.alert-row-label{color:var(--ink2)}
+.alert-row-val{font-weight:700;color:var(--ink)}
+.alert-row-val.ok{color:var(--success)}
+.alert-row-val.warn{color:var(--warn)}
+.alert-row-val.fail{color:var(--danger)}
+.alert-task{background:var(--danger-bg);border:1px solid rgba(107,26,26,0.15);border-radius:var(--r);padding:8px 10px;margin-bottom:6px}
+.alert-task.warn-task{background:var(--warn-bg);border-color:rgba(122,74,0,0.15)}
+.alert-task-name{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.alert-task-meta{font-size:11px;color:var(--ink3)}
+.alert-gc{background:var(--ink);color:rgba(255,255,255,0.7);font-size:11px;line-height:1.7;padding:12px 14px;border-left:2px solid var(--gold);border-radius:0 var(--r) var(--r) 0;font-style:italic;margin-bottom:12px}
+.report-tab-row{display:flex;gap:4px;margin-bottom:14px}
+.report-tab{padding:6px 12px;background:var(--cream);border:1px solid var(--border);border-radius:100px;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;color:var(--ink3);transition:all 0.15s}
+.report-tab.act{background:var(--ink);color:var(--white);border-color:var(--ink)}
+
+/* ── PERM NOTIF REQUEST BANNER ── */
+.perm-banner{background:var(--gold-light);border:1px solid rgba(184,149,90,0.25);border-radius:var(--r2);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;display:none}
+.perm-banner.show{display:flex}
+.perm-banner-text{font-size:11px;color:var(--ink2)}
+.perm-banner-btn{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:var(--gold);color:var(--ink);border:none;border-radius:100px;padding:5px 12px;cursor:pointer;white-space:nowrap;font-family:'Syne',sans-serif}
+.perm-banner-btn:hover{background:var(--gold2)}
 </style>
 </head>
 <body>
@@ -319,9 +385,39 @@ textarea{resize:vertical;min-height:70px;line-height:1.55}
   </div>
   <div class="mast-r">
     <div class="sync-dot" id="sync-dot" title="Supabase sync" onclick="forceSync()"></div>
+    <button class="notif-btn" id="notif-bell" onclick="toggleNotifPanel()" title="Alerts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      <span class="notif-badge" id="notif-badge">0</span>
+    </button>
+    <button class="notif-btn" onclick="openDailyBrief()" title="Daily Brief &amp; Reports">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </button>
     <div class="target-chip">KShs 50M · 2026</div>
   </div>
 </header>
+
+<!-- Notification Panel -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    <div class="notif-title">Alerts &amp; Notifications</div>
+    <div class="notif-actions">
+      <button class="notif-clear" onclick="clearAllNotifs()">Clear all</button>
+      <button class="notif-close" onclick="toggleNotifPanel()">✕</button>
+    </div>
+  </div>
+  <div id="notif-list"><div class="notif-empty">Checking your data…</div></div>
+</div>
+
+<!-- Daily Brief / Report Modal -->
+<div class="alert-overlay" id="alert-overlay" onclick="closeAlertModal(event)">
+  <div class="alert-box" onclick="event.stopPropagation()">
+    <div class="alert-head">
+      <div class="alert-head-title" id="alert-title">Daily Brief</div>
+      <button class="alert-head-close" onclick="closeAlertModal()">✕</button>
+    </div>
+    <div class="alert-body" id="alert-body"></div>
+  </div>
+</div>
 
 <!-- Progress Bar -->
 <div class="progress-bar-wrap">
@@ -765,7 +861,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // IMPORTANT: Replace this with your actual user ID from Supabase Auth dashboard
 // Auth → Users → copy the UUID of your user
 // Or set to null to use a shared/demo mode (data visible to all anon users)
-const HARDCODED_USER_ID = "96f370cb-479f-49ad-9ef0-668b9363a0c6";
+const HARDCODED_USER_ID = "00000000-0000-0000-0000-000000000001";
 
 const TARGET = 50000000;
 const WEIGHTS = {
@@ -793,6 +889,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   const td = today();
   document.querySelectorAll('input[type="date"]').forEach(el => { if (!el.value) el.value = td; });
+  initNotifications();
   loadAllData();
 });
 
@@ -870,6 +967,7 @@ async function loadAllData() {
   } catch(e) { console.error('loadAllData', e); }
   hideLoading();
   render();
+  runAllAlerts();
 }
 
 function forceSync() { loadAllData(); }
@@ -1203,6 +1301,7 @@ async function updateDealStage(id, stage) {
   const d = DATA.pipeline.find(x => x.id === id);
   if (d) d.stage = stage;
   renderStats(); renderPipeline();
+  notifCrud('update','Deal Stage', d ? d.asset + ' → ' + stage : stage);
   toast('Stage → ' + stage);
 }
 
@@ -1210,7 +1309,9 @@ async function deleteDeal(id) {
   if (!confirm('Remove this deal from pipeline?')) return;
   const ok = await dbDelete('pipeline', id);
   if (ok) {
+    const d = DATA.pipeline.find(x=>x.id===id);
     DATA.pipeline = DATA.pipeline.filter(x => x.id !== id);
+    notifCrud('delete','Deal', d ? d.asset : '');
     render(); toast('Deal removed');
   }
 }
@@ -1257,7 +1358,7 @@ function renderLog() {
 async function deleteLog(id) {
   if (!confirm('Delete this log entry?')) return;
   const ok = await dbDelete('daily_log', id);
-  if (ok) { DATA.log = DATA.log.filter(x => x.id !== id); render(); toast('Entry deleted'); }
+  if (ok) { DATA.log = DATA.log.filter(x => x.id !== id); notifCrud('delete','Log Entry',''); render(); toast('Entry deleted'); }
 }
 
 // ── FLAGSHIP ──
@@ -1448,6 +1549,7 @@ async function addDeal() {
   enableBtn('btn-add-deal');
   if (!row) return;
   DATA.pipeline.unshift(row);
+  notifCrud('add','Deal', row.asset + ' — ' + fmtKes(Number(row.size)));
   ['np-asset','np-market','np-size','np-fee','np-source','np-action'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
@@ -1470,6 +1572,7 @@ async function logActivity() {
   enableBtn('btn-log-activity');
   if (!row) return;
   DATA.log.unshift(row);
+  notifCrud('add','Activity', row.activity + ' — ' + Math.round(Number(row.points)) + ' pts');
   document.getElementById('log-cp').value = '';
   document.getElementById('log-out').value = '';
   render(); toast(`Logged: ${Math.round(points)} execution points ✓`);
@@ -1486,6 +1589,8 @@ async function addFlagship() {
   enableBtn('btn-add-flagship');
   if (!row) return;
   DATA.flagship.push(row);
+  notifCrud('add','Flagship Task', row.asset + ': ' + row.task.slice(0,50));
+  checkFlagshipAlerts();
   document.getElementById('ft-asset').value = '';
   document.getElementById('ft-task').value = '';
   renderFlagship(); toast('Task registered ✓');
@@ -1507,6 +1612,7 @@ async function addCapital() {
   enableBtn('btn-add-capital');
   if (!row) return;
   DATA.capital.push(row);
+  notifCrud('add','Capital Partner', row.entity_name);
   ['cp-name','cp-region','cp-mandate','cp-size','cp-prob','cp-touch'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
@@ -1533,6 +1639,8 @@ async function addMandate() {
   enableBtn('btn-add-mandate');
   if (!row) return;
   DATA.mandates.push(row);
+  notifCrud('add','Mandate', row.asset + ' — ' + fmtKes(Number(row.asking_price)));
+  checkMandateAlerts();
   ['mn-asset','mn-location','mn-provider','mn-price','mn-fee','mn-start','mn-expiry','mn-notes'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
@@ -1593,6 +1701,467 @@ async function logContent() {
   document.getElementById('ct-leads-gen').value = '';
   renderContent(); renderDashboard(); toast('Content logged ✓ — authority built');
 }
+
+// ═══════════════════════════════════════════════════════
+// NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════════════
+
+const NOTIFS_KEY = 'murivest_notifs';
+let NOTIFS = [];
+let notifPanelOpen = false;
+
+// ── Storage helpers ──
+function saveNotifs() {
+  try { localStorage.setItem(NOTIFS_KEY, JSON.stringify(NOTIFS.slice(0,100))); } catch(e) {}
+}
+function loadNotifs() {
+  try { NOTIFS = JSON.parse(localStorage.getItem(NOTIFS_KEY) || '[]'); } catch(e) { NOTIFS = []; }
+}
+
+// ── Push a notification into the panel ──
+function pushNotif(msg, sub, type, icon) {
+  const n = { id: Date.now() + Math.random(), msg, sub, type, icon, time: new Date().toISOString(), read: false };
+  NOTIFS.unshift(n);
+  if (NOTIFS.length > 100) NOTIFS = NOTIFS.slice(0, 100);
+  saveNotifs();
+  renderNotifPanel();
+  updateNotifBadge();
+}
+
+function updateNotifBadge() {
+  const unread = NOTIFS.filter(n => !n.read).length;
+  const badge = document.getElementById('notif-badge');
+  if (!badge) return;
+  badge.textContent = unread > 9 ? '9+' : unread;
+  badge.className = 'notif-badge' + (unread > 0 ? ' show' : '');
+}
+
+function toggleNotifPanel() {
+  notifPanelOpen = !notifPanelOpen;
+  const panel = document.getElementById('notif-panel');
+  if (!panel) return;
+  if (notifPanelOpen) {
+    panel.classList.add('open');
+    NOTIFS.forEach(n => n.read = true);
+    saveNotifs();
+    updateNotifBadge();
+  } else {
+    panel.classList.remove('open');
+  }
+}
+
+function renderNotifPanel() {
+  const list = document.getElementById('notif-list');
+  if (!list) return;
+  if (!NOTIFS.length) { list.innerHTML = '<div class="notif-empty">No alerts yet — check back after syncing data.</div>'; return; }
+  const typeMap = { critical:'ni-critical', warn:'ni-warn', success:'ni-success', info:'ni-info', gold:'ni-gold' };
+  list.innerHTML = NOTIFS.slice(0, 60).map(n => `
+    <div class="notif-item ${n.read ? '' : 'unread'}">
+      <div class="notif-icon ${typeMap[n.type]||'ni-info'}">${n.icon}</div>
+      <div class="notif-body">
+        <div class="notif-msg">${escHtml(n.msg)}</div>
+        ${n.sub ? `<div class="notif-sub">${escHtml(n.sub)}</div>` : ''}
+        <div class="notif-time">${relTime(n.time)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function escHtml(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+function relTime(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'Just now';
+  if (m < 60) return m + 'm ago';
+  const hr = Math.floor(m / 60);
+  if (hr < 24) return hr + 'h ago';
+  return Math.floor(hr/24) + 'd ago';
+}
+
+function clearAllNotifs() {
+  NOTIFS = [];
+  saveNotifs();
+  renderNotifPanel();
+  updateNotifBadge();
+}
+
+// ── Desktop / Browser Notifications ──
+let desktopPermission = false;
+
+async function requestDesktopPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') { desktopPermission = true; return true; }
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  desktopPermission = result === 'granted';
+  return desktopPermission;
+}
+
+function sendDesktopNotif(title, body, tag) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    const n = new Notification('Murivest OS — ' + title, {
+      body,
+      tag: tag || 'murivest-' + Date.now(),
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230D0D0D"/><text x="50%" y="60%" text-anchor="middle" font-size="18" fill="%23D4AF78">M</text></svg>',
+      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%230D0D0D"/></svg>'
+    });
+    n.onclick = () => { window.focus(); n.close(); };
+    setTimeout(() => n.close(), 8000);
+  } catch(e) {}
+}
+
+function checkAndPromptDesktopPerm() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    // Show a gentle in-app prompt after 3 seconds
+    setTimeout(() => {
+      pushNotif(
+        'Enable desktop alerts',
+        'Get notified about task deadlines even when the tab is in background. Click to enable.',
+        'gold', '🔔'
+      );
+    }, 3000);
+  } else if (Notification.permission === 'granted') {
+    desktopPermission = true;
+  }
+}
+
+// ── CRUD Event Notifications ──
+function notifCrud(action, entity, name) {
+  const icons = { add:'✅', update:'🔄', delete:'🗑️' };
+  const types = { add:'success', update:'info', delete:'warn' };
+  const labels = { add:'added', update:'updated', delete:'removed' };
+  pushNotif(
+    `${entity} ${labels[action] || action}`,
+    name || '',
+    types[action] || 'info',
+    icons[action] || '📌'
+  );
+}
+
+// ── FLAGSHIP TASK ALERTS ──
+function checkFlagshipAlerts() {
+  if (!DATA.flagship || !DATA.flagship.length) return;
+  const now = new Date();
+  const seen = JSON.parse(localStorage.getItem('murivest_seen_task_alerts') || '{}');
+  const newSeen = {};
+
+  DATA.flagship.forEach(t => {
+    if (t.status === 'Done') return;
+    const du = daysUntil(t.deadline);
+    const key = t.id + '_' + (du <= 0 ? 'overdue' : du <= 1 ? 'due1' : du <= 3 ? 'due3' : du <= 7 ? 'due7' : null);
+    if (!key.endsWith('null') && !seen[key]) {
+      newSeen[key] = true;
+      if (du < 0) {
+        pushNotif(
+          `🔴 OVERDUE: ${t.asset}`,
+          `"${t.task}" — was due ${Math.abs(du)} day(s) ago. Status: ${t.status}`,
+          'critical', '🚨'
+        );
+        sendDesktopNotif('Overdue Task!', `${t.asset}: "${t.task}" is ${Math.abs(du)} day(s) overdue`, t.id);
+      } else if (du <= 1) {
+        pushNotif(
+          `⚠️ Due TOMORROW: ${t.asset}`,
+          `"${t.task}" — Status: ${t.status}`,
+          'critical', '⏰'
+        );
+        sendDesktopNotif('Task Due Tomorrow!', `${t.asset}: "${t.task}"`, t.id);
+      } else if (du <= 3) {
+        pushNotif(
+          `Due in ${du} days: ${t.asset}`,
+          `"${t.task}" — Status: ${t.status}. Act now.`,
+          'warn', '⚡'
+        );
+        sendDesktopNotif(`Task Due in ${du} Days`, `${t.asset}: "${t.task}"`, t.id);
+      } else if (du <= 7) {
+        pushNotif(
+          `Due in ${du} days: ${t.asset}`,
+          `"${t.task}" — Status: ${t.status}`,
+          'info', '📋'
+        );
+      }
+    } else if (!key.endsWith('null')) {
+      newSeen[key] = seen[key];
+    }
+  });
+
+  // Blocked tasks alert
+  const blocked = DATA.flagship.filter(t => t.status === 'Blocked');
+  if (blocked.length) {
+    const bkey = 'blocked_' + today();
+    if (!seen[bkey]) {
+      newSeen[bkey] = true;
+      pushNotif(
+        `${blocked.length} Blocked Task${blocked.length>1?'s':''}`,
+        blocked.map(t => t.asset + ': ' + t.task.slice(0,40)).join(' | '),
+        'critical', '🔴'
+      );
+    }
+  }
+
+  localStorage.setItem('murivest_seen_task_alerts', JSON.stringify({...seen, ...newSeen}));
+}
+
+// ── CAPITAL TOUCHPOINT ALERTS ──
+function checkCapitalAlerts() {
+  if (!DATA.capital || !DATA.capital.length) return;
+  const overdue = DATA.capital.filter(c => c.next_touchpoint && daysUntil(c.next_touchpoint) < 0);
+  const dueSoon = DATA.capital.filter(c => c.next_touchpoint && daysUntil(c.next_touchpoint) <= 2 && daysUntil(c.next_touchpoint) >= 0);
+  const seen = JSON.parse(localStorage.getItem('murivest_seen_cap_alerts') || '{}');
+  const todayKey = today();
+
+  if (overdue.length && !seen['capital_overdue_' + todayKey]) {
+    pushNotif(
+      `${overdue.length} Overdue Investor Touchpoint${overdue.length>1?'s':''}`,
+      overdue.slice(0,3).map(c => c.entity_name).join(', ') + (overdue.length>3?'…':''),
+      'critical', '💼'
+    );
+    sendDesktopNotif('Overdue Investor Touchpoints', `${overdue.length} capital partner(s) need contact`, 'cap_overdue');
+    seen['capital_overdue_' + todayKey] = true;
+  }
+  if (dueSoon.length && !seen['capital_soon_' + todayKey]) {
+    pushNotif(
+      `${dueSoon.length} Investor Touchpoint${dueSoon.length>1?'s':''} Due Soon`,
+      dueSoon.map(c => c.entity_name).join(', '),
+      'warn', '📞'
+    );
+    seen['capital_soon_' + todayKey] = true;
+  }
+  localStorage.setItem('murivest_seen_cap_alerts', JSON.stringify(seen));
+}
+
+// ── MANDATE EXPIRY ALERTS ──
+function checkMandateAlerts() {
+  if (!DATA.mandates || !DATA.mandates.length) return;
+  const seen = JSON.parse(localStorage.getItem('murivest_seen_man_alerts') || '{}');
+  const todayKey = today();
+  DATA.mandates.forEach(m => {
+    const du = daysUntil(m.expiry_date);
+    if (du <= 30 && !seen['man_' + m.id + '_' + todayKey]) {
+      const lvl = du < 0 ? 'critical' : du <= 7 ? 'warn' : 'info';
+      const msg = du < 0 ? `EXPIRED: ${m.asset}` : `Mandate expiring in ${du} days: ${m.asset}`;
+      pushNotif(msg, `${m.mandate_type} · ${fmtKes(Number(m.asking_price))}`, lvl, '📄');
+      seen['man_' + m.id + '_' + todayKey] = true;
+    }
+  });
+  localStorage.setItem('murivest_seen_man_alerts', JSON.stringify(seen));
+}
+
+// ── DAILY SCORECARD CHECK (end of day) ──
+function checkDailyScoreAlert() {
+  const hour = new Date().getHours();
+  if (hour < 17) return; // Only alert after 5pm
+  const todayStr = today();
+  const seen = JSON.parse(localStorage.getItem('murivest_seen_score_alerts') || '{}');
+  if (seen[todayStr]) return;
+
+  const st = calcStats();
+  const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
+  const todayOutreach = DATA.outreach.filter(o => o.outreach_date === todayStr).reduce((s,o) => s+(Number(o.count)||0), 0);
+  const todayContent = DATA.content.filter(c => c.published_at === todayStr).length;
+  const checks = [todayOutreach >= 20, todayContent >= 2, todayLog.length >= 3, st.todayPts >= 30];
+  const score = checks.filter(Boolean).length;
+
+  if (score < 4) {
+    pushNotif(
+      `Day not complete — ${score}/4 targets hit`,
+      `Points: ${st.todayPts} | Outreach: ${todayOutreach}/20 | Content: ${todayContent}/2 | Moves: ${todayLog.length}/3`,
+      score < 2 ? 'critical' : 'warn', '📊'
+    );
+    sendDesktopNotif('Daily Targets Incomplete', `${score}/4 targets hit today. Execution required.`, 'daily_score');
+  } else {
+    pushNotif('All daily targets hit! 🎯', `${st.todayPts} execution points earned today. Outstanding.`, 'success', '🏆');
+    sendDesktopNotif('Daily Targets Complete!', `All ${score}/4 targets smashed. ${st.todayPts} points today.`, 'daily_complete');
+  }
+  seen[todayStr] = true;
+  localStorage.setItem('murivest_seen_score_alerts', JSON.stringify(seen));
+}
+
+// ── RUN ALL CHECKS (called after data loads) ──
+function runAllAlerts() {
+  checkFlagshipAlerts();
+  checkCapitalAlerts();
+  checkMandateAlerts();
+  checkDailyScoreAlert();
+}
+
+// ═══════════════════════════════════════════════════════
+// DAILY BRIEF MODAL
+// ═══════════════════════════════════════════════════════
+function closeAlertModal(e) {
+  if (e && e.target !== document.getElementById('alert-overlay')) return;
+  document.getElementById('alert-overlay').classList.remove('show');
+}
+
+function openDailyBrief() {
+  document.getElementById('alert-title').textContent = 'Daily Brief & Reports';
+  document.getElementById('alert-body').innerHTML = buildBriefHTML('daily');
+  document.getElementById('alert-overlay').classList.add('show');
+}
+
+function switchReport(tab) {
+  document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('act'));
+  document.querySelector(`[data-rtab="${tab}"]`).classList.add('act');
+  document.getElementById('report-content').innerHTML = buildReportSection(tab);
+}
+
+function buildBriefHTML(initTab) {
+  return `
+    <div class="report-tab-row">
+      <button class="report-tab act" data-rtab="daily" onclick="switchReport('daily')">Today</button>
+      <button class="report-tab" data-rtab="week" onclick="switchReport('week')">This Week</button>
+      <button class="report-tab" data-rtab="month" onclick="switchReport('month')">This Month</button>
+      <button class="report-tab" data-rtab="all" onclick="switchReport('all')">All Time</button>
+    </div>
+    <div id="report-content">${buildReportSection('daily')}</div>`;
+}
+
+function buildReportSection(period) {
+  const todayStr = today();
+  const now = new Date();
+  const startOfWeek = new Date(now); startOfWeek.setDate(now.getDate() - now.getDay());
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  function inPeriod(dateStr) {
+    if (!dateStr) return false;
+    const d = new Date(dateStr);
+    if (period === 'daily') return dateStr.startsWith(todayStr);
+    if (period === 'week') return d >= startOfWeek;
+    if (period === 'month') return d >= startOfMonth;
+    return true;
+  }
+
+  const logs = DATA.log.filter(l => inPeriod(l.logged_at));
+  const outreachItems = DATA.outreach.filter(o => inPeriod(o.outreach_date));
+  const contentItems = DATA.content.filter(c => inPeriod(c.published_at));
+  const totalPts = logs.reduce((s,l) => s+(Number(l.points)||0), 0);
+  const totalOutreach = outreachItems.reduce((s,o) => s+(Number(o.count)||0), 0);
+  const leads = contentItems.reduce((s,c) => s+(Number(c.leads_generated)||0), 0);
+  const calls = logs.filter(l => l.activity?.includes('Call')||l.activity?.includes('Meeting')).length;
+  const lois = logs.filter(l => l.activity?.includes('LOI')).length;
+  const st = calcStats();
+
+  const pLabel = { daily:'Today', week:'This Week', month:'This Month', all:'All Time' }[period];
+  const pTarget = { daily:30, week:210, month:900, all:9999 }[period];
+  const outTarget = { daily:20, week:140, month:600, all:9999 }[period];
+
+  // GC quote based on score
+  const dayScore = period === 'daily' ? Math.round((Math.min(totalPts/30,1) + Math.min(totalOutreach/20,1) + Math.min(contentItems.length/2,1) + Math.min(calls/1,1)) / 4 * 100) : null;
+  const gcQuote = dayScore !== null
+    ? dayScore >= 80 ? '"Massive action produces massive results. Keep this up every day."'
+    : dayScore >= 50 ? '"You're halfway there. Halfway doesn't pay the bills — double it."'
+    : '"You didn't even come close today. That's fine — start now. Not tomorrow. Now."'
+    : '"Success is your duty, obligation, and responsibility."';
+
+  // Activity breakdown
+  const actBreakdown = {};
+  logs.forEach(l => { actBreakdown[l.activity] = (actBreakdown[l.activity]||0) + 1; });
+
+  // Overdue tasks
+  const overdueTasks = DATA.flagship.filter(t => t.status !== 'Done' && daysUntil(t.deadline) < 0);
+  const dueSoonTasks = DATA.flagship.filter(t => t.status !== 'Done' && daysUntil(t.deadline) >= 0 && daysUntil(t.deadline) <= 3);
+
+  return `
+    <div class="alert-gc">${gcQuote}</div>
+
+    <div class="alert-section">
+      <div class="alert-section-title">📊 ${pLabel} — Execution Summary</div>
+      <div class="alert-row"><span class="alert-row-label">Execution Points</span><span class="alert-row-val ${totalPts>=pTarget?'ok':totalPts>=pTarget*0.5?'warn':'fail'}">${Math.round(totalPts)} / ${pTarget}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Outreach Touches</span><span class="alert-row-val ${totalOutreach>=outTarget?'ok':totalOutreach>=outTarget*0.5?'warn':'fail'}">${totalOutreach} / ${outTarget}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Content Published</span><span class="alert-row-val ${contentItems.length>0?'ok':'fail'}">${contentItems.length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Investor Calls / Meetings</span><span class="alert-row-val ${calls>0?'ok':'fail'}">${calls}</span></div>
+      <div class="alert-row"><span class="alert-row-label">LOIs Drafted / Submitted</span><span class="alert-row-val">${lois}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Leads from Content</span><span class="alert-row-val ${leads>0?'ok':''}">${leads}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Total Activities Logged</span><span class="alert-row-val">${logs.length}</span></div>
+    </div>
+
+    <div class="alert-section">
+      <div class="alert-section-title">💰 Pipeline Status</div>
+      <div class="alert-row"><span class="alert-row-label">Commission Earned (Closed)</span><span class="alert-row-val ok">${fmtKes(st.commEarned)}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Active Deal Value</span><span class="alert-row-val">${fmtKes(st.totalPipe)}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Risk-Adjusted Revenue</span><span class="alert-row-val">${fmtKes(st.riskAdj)}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Active Deals</span><span class="alert-row-val">${st.active}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Target Remaining</span><span class="alert-row-val ${st.commEarned>0?'warn':'fail'}">${fmtKes(Math.max(0, TARGET - st.commEarned))}</span></div>
+    </div>
+
+    ${Object.keys(actBreakdown).length ? `
+    <div class="alert-section">
+      <div class="alert-section-title">⚡ Activity Breakdown</div>
+      ${Object.entries(actBreakdown).sort((a,b)=>b[1]-a[1]).map(([act,cnt]) =>
+        `<div class="alert-row"><span class="alert-row-label">${escHtml(act)}</span><span class="alert-row-val">${cnt}×</span></div>`
+      ).join('')}
+    </div>` : ''}
+
+    ${(overdueTasks.length || dueSoonTasks.length) ? `
+    <div class="alert-section">
+      <div class="alert-section-title">🚨 Flagship Task Alerts</div>
+      ${overdueTasks.map(t => `
+        <div class="alert-task">
+          <div class="alert-task-name">🔴 OVERDUE: ${escHtml(t.asset)}</div>
+          <div class="alert-task-meta">${escHtml(t.task)} — ${Math.abs(daysUntil(t.deadline))} days overdue · ${escHtml(t.status)}</div>
+        </div>`).join('')}
+      ${dueSoonTasks.map(t => `
+        <div class="alert-task warn-task">
+          <div class="alert-task-name">⚠️ Due in ${daysUntil(t.deadline)} day(s): ${escHtml(t.asset)}</div>
+          <div class="alert-task-meta">${escHtml(t.task)} · ${escHtml(t.status)}</div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    <div class="alert-section">
+      <div class="alert-section-title">🏆 Capital & Mandates</div>
+      <div class="alert-row"><span class="alert-row-label">Capital Partners</span><span class="alert-row-val">${DATA.capital.length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Overdue Touchpoints</span><span class="alert-row-val ${DATA.capital.filter(c=>daysUntil(c.next_touchpoint)<0).length>0?'fail':''}">${DATA.capital.filter(c=>c.next_touchpoint&&daysUntil(c.next_touchpoint)<0).length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Active Mandates</span><span class="alert-row-val">${DATA.mandates.filter(m=>daysUntil(m.expiry_date)>=0).length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Expiring in 30 days</span><span class="alert-row-val ${DATA.mandates.filter(m=>daysUntil(m.expiry_date)<=30&&daysUntil(m.expiry_date)>=0).length>0?'warn':''}">${DATA.mandates.filter(m=>daysUntil(m.expiry_date)<=30&&daysUntil(m.expiry_date)>=0).length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Prospects Logged</span><span class="alert-row-val">${DATA.traffic.length}</span></div>
+      <div class="alert-row"><span class="alert-row-label">Hot Prospects</span><span class="alert-row-val ok">${DATA.traffic.filter(t=>t.temperature==='Hot — Ready'||t.temperature==='Offer Submitted').length}</span></div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// SCHEDULED CHECKS (interval-based, runs while tab is open)
+// ═══════════════════════════════════════════════════════
+function startScheduledAlerts() {
+  // Check alerts every 30 minutes while the app is open
+  setInterval(() => {
+    checkFlagshipAlerts();
+    checkCapitalAlerts();
+    checkMandateAlerts();
+    checkDailyScoreAlert();
+  }, 30 * 60 * 1000);
+
+  // Daily brief auto-popup at 7pm if targets not met
+  setInterval(() => {
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    if (hour === 19 && minute === 0) {
+      const todayStr = today();
+      const todayLog = DATA.log.filter(l => l.logged_at?.startsWith(todayStr));
+      const st = calcStats();
+      if (st.todayPts < 30 || todayLog.length < 3) {
+        openDailyBrief();
+      }
+    }
+  }, 60 * 1000);
+}
+
+// ── Intercept CRUD operations to add notifications ──
+// These wrappers are called AFTER data is saved
+const _origAddDeal = typeof addDeal !== 'undefined' ? addDeal : null;
+const _origLogActivity = typeof logActivity !== 'undefined' ? logActivity : null;
+
+// ═══════════════════════════════════════════════════════
+// INIT NOTIFICATION SYSTEM
+// ═══════════════════════════════════════════════════════
+function initNotifications() {
+  loadNotifs();
+  renderNotifPanel();
+  updateNotifBadge();
+  checkAndPromptDesktopPerm();
+  startScheduledAlerts();
+}
+
 </script>
 </body>
 </html>
